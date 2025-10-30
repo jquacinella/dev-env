@@ -26,6 +26,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 - **ccze** - Colorizer for log files
 - **bcat** - Browser-based pipe viewer
 - **dust** - Modern disk usage analyzer
+- **procs** - Modern replacement for ps with colored output and tree view
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
 
@@ -53,7 +54,7 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, bcat, up, ripgrep, espanso, dust, xh, broot)
+4. Install tools from GitHub (fzf, bcat, up, ripgrep, espanso, dust, xh, broot, procs)
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 

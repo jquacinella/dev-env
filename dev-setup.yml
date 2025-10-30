@@ -427,6 +427,61 @@
             state: absent
       when: not broot_stat.stat.exists
 
+    # procs Setup
+    - name: Check if procs is installed
+      stat:
+        path: /usr/local/bin/procs
+      register: procs_stat
+
+    - name: Download and install procs
+      block:
+        - name: Get latest procs release info
+          uri:
+            url: https://api.github.com/repos/dalance/procs/releases/latest
+            return_content: yes
+          register: procs_release
+
+        - name: Set procs download URL
+          set_fact:
+            procs_download_url: "{{ procs_release.json.assets | selectattr('name', 'match', '.*x86_64-lnx.zip$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for procs
+          tempfile:
+            state: directory
+          register: procs_temp
+
+        - name: Download procs zip
+          get_url:
+            url: "{{ procs_download_url }}"
+            dest: "{{ procs_temp.path }}/procs.zip"
+
+        - name: Extract procs zip
+          unarchive:
+            src: "{{ procs_temp.path }}/procs.zip"
+            dest: "{{ procs_temp.path }}"
+            remote_src: yes
+
+        - name: Find procs binary in extracted directory
+          find:
+            paths: "{{ procs_temp.path }}"
+            patterns: "procs"
+            recurse: yes
+            file_type: file
+          register: procs_binary
+
+        - name: Install procs to /usr/local/bin
+          copy:
+            src: "{{ procs_binary.files[0].path }}"
+            dest: /usr/local/bin/procs
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up procs temporary directory
+          file:
+            path: "{{ procs_temp.path }}"
+            state: absent
+      when: not procs_stat.stat.exists
+
     # Configuration Files
     - name: Create config directory
       file:
