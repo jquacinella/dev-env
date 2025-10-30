@@ -1,0 +1,40 @@
+# Path to oh-my-zsh installation
+export ZSH="{{ user_home }}/.oh-my-zsh"
+
+# Theme
+ZSH_THEME="robbyrussell"
+
+# Plugins
+plugins=(
+  git
+  direnv
+  fzf
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+export EDITOR='vim'
+export VISUAL='vim'
+
+# FZF Configuration
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+
+# Direnv hook
+eval "$(direnv hook zsh)"
+
+# Custom aliases
+alias ll='ls -lah'
+alias reload='source ~/.zshrc'
+alias zshconfig='vim ~/.zshrc'
+
+# Add local bin to PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# History configuration
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
