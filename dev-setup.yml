@@ -312,6 +312,61 @@
             state: absent
       when: not dust_stat.stat.exists
 
+    # xh Setup
+    - name: Check if xh is installed
+      stat:
+        path: /usr/local/bin/xh
+      register: xh_stat
+
+    - name: Download and install xh
+      block:
+        - name: Get latest xh release info
+          uri:
+            url: https://api.github.com/repos/ducaale/xh/releases/latest
+            return_content: yes
+          register: xh_release
+
+        - name: Set xh download URL
+          set_fact:
+            xh_download_url: "{{ xh_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for xh
+          tempfile:
+            state: directory
+          register: xh_temp
+
+        - name: Download xh tarball
+          get_url:
+            url: "{{ xh_download_url }}"
+            dest: "{{ xh_temp.path }}/xh.tar.gz"
+
+        - name: Extract xh tarball
+          unarchive:
+            src: "{{ xh_temp.path }}/xh.tar.gz"
+            dest: "{{ xh_temp.path }}"
+            remote_src: yes
+
+        - name: Find xh binary in extracted directory
+          find:
+            paths: "{{ xh_temp.path }}"
+            patterns: "xh"
+            recurse: yes
+            file_type: file
+          register: xh_binary
+
+        - name: Install xh to /usr/local/bin
+          copy:
+            src: "{{ xh_binary.files[0].path }}"
+            dest: /usr/local/bin/xh
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up xh temporary directory
+          file:
+            path: "{{ xh_temp.path }}"
+            state: absent
+      when: not xh_stat.stat.exists
+
     # Configuration Files
     - name: Create config directory
       file:
