@@ -367,6 +367,66 @@
             state: absent
       when: not xh_stat.stat.exists
 
+    # broot Setup
+    - name: Check if broot is installed
+      stat:
+        path: /usr/local/bin/broot
+      register: broot_stat
+
+    - name: Download and install broot
+      block:
+        - name: Get latest broot release info
+          uri:
+            url: https://api.github.com/repos/Canop/broot/releases/latest
+            return_content: yes
+          register: broot_release
+
+        - name: Set broot download URL
+          set_fact:
+            broot_download_url: "{{ broot_release.json.assets | selectattr('name', 'match', '.*x86_64-linux.zip$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Install unzip if not present
+          apt:
+            name: unzip
+            state: present
+
+        - name: Create temporary directory for broot
+          tempfile:
+            state: directory
+          register: broot_temp
+
+        - name: Download broot zip
+          get_url:
+            url: "{{ broot_download_url }}"
+            dest: "{{ broot_temp.path }}/broot.zip"
+
+        - name: Extract broot zip
+          unarchive:
+            src: "{{ broot_temp.path }}/broot.zip"
+            dest: "{{ broot_temp.path }}"
+            remote_src: yes
+
+        - name: Find broot binary in extracted directory
+          find:
+            paths: "{{ broot_temp.path }}"
+            patterns: "broot"
+            recurse: yes
+            file_type: file
+          register: broot_binary
+
+        - name: Install broot to /usr/local/bin
+          copy:
+            src: "{{ broot_binary.files[0].path }}"
+            dest: /usr/local/bin/broot
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up broot temporary directory
+          file:
+            path: "{{ broot_temp.path }}"
+            state: absent
+      when: not broot_stat.stat.exists
+
     # Configuration Files
     - name: Create config directory
       file:
