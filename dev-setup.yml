@@ -93,6 +93,53 @@
             state: absent
       when: not bcat_stat.stat.exists
 
+    # UP (Ultimate Plumber) Setup
+    - name: Check if up is installed
+      stat:
+        path: /usr/local/bin/up
+      register: up_stat
+
+    - name: Download and install up (Ultimate Plumber)
+      block:
+        - name: Get latest up release info
+          uri:
+            url: https://api.github.com/repos/akavel/up/releases/latest
+            return_content: yes
+          register: up_release
+
+        - name: Set up download URL
+          set_fact:
+            up_download_url: "{{ up_release.json.assets | selectattr('name', 'match', '.*linux_amd64.*') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for up
+          tempfile:
+            state: directory
+          register: up_temp
+
+        - name: Download up tarball
+          get_url:
+            url: "{{ up_download_url }}"
+            dest: "{{ up_temp.path }}/up.tar.gz"
+
+        - name: Extract up binary
+          unarchive:
+            src: "{{ up_temp.path }}/up.tar.gz"
+            dest: "{{ up_temp.path }}"
+            remote_src: yes
+
+        - name: Install up to /usr/local/bin
+          copy:
+            src: "{{ up_temp.path }}/up"
+            dest: /usr/local/bin/up
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up up temporary directory
+          file:
+            path: "{{ up_temp.path }}"
+            state: absent
+      when: not up_stat.stat.exists
+
     # Configuration Files
     - name: Create config directory
       file:
