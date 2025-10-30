@@ -5,13 +5,29 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 ## What's Included
 
 ### Installed Tools
+
+#### Essential Development Tools
+- **git**, **curl**, **wget**, **build-essential** - Core development utilities
+
+#### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
 - **tmux** - Terminal multiplexer with custom configuration
+
+#### File & Directory Navigation
 - **fzf** - Fuzzy finder for command line
+- **broot** - Modern tree view and directory navigator
 - **direnv** - Environment variable manager per directory
+
+#### Search & Text Processing
+- **ripgrep (rg)** - Ultra-fast recursive search tool
+- **up (Ultimate Plumber)** - Interactive pipe building tool
+
+#### Utilities
 - **ccze** - Colorizer for log files
 - **bcat** - Browser-based pipe viewer
-- **git**, **curl**, **wget**, **build-essential** - Essential development tools
+- **dust** - Modern disk usage analyzer
+- **xh** - Friendly HTTP client (HTTPie-like)
+- **Espanso** - Cross-platform text expander
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
@@ -37,8 +53,9 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, bcat)
-5. Apply your custom configurations
+4. Install tools from GitHub (fzf, bcat, up, ripgrep, espanso, dust, xh, broot)
+5. Register and start Espanso text expander service
+6. Apply your custom configurations
 
 ## Customization
 
@@ -127,18 +144,18 @@ By default, custom config file deployment is disabled. To enable:
     state: present
 ```
 
-### Ripgrep (from GitHub releases)
+### bat (cat with syntax highlighting)
 ```yaml
-- name: Install ripgrep
+- name: Install bat
   block:
-    - name: Download ripgrep
+    - name: Download bat
       get_url:
-        url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
-        dest: /tmp/ripgrep.deb
+        url: https://github.com/sharkdp/bat/releases/download/v0.24.0/bat_0.24.0_amd64.deb
+        dest: /tmp/bat.deb
 
-    - name: Install ripgrep package
+    - name: Install bat package
       apt:
-        deb: /tmp/ripgrep.deb
+        deb: /tmp/bat.deb
 ```
 
 ### Node.js (via NodeSource)
