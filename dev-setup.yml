@@ -140,6 +140,69 @@
             state: absent
       when: not up_stat.stat.exists
 
+    # Espanso Setup
+    - name: Install Espanso dependencies
+      apt:
+        name:
+          - libx11-dev
+          - libxtst-dev
+          - libxkbcommon-dev
+          - libdbus-1-dev
+          - libwxgtk3.0-gtk3-dev
+        state: present
+
+    - name: Check if Espanso is installed
+      stat:
+        path: /usr/local/bin/espanso
+      register: espanso_stat
+
+    - name: Download and install Espanso
+      block:
+        - name: Get latest Espanso release info
+          uri:
+            url: https://api.github.com/repos/espanso/espanso/releases/latest
+            return_content: yes
+          register: espanso_release
+
+        - name: Set Espanso download URL
+          set_fact:
+            espanso_download_url: "{{ espanso_release.json.assets | selectattr('name', 'match', '.*Espanso-Debian.*\\.deb$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for Espanso
+          tempfile:
+            state: directory
+          register: espanso_temp
+
+        - name: Download Espanso .deb package
+          get_url:
+            url: "{{ espanso_download_url }}"
+            dest: "{{ espanso_temp.path }}/espanso.deb"
+
+        - name: Install Espanso package
+          apt:
+            deb: "{{ espanso_temp.path }}/espanso.deb"
+            state: present
+
+        - name: Clean up Espanso temporary directory
+          file:
+            path: "{{ espanso_temp.path }}"
+            state: absent
+      when: not espanso_stat.stat.exists
+
+    - name: Register Espanso systemd service for user
+      shell: espanso service register
+      become: no
+      register: espanso_register
+      failed_when: espanso_register.rc != 0 and 'already registered' not in espanso_register.stderr
+      changed_when: espanso_register.rc == 0
+      when: not espanso_stat.stat.exists
+
+    - name: Start Espanso service
+      shell: espanso start
+      become: no
+      ignore_errors: yes
+      when: not espanso_stat.stat.exists
+
     # Configuration Files
     - name: Create config directory
       file:
