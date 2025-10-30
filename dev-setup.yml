@@ -1,0 +1,134 @@
+---
+- name: Setup Ubuntu Development Environment
+  hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    user_name: "{{ ansible_env.SUDO_USER | default(ansible_env.USER) }}"
+    user_home: "{{ ansible_env.HOME }}"
+    
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install basic dependencies
+      apt:
+        name:
+          - git
+          - curl
+          - wget
+          - build-essential
+          - zsh
+          - tmux
+          - ccze
+          - direnv
+        state: present
+
+    # ZSH Setup
+    - name: Check if oh-my-zsh is installed
+      stat:
+        path: "{{ user_home }}/.oh-my-zsh"
+      register: ohmyzsh_stat
+      become: no
+
+    - name: Install oh-my-zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      args:
+        creates: "{{ user_home }}/.oh-my-zsh"
+      become: no
+      when: not ohmyzsh_stat.stat.exists
+
+    - name: Set zsh as default shell
+      user:
+        name: "{{ user_name }}"
+        shell: /usr/bin/zsh
+
+    # FZF Setup
+    - name: Clone fzf repository
+      git:
+        repo: 'https://github.com/junegunn/fzf.git'
+        dest: "{{ user_home }}/.fzf"
+        depth: 1
+        update: yes
+      become: no
+
+    - name: Install fzf
+      shell: "{{ user_home }}/.fzf/install --all --no-bash --no-fish"
+      args:
+        creates: "{{ user_home }}/.fzf/bin/fzf"
+      become: no
+
+    # BCAT Setup
+    - name: Check if bcat is installed
+      stat:
+        path: /usr/local/bin/bcat
+      register: bcat_stat
+
+    - name: Download and install bcat
+      block:
+        - name: Create temporary directory for bcat
+          tempfile:
+            state: directory
+          register: bcat_temp
+
+        - name: Download bcat
+          get_url:
+            url: https://raw.githubusercontent.com/rtomayko/bcat/master/bin/bcat
+            dest: "{{ bcat_temp.path }}/bcat"
+            mode: '0755'
+
+        - name: Install bcat to /usr/local/bin
+          copy:
+            src: "{{ bcat_temp.path }}/bcat"
+            dest: /usr/local/bin/bcat
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up bcat temporary directory
+          file:
+            path: "{{ bcat_temp.path }}"
+            state: absent
+      when: not bcat_stat.stat.exists
+
+    # Configuration Files
+    - name: Create config directory
+      file:
+        path: "{{ user_home }}/.config"
+        state: directory
+        owner: "{{ user_name }}"
+        mode: '0755'
+      become: no
+
+    - name: Copy custom zshrc
+      template:
+        src: ./configs/zshrc.j2
+        dest: "{{ user_home }}/.zshrc"
+        owner: "{{ user_name }}"
+        mode: '0644'
+      become: no
+      when: false  # Enable this when you create the config file
+
+    - name: Copy custom tmux.conf
+      template:
+        src: ./configs/tmux.conf.j2
+        dest: "{{ user_home }}/.tmux.conf"
+        owner: "{{ user_name }}"
+        mode: '0644'
+      become: no
+      when: false  # Enable this when you create the config file
+
+    - name: Setup direnv hook for zsh
+      lineinfile:
+        path: "{{ user_home }}/.zshrc"
+        line: 'eval "$(direnv hook zsh)"'
+        create: yes
+        owner: "{{ user_name }}"
+      become: no
+
+  handlers:
+    - name: reload shell
+      debug:
+        msg: "Shell configuration updated. Please restart your terminal or run 'source ~/.zshrc'"
