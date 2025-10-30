@@ -537,6 +537,60 @@
             state: absent
       when: not bottom_stat.stat.exists
 
+    # gping Setup
+    - name: Check if gping is installed
+      stat:
+        path: /usr/local/bin/gping
+      register: gping_stat
+
+    - name: Download and install gping
+      block:
+        - name: Get latest gping release info
+          uri:
+            url: https://api.github.com/repos/orf/gping/releases/latest
+            return_content: yes
+          register: gping_release
+
+        - name: Set gping download URL
+          set_fact:
+            gping_download_url: "{{ gping_release.json.assets | selectattr('name', 'match', '.*Linux-x86_64.tar.gz$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for gping
+          tempfile:
+            state: directory
+          register: gping_temp
+
+        - name: Download gping tarball
+          get_url:
+            url: "{{ gping_download_url }}"
+            dest: "{{ gping_temp.path }}/gping.tar.gz"
+
+        - name: Extract gping tarball
+          unarchive:
+            src: "{{ gping_temp.path }}/gping.tar.gz"
+            dest: "{{ gping_temp.path }}"
+            remote_src: yes
+
+        - name: Find gping binary in extracted directory
+          find:
+            paths: "{{ gping_temp.path }}"
+            patterns: "gping"
+            recurse: yes
+            file_type: file
+          register: gping_binary
+
+        - name: Install gping to /usr/local/bin
+          copy:
+            src: "{{ gping_binary.files[0].path }}"
+            dest: /usr/local/bin/gping
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up gping temporary directory
+          file:
+            path: "{{ gping_temp.path }}"
+            state: absent
+      when: not gping_stat.stat.exists
     # bandwhich Setup
     - name: Check if bandwhich is installed
       stat:
