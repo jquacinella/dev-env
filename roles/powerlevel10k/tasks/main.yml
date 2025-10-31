@@ -1,3 +1,4 @@
 ---
 - name: Include OS-specific tasks
+  tags: ['powerlevel10k']
   include_tasks: "{{ ansible_distribution | lower }}.yml"
