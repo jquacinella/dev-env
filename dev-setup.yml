@@ -5,11 +5,17 @@
   become: yes
   vars_files:
     - vars/versions.yml
-  vars:
-    user_name: "{{ ansible_env.SUDO_USER | default(ansible_env.USER) }}"
-    user_home: "{{ lookup('env', 'SUDO_USER') | ternary('/home/' + lookup('env', 'SUDO_USER'), ansible_env.HOME) }}"
-
+  
   tasks:
+    - name: Use environment lookup to get the current system user
+      ansible.builtin.set_fact:
+        user_name: "{{ lookup('ansible.builtin.env', 'USER') }}"
+        user_home: "/home/{{ lookup('ansible.builtin.env', 'USER') }}"
+
+    - name: Display the local username
+      ansible.builtin.debug:
+        msg: "The user running the playbook on the control node is: {{ user_name }}"
+
     - name: Include system role
       include_role:
         name: system
