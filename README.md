@@ -257,11 +257,50 @@ By default, custom config file deployment is disabled. To enable:
 ├── dev-setup.yml          # Main installation playbook
 ├── version-checks.yml     # Version update checker playbook
 ├── vars/
-│   └── versions.yml      # Centralized tool version definitions
+│   └── versions.yml       # Centralized tool version definitions
 ├── configs/
-│   ├── zshrc.j2          # ZSH configuration template
-│   └── tmux.conf.j2      # Tmux configuration template
-└── README.md             # This file
+│   ├── zshrc.j2           # ZSH configuration template
+│   └── tmux.conf.j2       # Tmux configuration template
+├── roles/                 # Modular Ansible roles for each tool
+│   ├── README.md          # Roles documentation
+│   ├── system/            # System-level setup
+│   ├── basics/            # Basic development tools
+│   ├── zsh/               # Oh-my-zsh installation
+│   ├── zsh-autosuggestions/        # ZSH plugin
+│   ├── zsh-syntax-highlighting/    # ZSH plugin
+│   ├── zsh-history-substring-search/  # ZSH plugin
+│   ├── zsh-fzf-history-search/     # ZSH plugin
+│   ├── zsh-completions/   # ZSH plugin
+│   ├── config/            # Configuration files deployment
+│   ├── fzf/               # Fuzzy finder
+│   ├── up/                # Ultimate Plumber
+│   ├── ripgrep/           # Fast search tool
+│   ├── espanso/           # Text expander
+│   ├── dust/              # Disk usage analyzer
+│   ├── xh/                # HTTP client
+│   ├── broot/             # Directory navigator
+│   ├── procs/             # Process viewer
+│   ├── bottom/            # System monitor
+│   ├── zellij/            # Terminal multiplexer
+│   ├── gping/             # Graphical ping
+│   ├── bandwhich/         # Network monitor
+│   ├── bat/               # Better cat
+│   ├── zoxide/            # Smarter cd
+│   ├── gitui/             # Git terminal UI
+│   ├── asciinema/         # Terminal recorder
+│   ├── navi/              # Interactive cheatsheet
+│   ├── ssh-list/          # SSH connection manager
+│   ├── tldr/              # Simplified man pages
+│   └── nvm/               # Node Version Manager
+└── README.md              # This file
+```
+
+Each role follows a consistent structure:
+```
+roles/<tool_name>/
+└── tasks/
+    ├── main.yml           # Entry point with OS detection
+    └── ubuntu.yml         # Ubuntu-specific implementation
 ```
 
 ## Adding More Tools - Examples
@@ -298,16 +337,3 @@ By default, custom config file deployment is disabled. To enable:
 - Test in a VM or container first
 - Commit your customized configs to version control
 - After running, restart your terminal or run `source ~/.zshrc`
-
-## Troubleshooting
-
-**Shell didn't change to zsh:**
-```bash
-chsh -s $(which zsh)
-```
-
-**oh-my-zsh installation failed:**
-Check internet connectivity and GitHub access
-
-**Permission errors:**
-Make sure you're running with `--ask-become-pass` and entering your sudo password
