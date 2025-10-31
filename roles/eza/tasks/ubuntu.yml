@@ -1,10 +1,12 @@
 ---
 - name: Check if eza is installed
+  tags: ['eza']
   stat:
     path: /usr/local/bin/eza
   register: eza_stat
 
 - name: Download and install eza
+  tags: ['eza']
   block:
     - name: Create temporary directory for eza
       tempfile:

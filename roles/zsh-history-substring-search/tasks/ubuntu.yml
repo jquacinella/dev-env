@@ -1,5 +1,6 @@
 ---
 - name: Clone zsh-history-substring-search repository
+  tags: ['zsh', 'zsh-plugins', 'zsh-history-substring-search']
   git:
     repo: 'https://github.com/zsh-users/zsh-history-substring-search.git'
     dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-history-substring-search"

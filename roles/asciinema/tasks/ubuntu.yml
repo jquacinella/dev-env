@@ -1,10 +1,12 @@
 ---
 - name: Check if asciinema is installed
+  tags: ['asciinema']
   stat:
     path: /usr/local/bin/asciinema
   register: asciinema_stat
 
 - name: Download and install asciinema
+  tags: ['asciinema']
   block:
     - name: Download asciinema binary
       get_url:

@@ -1,10 +1,12 @@
 ---
 - name: Check if ssh-list is installed
+  tags: ['ssh-list']
   stat:
     path: /usr/local/bin/ssh-list
   register: ssh_list_stat
 
 - name: Download and install ssh-list
+  tags: ['ssh-list']
   block:
     - name: Create temporary directory for ssh-list
       tempfile:

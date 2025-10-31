@@ -1,10 +1,12 @@
 ---
 - name: Check if dust is installed
+  tags: ['dust']
   stat:
     path: /usr/local/bin/dust
   register: dust_stat
 
 - name: Download and install dust
+  tags: ['dust']
   block:
     - name: Create temporary directory for dust
       tempfile:
