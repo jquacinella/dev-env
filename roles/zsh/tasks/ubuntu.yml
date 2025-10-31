@@ -1,0 +1,19 @@
+---
+- name: Check if oh-my-zsh is installed
+  stat:
+    path: "{{ user_home }}/.oh-my-zsh"
+  register: ohmyzsh_stat
+  become: no
+
+- name: Install oh-my-zsh
+  shell: |
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  args:
+    creates: "{{ user_home }}/.oh-my-zsh"
+  become: no
+  when: not ohmyzsh_stat.stat.exists
+
+- name: Set zsh as default shell
+  user:
+    name: "{{ user_name }}"
+    shell: /usr/bin/zsh

@@ -1,0 +1,44 @@
+---
+- name: Check if bottom is installed
+  stat:
+    path: /usr/local/bin/btm
+  register: bottom_stat
+
+- name: Download and install bottom
+  block:
+    - name: Create temporary directory for bottom
+      tempfile:
+        state: directory
+      register: bottom_temp
+
+    - name: Download bottom tarball
+      get_url:
+        url: "https://github.com/ClementTsang/bottom/releases/download/{{ bottom_version }}/bottom_x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ bottom_temp.path }}/bottom.tar.gz"
+
+    - name: Extract bottom tarball
+      unarchive:
+        src: "{{ bottom_temp.path }}/bottom.tar.gz"
+        dest: "{{ bottom_temp.path }}"
+        remote_src: yes
+
+    - name: Find bottom binary in extracted directory
+      find:
+        paths: "{{ bottom_temp.path }}"
+        patterns: "btm"
+        recurse: yes
+        file_type: file
+      register: bottom_binary
+
+    - name: Install bottom to /usr/local/bin
+      copy:
+        src: "{{ bottom_binary.files[0].path }}"
+        dest: /usr/local/bin/btm
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up bottom temporary directory
+      file:
+        path: "{{ bottom_temp.path }}"
+        state: absent
+  when: not bottom_stat.stat.exists

@@ -1,0 +1,13 @@
+---
+- name: Install basic dependencies
+  apt:
+    name:
+      - git
+      - curl
+      - wget
+      - build-essential
+      - zsh
+      - tmux
+      - ccze
+      - direnv
+    state: present

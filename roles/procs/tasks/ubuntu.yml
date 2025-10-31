@@ -1,0 +1,44 @@
+---
+- name: Check if procs is installed
+  stat:
+    path: /usr/local/bin/procs
+  register: procs_stat
+
+- name: Download and install procs
+  block:
+    - name: Create temporary directory for procs
+      tempfile:
+        state: directory
+      register: procs_temp
+
+    - name: Download procs zip
+      get_url:
+        url: "https://github.com/dalance/procs/releases/download/{{ procs_version }}/procs-{{ procs_version }}-x86_64-lnx.zip"
+        dest: "{{ procs_temp.path }}/procs.zip"
+
+    - name: Extract procs zip
+      unarchive:
+        src: "{{ procs_temp.path }}/procs.zip"
+        dest: "{{ procs_temp.path }}"
+        remote_src: yes
+
+    - name: Find procs binary in extracted directory
+      find:
+        paths: "{{ procs_temp.path }}"
+        patterns: "procs"
+        recurse: yes
+        file_type: file
+      register: procs_binary
+
+    - name: Install procs to /usr/local/bin
+      copy:
+        src: "{{ procs_binary.files[0].path }}"
+        dest: /usr/local/bin/procs
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up procs temporary directory
+      file:
+        path: "{{ procs_temp.path }}"
+        state: absent
+  when: not procs_stat.stat.exists

@@ -10,26 +10,16 @@
     user_home: "{{ ansible_env.HOME }}"
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+    - name: Include system role
+      include_role:
+        name: system
       tags:
         - always
         - system
 
-    - name: Install basic dependencies
-      apt:
-        name:
-          - git
-          - curl
-          - wget
-          - build-essential
-          - zsh
-          - tmux
-          - ccze
-          - direnv
-        state: present
+    - name: Include basics role
+      include_role:
+        name: basics
       tags:
         - basics
         - git
@@ -41,700 +31,100 @@
         - ccze
         - direnv
 
-    # ZSH Setup
-    - name: Check if oh-my-zsh is installed
-      stat:
-        path: "{{ user_home }}/.oh-my-zsh"
-      register: ohmyzsh_stat
-      become: no
+    - name: Include zsh role
+      include_role:
+        name: zsh
       tags:
         - zsh
 
-    - name: Install oh-my-zsh
-      shell: |
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-      args:
-        creates: "{{ user_home }}/.oh-my-zsh"
-      become: no
-      when: not ohmyzsh_stat.stat.exists
-      tags:
-        - zsh
-
-    - name: Set zsh as default shell
-      user:
-        name: "{{ user_name }}"
-        shell: /usr/bin/zsh
-      tags:
-        - zsh
-
-    # FZF Setup
-    - name: Clone fzf repository
-      git:
-        repo: 'https://github.com/junegunn/fzf.git'
-        dest: "{{ user_home }}/.fzf"
-        version: "{{ fzf_version }}"
-        depth: 1
-        update: yes
-      become: no
+    - name: Include fzf role
+      include_role:
+        name: fzf
       tags:
         - fzf
 
-    - name: Install fzf
-      shell: "{{ user_home }}/.fzf/install --all --no-bash --no-fish"
-      args:
-        creates: "{{ user_home }}/.fzf/bin/fzf"
-      become: no
-      tags:
-        - fzf
-
-    # UP (Ultimate Plumber) Setup
-    - name: Check if up is installed
-      stat:
-        path: /usr/local/bin/up
-      register: up_stat
+    - name: Include up role
+      include_role:
+        name: up
       tags:
         - up
 
-    - name: Download and install up (Ultimate Plumber)
-      block:
-        - name: Create temporary directory for up
-          tempfile:
-            state: directory
-          register: up_temp
-
-        - name: Download up tarball
-          get_url:
-            url: "https://github.com/akavel/up/releases/download/{{ up_version }}/up-{{ up_version }}-linux_amd64.tar.gz"
-            dest: "{{ up_temp.path }}/up.tar.gz"
-
-        - name: Extract up binary
-          unarchive:
-            src: "{{ up_temp.path }}/up.tar.gz"
-            dest: "{{ up_temp.path }}"
-            remote_src: yes
-
-        - name: Install up to /usr/local/bin
-          copy:
-            src: "{{ up_temp.path }}/up"
-            dest: /usr/local/bin/up
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up up temporary directory
-          file:
-            path: "{{ up_temp.path }}"
-            state: absent
-      when: not up_stat.stat.exists
-      tags:
-        - up
-
-    # Ripgrep Setup
-    - name: Check if ripgrep is installed
-      stat:
-        path: /usr/local/bin/rg
-      register: ripgrep_stat
+    - name: Include ripgrep role
+      include_role:
+        name: ripgrep
       tags:
         - ripgrep
         - rg
 
-    - name: Download and install ripgrep
-      block:
-        - name: Create temporary directory for ripgrep
-          tempfile:
-            state: directory
-          register: ripgrep_temp
-
-        - name: Download ripgrep tarball
-          get_url:
-            url: "https://github.com/BurntSushi/ripgrep/releases/download/{{ ripgrep_version }}/ripgrep-{{ ripgrep_version }}-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ ripgrep_temp.path }}/ripgrep.tar.gz"
-
-        - name: Extract ripgrep tarball
-          unarchive:
-            src: "{{ ripgrep_temp.path }}/ripgrep.tar.gz"
-            dest: "{{ ripgrep_temp.path }}"
-            remote_src: yes
-
-        - name: Find ripgrep binary in extracted directory
-          find:
-            paths: "{{ ripgrep_temp.path }}"
-            patterns: "rg"
-            recurse: yes
-            file_type: file
-          register: ripgrep_binary
-
-        - name: Install ripgrep to /usr/local/bin
-          copy:
-            src: "{{ ripgrep_binary.files[0].path }}"
-            dest: /usr/local/bin/rg
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up ripgrep temporary directory
-          file:
-            path: "{{ ripgrep_temp.path }}"
-            state: absent
-      when: not ripgrep_stat.stat.exists
-      tags:
-        - ripgrep
-        - rg
-    # Espanso Setup
-    - name: Install Espanso dependencies
-      apt:
-        name:
-          - libx11-dev
-          - libxtst-dev
-          - libxkbcommon-dev
-          - libdbus-1-dev
-          - libwxgtk3.0-gtk3-dev
-        state: present
+    - name: Include espanso role
+      include_role:
+        name: espanso
       tags:
         - espanso
 
-    - name: Check if Espanso is installed
-      stat:
-        path: /usr/local/bin/espanso
-      register: espanso_stat
-      tags:
-        - espanso
-
-    - name: Download and install Espanso
-      block:
-        - name: Create temporary directory for Espanso
-          tempfile:
-            state: directory
-          register: espanso_temp
-
-        - name: Download Espanso .deb package
-          get_url:
-            url: "https://github.com/espanso/espanso/releases/download/{{ espanso_version }}/Espanso-Debian-X11-{{ espanso_version }}.deb"
-            dest: "{{ espanso_temp.path }}/espanso.deb"
-
-        - name: Install Espanso package
-          apt:
-            deb: "{{ espanso_temp.path }}/espanso.deb"
-            state: present
-
-        - name: Clean up Espanso temporary directory
-          file:
-            path: "{{ espanso_temp.path }}"
-            state: absent
-      when: not espanso_stat.stat.exists
-      tags:
-        - espanso
-
-    - name: Register Espanso systemd service for user
-      shell: espanso service register
-      become: no
-      register: espanso_register
-      failed_when: espanso_register.rc != 0 and 'already registered' not in espanso_register.stderr
-      changed_when: espanso_register.rc == 0
-      when: not espanso_stat.stat.exists
-      tags:
-        - espanso
-
-    - name: Start Espanso service
-      shell: espanso start
-      become: no
-      ignore_errors: yes
-      when: not espanso_stat.stat.exists
-      tags:
-        - espanso
-
-    # Dust Setup
-    - name: Check if dust is installed
-      stat:
-        path: /usr/local/bin/dust
-      register: dust_stat
+    - name: Include dust role
+      include_role:
+        name: dust
       tags:
         - dust
 
-    - name: Download and install dust
-      block:
-        - name: Create temporary directory for dust
-          tempfile:
-            state: directory
-          register: dust_temp
-
-        - name: Download dust tarball
-          get_url:
-            url: "https://github.com/bootandy/dust/releases/download/{{ dust_version }}/dust-{{ dust_version }}-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ dust_temp.path }}/dust.tar.gz"
-
-        - name: Extract dust tarball
-          unarchive:
-            src: "{{ dust_temp.path }}/dust.tar.gz"
-            dest: "{{ dust_temp.path }}"
-            remote_src: yes
-
-        - name: Find dust binary in extracted directory
-          find:
-            paths: "{{ dust_temp.path }}"
-            patterns: "dust"
-            recurse: yes
-            file_type: file
-          register: dust_binary
-
-        - name: Install dust to /usr/local/bin
-          copy:
-            src: "{{ dust_binary.files[0].path }}"
-            dest: /usr/local/bin/dust
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up dust temporary directory
-          file:
-            path: "{{ dust_temp.path }}"
-            state: absent
-      when: not dust_stat.stat.exists
-      tags:
-        - dust
-
-    # xh Setup
-    - name: Check if xh is installed
-      stat:
-        path: /usr/local/bin/xh
-      register: xh_stat
+    - name: Include xh role
+      include_role:
+        name: xh
       tags:
         - xh
 
-    - name: Download and install xh
-      block:
-        - name: Create temporary directory for xh
-          tempfile:
-            state: directory
-          register: xh_temp
-
-        - name: Download xh tarball
-          get_url:
-            url: "https://github.com/ducaale/xh/releases/download/{{ xh_version }}/xh-{{ xh_version }}-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ xh_temp.path }}/xh.tar.gz"
-
-        - name: Extract xh tarball
-          unarchive:
-            src: "{{ xh_temp.path }}/xh.tar.gz"
-            dest: "{{ xh_temp.path }}"
-            remote_src: yes
-
-        - name: Find xh binary in extracted directory
-          find:
-            paths: "{{ xh_temp.path }}"
-            patterns: "xh"
-            recurse: yes
-            file_type: file
-          register: xh_binary
-
-        - name: Install xh to /usr/local/bin
-          copy:
-            src: "{{ xh_binary.files[0].path }}"
-            dest: /usr/local/bin/xh
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up xh temporary directory
-          file:
-            path: "{{ xh_temp.path }}"
-            state: absent
-      when: not xh_stat.stat.exists
-      tags:
-        - xh
-
-    # broot Setup
-    - name: Check if broot is installed
-      stat:
-        path: /usr/local/bin/broot
-      register: broot_stat
+    - name: Include broot role
+      include_role:
+        name: broot
       tags:
         - broot
 
-    - name: Download and install broot
-      block:
-        - name: Install unzip if not present
-          apt:
-            name: unzip
-            state: present
-
-        - name: Create temporary directory for broot
-          tempfile:
-            state: directory
-          register: broot_temp
-
-        - name: Download broot zip
-          get_url:
-            url: "https://github.com/Canop/broot/releases/download/{{ broot_version }}/broot-{{ broot_version }}-x86_64-linux.zip"
-            dest: "{{ broot_temp.path }}/broot.zip"
-
-        - name: Extract broot zip
-          unarchive:
-            src: "{{ broot_temp.path }}/broot.zip"
-            dest: "{{ broot_temp.path }}"
-            remote_src: yes
-
-        - name: Find broot binary in extracted directory
-          find:
-            paths: "{{ broot_temp.path }}"
-            patterns: "broot"
-            recurse: yes
-            file_type: file
-          register: broot_binary
-
-        - name: Install broot to /usr/local/bin
-          copy:
-            src: "{{ broot_binary.files[0].path }}"
-            dest: /usr/local/bin/broot
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up broot temporary directory
-          file:
-            path: "{{ broot_temp.path }}"
-            state: absent
-      when: not broot_stat.stat.exists
-      tags:
-        - broot
-
-    # procs Setup
-    - name: Check if procs is installed
-      stat:
-        path: /usr/local/bin/procs
-      register: procs_stat
+    - name: Include procs role
+      include_role:
+        name: procs
       tags:
         - procs
 
-    - name: Download and install procs
-      block:
-        - name: Create temporary directory for procs
-          tempfile:
-            state: directory
-          register: procs_temp
-
-        - name: Download procs zip
-          get_url:
-            url: "https://github.com/dalance/procs/releases/download/{{ procs_version }}/procs-{{ procs_version }}-x86_64-lnx.zip"
-            dest: "{{ procs_temp.path }}/procs.zip"
-
-        - name: Extract procs zip
-          unarchive:
-            src: "{{ procs_temp.path }}/procs.zip"
-            dest: "{{ procs_temp.path }}"
-            remote_src: yes
-
-        - name: Find procs binary in extracted directory
-          find:
-            paths: "{{ procs_temp.path }}"
-            patterns: "procs"
-            recurse: yes
-            file_type: file
-          register: procs_binary
-
-        - name: Install procs to /usr/local/bin
-          copy:
-            src: "{{ procs_binary.files[0].path }}"
-            dest: /usr/local/bin/procs
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up procs temporary directory
-          file:
-            path: "{{ procs_temp.path }}"
-            state: absent
-      when: not procs_stat.stat.exists
-      tags:
-        - procs
-
-    # bottom Setup
-    - name: Check if bottom is installed
-      stat:
-        path: /usr/local/bin/btm
-      register: bottom_stat
+    - name: Include bottom role
+      include_role:
+        name: bottom
       tags:
         - bottom
         - btm
 
-    - name: Download and install bottom
-      block:
-        - name: Create temporary directory for bottom
-          tempfile:
-            state: directory
-          register: bottom_temp
-
-        - name: Download bottom tarball
-          get_url:
-            url: "https://github.com/ClementTsang/bottom/releases/download/{{ bottom_version }}/bottom_x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ bottom_temp.path }}/bottom.tar.gz"
-
-        - name: Extract bottom tarball
-          unarchive:
-            src: "{{ bottom_temp.path }}/bottom.tar.gz"
-            dest: "{{ bottom_temp.path }}"
-            remote_src: yes
-
-        - name: Find bottom binary in extracted directory
-          find:
-            paths: "{{ bottom_temp.path }}"
-            patterns: "btm"
-            recurse: yes
-            file_type: file
-          register: bottom_binary
-
-        - name: Install bottom to /usr/local/bin
-          copy:
-            src: "{{ bottom_binary.files[0].path }}"
-            dest: /usr/local/bin/btm
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up bottom temporary directory
-          file:
-            path: "{{ bottom_temp.path }}"
-            state: absent
-      when: not bottom_stat.stat.exists
-      tags:
-        - bottom
-        - btm
-
-    # Zellij Setup
-    - name: Check if zellij is installed
-      stat:
-        path: /usr/local/bin/zellij
-      register: zellij_stat
+    - name: Include zellij role
+      include_role:
+        name: zellij
       tags:
         - zellij
 
-    - name: Download and install zellij
-      block:
-        - name: Create temporary directory for zellij
-          tempfile:
-            state: directory
-          register: zellij_temp
-
-        - name: Download zellij tarball
-          get_url:
-            url: "https://github.com/zellij-org/zellij/releases/download/{{ zellij_version }}/zellij-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ zellij_temp.path }}/zellij.tar.gz"
-
-        - name: Extract zellij tarball
-          unarchive:
-            src: "{{ zellij_temp.path }}/zellij.tar.gz"
-            dest: "{{ zellij_temp.path }}"
-            remote_src: yes
-
-        - name: Find zellij binary in extracted directory
-          find:
-            paths: "{{ zellij_temp.path }}"
-            patterns: "zellij"
-            recurse: yes
-            file_type: file
-          register: zellij_binary
-
-        - name: Install zellij to /usr/local/bin
-          copy:
-            src: "{{ zellij_binary.files[0].path }}"
-            dest: /usr/local/bin/zellij
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up zellij temporary directory
-          file:
-            path: "{{ zellij_temp.path }}"
-            state: absent
-      when: not zellij_stat.stat.exists
-      tags:
-        - zellij
-    
-    # gping Setup
-    - name: Check if gping is installed
-      stat:
-        path: /usr/local/bin/gping
-      register: gping_stat
+    - name: Include gping role
+      include_role:
+        name: gping
       tags:
         - gping
 
-    - name: Download and install gping
-      block:
-        - name: Create temporary directory for gping
-          tempfile:
-            state: directory
-          register: gping_temp
-
-        - name: Download gping tarball
-          get_url:
-            url: "https://github.com/orf/gping/releases/download/{{ gping_version }}/gping-Linux-x86_64.tar.gz"
-            dest: "{{ gping_temp.path }}/gping.tar.gz"
-
-        - name: Extract gping tarball
-          unarchive:
-            src: "{{ gping_temp.path }}/gping.tar.gz"
-            dest: "{{ gping_temp.path }}"
-            remote_src: yes
-
-        - name: Find gping binary in extracted directory
-          find:
-            paths: "{{ gping_temp.path }}"
-            patterns: "gping"
-            recurse: yes
-            file_type: file
-          register: gping_binary
-
-        - name: Install gping to /usr/local/bin
-          copy:
-            src: "{{ gping_binary.files[0].path }}"
-            dest: /usr/local/bin/gping
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up gping temporary directory
-          file:
-            path: "{{ gping_temp.path }}"
-            state: absent
-      when: not gping_stat.stat.exists
-      tags:
-        - gping
-    
-    # bandwhich Setup
-    - name: Check if bandwhich is installed
-      stat:
-        path: /usr/local/bin/bandwhich
-      register: bandwhich_stat
+    - name: Include bandwhich role
+      include_role:
+        name: bandwhich
       tags:
         - bandwhich
 
-    - name: Download and install bandwhich
-      block:
-        - name: Create temporary directory for bandwhich
-          tempfile:
-            state: directory
-          register: bandwhich_temp
-
-        - name: Download bandwhich tarball
-          get_url:
-            url: "https://github.com/imsnif/bandwhich/releases/download/{{ bandwhich_version }}/bandwhich-{{ bandwhich_version }}-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ bandwhich_temp.path }}/bandwhich.tar.gz"
-
-        - name: Extract bandwhich tarball
-          unarchive:
-            src: "{{ bandwhich_temp.path }}/bandwhich.tar.gz"
-            dest: "{{ bandwhich_temp.path }}"
-            remote_src: yes
-
-        - name: Find bandwhich binary in extracted directory
-          find:
-            paths: "{{ bandwhich_temp.path }}"
-            patterns: "bandwhich"
-            recurse: yes
-            file_type: file
-          register: bandwhich_binary
-
-        - name: Install bandwhich to /usr/local/bin
-          copy:
-            src: "{{ bandwhich_binary.files[0].path }}"
-            dest: /usr/local/bin/bandwhich
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up bandwhich temporary directory
-          file:
-            path: "{{ bandwhich_temp.path }}"
-            state: absent
-      when: not bandwhich_stat.stat.exists
-      tags:
-        - bandwhich
-
-    # bat (batcat) Setup
-    - name: Check if bat is installed
-      stat:
-        path: /usr/local/bin/bat
-      register: bat_stat
+    - name: Include bat role
+      include_role:
+        name: bat
       tags:
         - bat
 
-    - name: Download and install bat
-      block:
-        - name: Create temporary directory for bat
-          tempfile:
-            state: directory
-          register: bat_temp
-
-        - name: Download bat tarball
-          get_url:
-            url: "https://github.com/sharkdp/bat/releases/download/{{ bat_version }}/bat-{{ bat_version }}-x86_64-unknown-linux-musl.tar.gz"
-            dest: "{{ bat_temp.path }}/bat.tar.gz"
-
-        - name: Extract bat tarball
-          unarchive:
-            src: "{{ bat_temp.path }}/bat.tar.gz"
-            dest: "{{ bat_temp.path }}"
-            remote_src: yes
-
-        - name: Find bat binary in extracted directory
-          find:
-            paths: "{{ bat_temp.path }}"
-            patterns: "bat"
-            recurse: yes
-            file_type: file
-          register: bat_binary
-
-        - name: Install bat to /usr/local/bin
-          copy:
-            src: "{{ bat_binary.files[0].path }}"
-            dest: /usr/local/bin/bat
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up bat temporary directory
-          file:
-            path: "{{ bat_temp.path }}"
-            state: absent
-      when: not bat_stat.stat.exists
-      tags:
-        - bat
-
-    # Configuration Files
-    - name: Create config directory
-      file:
-        path: "{{ user_home }}/.config"
-        state: directory
-        owner: "{{ user_name }}"
-        mode: '0755'
-      become: no
-      tags:
-        - config
-
-    - name: Copy custom zshrc
-      template:
-        src: ./configs/zshrc.j2
-        dest: "{{ user_home }}/.zshrc"
-        owner: "{{ user_name }}"
-        mode: '0644'
-      become: no
-      when: false  # Enable this when you create the config file
+    - name: Include config role
+      include_role:
+        name: config
       tags:
         - config
         - zsh
-
-    - name: Copy custom tmux.conf
-      template:
-        src: ./configs/tmux.conf.j2
-        dest: "{{ user_home }}/.tmux.conf"
-        owner: "{{ user_name }}"
-        mode: '0644'
-      become: no
-      when: false  # Enable this when you create the config file
-      tags:
-        - config
         - tmux
-
-    - name: Setup direnv hook for zsh
-      lineinfile:
-        path: "{{ user_home }}/.zshrc"
-        line: 'eval "$(direnv hook zsh)"'
-        create: yes
-        owner: "{{ user_name }}"
-      become: no
-      tags:
-        - config
         - direnv
-        - zsh
 
   handlers:
     - name: reload shell

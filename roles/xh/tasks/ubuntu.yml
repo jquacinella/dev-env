@@ -1,0 +1,44 @@
+---
+- name: Check if xh is installed
+  stat:
+    path: /usr/local/bin/xh
+  register: xh_stat
+
+- name: Download and install xh
+  block:
+    - name: Create temporary directory for xh
+      tempfile:
+        state: directory
+      register: xh_temp
+
+    - name: Download xh tarball
+      get_url:
+        url: "https://github.com/ducaale/xh/releases/download/{{ xh_version }}/xh-{{ xh_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ xh_temp.path }}/xh.tar.gz"
+
+    - name: Extract xh tarball
+      unarchive:
+        src: "{{ xh_temp.path }}/xh.tar.gz"
+        dest: "{{ xh_temp.path }}"
+        remote_src: yes
+
+    - name: Find xh binary in extracted directory
+      find:
+        paths: "{{ xh_temp.path }}"
+        patterns: "xh"
+        recurse: yes
+        file_type: file
+      register: xh_binary
+
+    - name: Install xh to /usr/local/bin
+      copy:
+        src: "{{ xh_binary.files[0].path }}"
+        dest: /usr/local/bin/xh
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up xh temporary directory
+      file:
+        path: "{{ xh_temp.path }}"
+        state: absent
+  when: not xh_stat.stat.exists
