@@ -1,0 +1,44 @@
+---
+- name: Check if bat is installed
+  stat:
+    path: /usr/local/bin/bat
+  register: bat_stat
+
+- name: Download and install bat
+  block:
+    - name: Create temporary directory for bat
+      tempfile:
+        state: directory
+      register: bat_temp
+
+    - name: Download bat tarball
+      get_url:
+        url: "https://github.com/sharkdp/bat/releases/download/{{ bat_version }}/bat-{{ bat_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ bat_temp.path }}/bat.tar.gz"
+
+    - name: Extract bat tarball
+      unarchive:
+        src: "{{ bat_temp.path }}/bat.tar.gz"
+        dest: "{{ bat_temp.path }}"
+        remote_src: yes
+
+    - name: Find bat binary in extracted directory
+      find:
+        paths: "{{ bat_temp.path }}"
+        patterns: "bat"
+        recurse: yes
+        file_type: file
+      register: bat_binary
+
+    - name: Install bat to /usr/local/bin
+      copy:
+        src: "{{ bat_binary.files[0].path }}"
+        dest: /usr/local/bin/bat
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up bat temporary directory
+      file:
+        path: "{{ bat_temp.path }}"
+        state: absent
+  when: not bat_stat.stat.exists

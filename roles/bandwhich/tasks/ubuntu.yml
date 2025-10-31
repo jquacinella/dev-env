@@ -1,0 +1,44 @@
+---
+- name: Check if bandwhich is installed
+  stat:
+    path: /usr/local/bin/bandwhich
+  register: bandwhich_stat
+
+- name: Download and install bandwhich
+  block:
+    - name: Create temporary directory for bandwhich
+      tempfile:
+        state: directory
+      register: bandwhich_temp
+
+    - name: Download bandwhich tarball
+      get_url:
+        url: "https://github.com/imsnif/bandwhich/releases/download/{{ bandwhich_version }}/bandwhich-{{ bandwhich_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ bandwhich_temp.path }}/bandwhich.tar.gz"
+
+    - name: Extract bandwhich tarball
+      unarchive:
+        src: "{{ bandwhich_temp.path }}/bandwhich.tar.gz"
+        dest: "{{ bandwhich_temp.path }}"
+        remote_src: yes
+
+    - name: Find bandwhich binary in extracted directory
+      find:
+        paths: "{{ bandwhich_temp.path }}"
+        patterns: "bandwhich"
+        recurse: yes
+        file_type: file
+      register: bandwhich_binary
+
+    - name: Install bandwhich to /usr/local/bin
+      copy:
+        src: "{{ bandwhich_binary.files[0].path }}"
+        dest: /usr/local/bin/bandwhich
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up bandwhich temporary directory
+      file:
+        path: "{{ bandwhich_temp.path }}"
+        state: absent
+  when: not bandwhich_stat.stat.exists

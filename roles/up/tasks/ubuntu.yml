@@ -1,0 +1,36 @@
+---
+- name: Check if up is installed
+  stat:
+    path: /usr/local/bin/up
+  register: up_stat
+
+- name: Download and install up (Ultimate Plumber)
+  block:
+    - name: Create temporary directory for up
+      tempfile:
+        state: directory
+      register: up_temp
+
+    - name: Download up tarball
+      get_url:
+        url: "https://github.com/akavel/up/releases/download/{{ up_version }}/up-{{ up_version }}-linux_amd64.tar.gz"
+        dest: "{{ up_temp.path }}/up.tar.gz"
+
+    - name: Extract up binary
+      unarchive:
+        src: "{{ up_temp.path }}/up.tar.gz"
+        dest: "{{ up_temp.path }}"
+        remote_src: yes
+
+    - name: Install up to /usr/local/bin
+      copy:
+        src: "{{ up_temp.path }}/up"
+        dest: /usr/local/bin/up
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up up temporary directory
+      file:
+        path: "{{ up_temp.path }}"
+        state: absent
+  when: not up_stat.stat.exists
