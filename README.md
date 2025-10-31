@@ -26,6 +26,9 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 #### Version Control & Git
 - **gitui** - Blazing fast terminal UI for git
 
+#### Documentation & Help
+- **tldr** - Simplified and community-driven man pages with practical examples
+
 #### Utilities
 - **ccze** - Colorizer for log files
 - **bat** - Cat clone with syntax highlighting and Git integration
@@ -63,7 +66,7 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list)
+4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list, tldr)
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 

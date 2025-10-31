@@ -55,3 +55,6 @@ navi_version: "v2.24.0"
 
 # SSH-List - tool for managing SSH connections
 ssh_list_version: "v1.5.1"
+
+# TLDR - simplified and community-driven man pages (tealdeer client)
+tldr_version: "v1.8.0"

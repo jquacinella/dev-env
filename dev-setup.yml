@@ -147,6 +147,12 @@
       tags:
         - ssh-list
 
+    - name: Include tldr role
+      include_role:
+        name: tldr
+      tags:
+        - tldr
+
     - name: Include config role
       include_role:
         name: config
