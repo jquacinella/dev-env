@@ -60,6 +60,46 @@ This will:
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 
+### Other Install Examples
+
+#### Install only fzf
+
+```bash
+ansible-playbook dev-setup.yml --tags fzf
+```
+
+#### Setup only ZSH (includes oh-my-zsh, shell change, and related config)
+
+```bash
+ansible-playbook dev-setup.yml --tags zsh
+```
+
+#### Install multiple specific tools
+
+```bash
+ansible-playbook dev-setup.yml --tags "ripgrep,bat,dust"
+```
+
+#### Only run configuration tasks
+
+```bash
+ansible-playbook dev-setup.yml --tags config
+```
+
+#### Install basics and a few tools
+
+```bash
+ansible-playbook dev-setup.yml --tags "basics,fzf,ripgrep"
+```
+
+#### Skip certain tags
+
+```bash
+ansible-playbook dev-setup.yml --skip-tags espanso
+```
+
+
+
 ### Checking for Updates
 
 To check if newer versions of tools are available:
