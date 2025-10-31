@@ -86,6 +86,14 @@
         - zsh
         - zsh-plugins
         - zsh-completions
+
+    - name: Include powerlevel10k role
+      include_role:
+        name: powerlevel10k
+      tags:
+        - zsh
+        - zsh-theme
+        - powerlevel10k
     
     - name: Include config role
       include_role:
@@ -176,6 +184,12 @@
         name: bat
       tags:
         - bat
+
+    - name: Include eza role
+      include_role:
+        name: eza
+      tags:
+        - eza
 
     - name: Include zoxide role
       include_role:

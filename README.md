@@ -11,6 +11,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 
 #### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
+- **powerlevel10k** - Fast and flexible zsh theme with extensive customization
 - **tmux** - Terminal multiplexer with custom configuration
 - **zsh-autosuggestions** - Fish-like autosuggestions for zsh
 - **zsh-syntax-highlighting** - Fish-like syntax highlighting for zsh
@@ -23,6 +24,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 - **broot** - Modern tree view and directory navigator
 - **direnv** - Environment variable manager per directory
 - **zoxide** - Smarter cd command that learns your habits
+- **eza** - Modern replacement for ls with colors and git integration
 
 #### Search & Text Processing
 - **ripgrep (rg)** - Ultra-fast recursive search tool
@@ -71,7 +73,7 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list, tldr)
+4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, eza, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list, tldr)
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 
@@ -83,7 +85,7 @@ This will:
 ansible-playbook dev-setup.yml --tags fzf
 ```
 
-#### Setup only ZSH (includes oh-my-zsh, shell change, plugins, and related config)
+#### Setup only ZSH (includes oh-my-zsh, shell change, theme, plugins, and related config)
 
 ```bash
 ansible-playbook dev-setup.yml --tags zsh
@@ -93,6 +95,12 @@ ansible-playbook dev-setup.yml --tags zsh
 
 ```bash
 ansible-playbook dev-setup.yml --tags zsh-plugins
+```
+
+#### Install powerlevel10k theme
+
+```bash
+ansible-playbook dev-setup.yml --tags powerlevel10k
 ```
 
 #### Install a specific ZSH plugin
@@ -271,6 +279,7 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── zsh-history-substring-search/  # ZSH plugin
 │   ├── zsh-fzf-history-search/     # ZSH plugin
 │   ├── zsh-completions/   # ZSH plugin
+│   ├── powerlevel10k/     # ZSH theme
 │   ├── config/            # Configuration files deployment
 │   ├── fzf/               # Fuzzy finder
 │   ├── up/                # Ultimate Plumber
@@ -285,6 +294,7 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── gping/             # Graphical ping
 │   ├── bandwhich/         # Network monitor
 │   ├── bat/               # Better cat
+│   ├── eza/               # Modern ls replacement
 │   ├── zoxide/            # Smarter cd
 │   ├── gitui/             # Git terminal UI
 │   ├── asciinema/         # Terminal recorder

@@ -28,6 +28,19 @@
   become: no
   # when: false  # Enable this when you create the config file
 
+- name: Copy custom .p10k.zsh configuration
+  tags: ['config']
+  copy:
+    src: ./configs/p10k.zsh
+    dest: "{{ user_home }}/.p10k.zsh"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: '0644'
+    backup: yes
+  become: no
+  register: p10k_copy_result
+  failed_when: false
+
 - name: Setup direnv hook for zsh
   tags: ['config']
   lineinfile:

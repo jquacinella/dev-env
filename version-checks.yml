@@ -235,6 +235,23 @@
         up_to_date: "{{ up_to_date + ['bat'] }}"
       when: bat_version == bat_latest.json.tag_name
 
+    # Eza
+    - name: Get latest eza version from GitHub
+      uri:
+        url: https://api.github.com/repos/eza-community/eza/releases/latest
+        return_content: yes
+      register: eza_latest
+
+    - name: Compare eza versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'eza', 'current': eza_version, 'latest': eza_latest.json.tag_name}] }}"
+      when: eza_version != eza_latest.json.tag_name
+
+    - name: Mark eza as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['eza'] }}"
+      when: eza_version == eza_latest.json.tag_name
+
     # Generate Summary Report
     - name: Display separator
       debug:

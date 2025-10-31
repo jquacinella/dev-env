@@ -1,0 +1,9 @@
+---
+- name: Clone powerlevel10k repository
+  git:
+    repo: 'https://github.com/romkatv/powerlevel10k.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    version: "{{ powerlevel10k_version }}"
+    depth: 1
+    update: yes
+  become: false

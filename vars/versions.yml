@@ -41,6 +41,9 @@ bandwhich_version: "v0.23.1"
 # Bat - cat alternative with syntax highlighting
 bat_version: "v0.26.0"
 
+# Eza - modern replacement for ls
+eza_version: "v0.20.14"
+
 # Zoxide - smarter cd command that learns your habits
 zoxide_version: "0.9.8"
 
@@ -62,9 +65,10 @@ tldr_version: "v1.8.0"
 # NVM - Node Version Manager
 nvm_version: "v0.40.3"
 
-# Oh-My-Zsh Plugins
+# Oh-My-Zsh Plugins and Themes
 zsh_autosuggestions_version: "v0.7.1"
 zsh_syntax_highlighting_version: "0.8.0"
 zsh_history_substring_search_version: "v1.1.0"
 zsh_fzf_history_search_version: "master"
 zsh_completions_version: "0.35.0"
+powerlevel10k_version: "v1.20.0"

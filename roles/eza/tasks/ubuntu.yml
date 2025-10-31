@@ -1,0 +1,36 @@
+---
+- name: Check if eza is installed
+  stat:
+    path: /usr/local/bin/eza
+  register: eza_stat
+
+- name: Download and install eza
+  block:
+    - name: Create temporary directory for eza
+      tempfile:
+        state: directory
+      register: eza_temp
+
+    - name: Download eza tarball
+      get_url:
+        url: "https://github.com/eza-community/eza/releases/download/{{ eza_version }}/eza_x86_64-unknown-linux-gnu.tar.gz"
+        dest: "{{ eza_temp.path }}/eza.tar.gz"
+
+    - name: Extract eza tarball
+      unarchive:
+        src: "{{ eza_temp.path }}/eza.tar.gz"
+        dest: "{{ eza_temp.path }}"
+        remote_src: yes
+
+    - name: Install eza to /usr/local/bin
+      copy:
+        src: "{{ eza_temp.path }}/eza"
+        dest: /usr/local/bin/eza
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up eza temporary directory
+      file:
+        path: "{{ eza_temp.path }}"
+        state: absent
+  when: not eza_stat.stat.exists
