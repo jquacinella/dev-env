@@ -46,6 +46,46 @@
         name: zsh
       tags:
         - zsh
+
+    - name: Include zsh-autosuggestions role
+      include_role:
+        name: zsh-autosuggestions
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-autosuggestions
+
+    - name: Include zsh-syntax-highlighting role
+      include_role:
+        name: zsh-syntax-highlighting
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-syntax-highlighting
+
+    - name: Include zsh-history-substring-search role
+      include_role:
+        name: zsh-history-substring-search
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-history-substring-search
+
+    - name: Include zsh-fzf-history-search role
+      include_role:
+        name: zsh-fzf-history-search
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-fzf-history-search
+
+    - name: Include zsh-completions role
+      include_role:
+        name: zsh-completions
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-completions
     
     - name: Include config role
       include_role:

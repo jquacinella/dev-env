@@ -1,0 +1,9 @@
+---
+- name: Clone zsh-completions repository
+  git:
+    repo: 'https://github.com/zsh-users/zsh-completions.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-completions"
+    version: "{{ zsh_completions_version }}"
+    depth: 1
+    update: yes
+  become: false

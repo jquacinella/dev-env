@@ -1,0 +1,9 @@
+---
+- name: Clone zsh-syntax-highlighting repository
+  git:
+    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    version: "{{ zsh_syntax_highlighting_version }}"
+    depth: 1
+    update: yes
+  become: false

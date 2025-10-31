@@ -61,3 +61,10 @@ tldr_version: "v1.8.0"
 
 # NVM - Node Version Manager
 nvm_version: "v0.40.3"
+
+# Oh-My-Zsh Plugins
+zsh_autosuggestions_version: "v0.7.1"
+zsh_syntax_highlighting_version: "0.8.0"
+zsh_history_substring_search_version: "v1.1.0"
+zsh_fzf_history_search_version: "master"
+zsh_completions_version: "0.35.0"

@@ -18,6 +18,11 @@ roles/
 - **system**: System-level setup (apt cache updates)
 - **basics**: Basic development tools (git, curl, wget, build-essential, etc.)
 - **zsh**: Oh-my-zsh installation and configuration
+- **zsh-autosuggestions**: Fish-like autosuggestions for zsh
+- **zsh-syntax-highlighting**: Fish-like syntax highlighting for zsh
+- **zsh-history-substring-search**: Fish-like history search feature
+- **zsh-fzf-history-search**: FZF-powered history search
+- **zsh-completions**: Additional completion definitions for zsh
 - **fzf**: Fuzzy finder
 - **up**: Ultimate Plumber (interactive pipe viewer)
 - **ripgrep**: Fast code search tool
@@ -31,11 +36,18 @@ roles/
 - **gping**: Graphical ping
 - **bandwhich**: Network bandwidth monitor
 - **bat**: Better cat
+- **zoxide**: Smarter cd command that learns your habits
+- **gitui**: Blazing fast terminal UI for git
+- **asciinema**: Terminal session recorder
+- **navi**: Interactive cheatsheet tool for the command-line
+- **ssh-list**: Tool for managing SSH connections
+- **tldr**: Simplified and community-driven man pages
+- **nvm**: Node Version Manager
 - **config**: Configuration files setup
 
 ## OS Support
 
-Currently, all roles support Ubuntu (Debian family). The `main.yml` file in each role detects the OS and includes the appropriate OS-specific task file.
+Currently, all roles support Ubuntu (Ubuntu family). The `main.yml` file in each role detects the OS and includes the appropriate OS-specific task file.
 
 ### Adding Support for Other Operating Systems
 
@@ -45,8 +57,8 @@ To add support for another OS (e.g., Fedora):
 2. Update the `main.yml` to include the new OS:
    ```yaml
    - name: Include OS-specific tasks
-     include_tasks: "{{ ansible_os_family | lower }}.yml"
-     when: ansible_os_family in ["Debian", "RedHat"]
+     include_tasks: "{{ ansible_distribution | lower }}.yml"
+     when: ansible_distribution in ["Ubuntu", "RedHat"]
    ```
 
 ## Usage
@@ -95,8 +107,8 @@ To add a new tool:
    ```yaml
    ---
    - name: Include OS-specific tasks
-     include_tasks: "{{ ansible_os_family | lower }}.yml"
-     when: ansible_os_family == "Debian"
+     include_tasks: "{{ ansible_distribution | lower }}.yml"
+     when: ansible_distribution == "Ubuntu"
    ```
 
 3. Create `ubuntu.yml` with the installation tasks

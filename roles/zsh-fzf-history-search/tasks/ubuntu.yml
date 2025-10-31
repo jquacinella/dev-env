@@ -1,0 +1,9 @@
+---
+- name: Clone zsh-fzf-history-search repository
+  git:
+    repo: 'https://github.com/joshskidmore/zsh-fzf-history-search.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-fzf-history-search"
+    version: "{{ zsh_fzf_history_search_version }}"
+    depth: 1
+    update: yes
+  become: false

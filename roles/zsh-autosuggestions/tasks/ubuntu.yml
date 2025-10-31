@@ -1,0 +1,9 @@
+---
+- name: Clone zsh-autosuggestions repository
+  git:
+    repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    version: "{{ zsh_autosuggestions_version }}"
+    depth: 1
+    update: yes
+  become: false

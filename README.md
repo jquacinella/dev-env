@@ -12,6 +12,11 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 #### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
 - **tmux** - Terminal multiplexer with custom configuration
+- **zsh-autosuggestions** - Fish-like autosuggestions for zsh
+- **zsh-syntax-highlighting** - Fish-like syntax highlighting for zsh
+- **zsh-history-substring-search** - Fish-like history search feature
+- **zsh-fzf-history-search** - FZF-powered history search
+- **zsh-completions** - Additional completion definitions for zsh
 
 #### File & Directory Navigation
 - **fzf** - Fuzzy finder for command line
@@ -78,10 +83,22 @@ This will:
 ansible-playbook dev-setup.yml --tags fzf
 ```
 
-#### Setup only ZSH (includes oh-my-zsh, shell change, and related config)
+#### Setup only ZSH (includes oh-my-zsh, shell change, plugins, and related config)
 
 ```bash
 ansible-playbook dev-setup.yml --tags zsh
+```
+
+#### Install only ZSH plugins
+
+```bash
+ansible-playbook dev-setup.yml --tags zsh-plugins
+```
+
+#### Install a specific ZSH plugin
+
+```bash
+ansible-playbook dev-setup.yml --tags zsh-autosuggestions
 ```
 
 #### Install multiple specific tools

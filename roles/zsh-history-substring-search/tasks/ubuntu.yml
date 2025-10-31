@@ -1,0 +1,9 @@
+---
+- name: Clone zsh-history-substring-search repository
+  git:
+    repo: 'https://github.com/zsh-users/zsh-history-substring-search.git'
+    dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-history-substring-search"
+    version: "{{ zsh_history_substring_search_version }}"
+    depth: 1
+    update: yes
+  become: false
