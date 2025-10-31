@@ -61,38 +61,6 @@
         creates: "{{ user_home }}/.fzf/bin/fzf"
       become: no
 
-    # BCAT Setup
-    - name: Check if bcat is installed
-      stat:
-        path: /usr/local/bin/bcat
-      register: bcat_stat
-
-    - name: Download and install bcat
-      block:
-        - name: Create temporary directory for bcat
-          tempfile:
-            state: directory
-          register: bcat_temp
-
-        - name: Download bcat
-          get_url:
-            url: https://raw.githubusercontent.com/rtomayko/bcat/master/bin/bcat
-            dest: "{{ bcat_temp.path }}/bcat"
-            mode: '0755'
-
-        - name: Install bcat to /usr/local/bin
-          copy:
-            src: "{{ bcat_temp.path }}/bcat"
-            dest: /usr/local/bin/bcat
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up bcat temporary directory
-          file:
-            path: "{{ bcat_temp.path }}"
-            state: absent
-      when: not bcat_stat.stat.exists
-
     # UP (Ultimate Plumber) Setup
     - name: Check if up is installed
       stat:
@@ -701,6 +669,61 @@
             path: "{{ bandwhich_temp.path }}"
             state: absent
       when: not bandwhich_stat.stat.exists
+
+    # bat (batcat) Setup
+    - name: Check if bat is installed
+      stat:
+        path: /usr/local/bin/bat
+      register: bat_stat
+
+    - name: Download and install bat
+      block:
+        - name: Get latest bat release info
+          uri:
+            url: https://api.github.com/repos/sharkdp/bat/releases/latest
+            return_content: yes
+          register: bat_release
+
+        - name: Set bat download URL
+          set_fact:
+            bat_download_url: "{{ bat_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
+
+        - name: Create temporary directory for bat
+          tempfile:
+            state: directory
+          register: bat_temp
+
+        - name: Download bat tarball
+          get_url:
+            url: "{{ bat_download_url }}"
+            dest: "{{ bat_temp.path }}/bat.tar.gz"
+
+        - name: Extract bat tarball
+          unarchive:
+            src: "{{ bat_temp.path }}/bat.tar.gz"
+            dest: "{{ bat_temp.path }}"
+            remote_src: yes
+
+        - name: Find bat binary in extracted directory
+          find:
+            paths: "{{ bat_temp.path }}"
+            patterns: "bat"
+            recurse: yes
+            file_type: file
+          register: bat_binary
+
+        - name: Install bat to /usr/local/bin
+          copy:
+            src: "{{ bat_binary.files[0].path }}"
+            dest: /usr/local/bin/bat
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up bat temporary directory
+          file:
+            path: "{{ bat_temp.path }}"
+            state: absent
+      when: not bat_stat.stat.exists
 
     # Configuration Files
     - name: Create config directory

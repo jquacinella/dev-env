@@ -24,7 +24,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 
 #### Utilities
 - **ccze** - Colorizer for log files
-- **bcat** - Browser-based pipe viewer
+- **bat** - Cat clone with syntax highlighting and Git integration
 - **dust** - Modern disk usage analyzer
 - **procs** - Modern replacement for ps with colored output and tree view
 - **xh** - Friendly HTTP client (HTTPie-like)
@@ -54,7 +54,7 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, bcat, up, ripgrep, espanso, dust, xh, broot, procs)
+4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich)
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 
@@ -75,7 +75,7 @@ Add to the `Install basic dependencies` task:
 ```
 
 #### For tools requiring installation scripts:
-Follow the pattern used for fzf or bcat. Example structure:
+Follow the pattern used for fzf or bat. Example structure:
 
 ```yaml
 - name: Check if tool is installed
@@ -143,20 +143,6 @@ By default, custom config file deployment is disabled. To enable:
   apt:
     name: neovim
     state: present
-```
-
-### bat (cat with syntax highlighting)
-```yaml
-- name: Install bat
-  block:
-    - name: Download bat
-      get_url:
-        url: https://github.com/sharkdp/bat/releases/download/v0.24.0/bat_0.24.0_amd64.deb
-        dest: /tmp/bat.deb
-
-    - name: Install bat package
-      apt:
-        deb: /tmp/bat.deb
 ```
 
 ### Node.js (via NodeSource)
