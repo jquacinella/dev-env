@@ -1,0 +1,275 @@
+---
+- name: Check for Available Tool Updates
+  hosts: localhost
+  connection: local
+  become: no
+  vars_files:
+    - vars/versions.yml
+  vars:
+    updates_available: []
+    up_to_date: []
+
+  tasks:
+    - name: Display current configuration
+      debug:
+        msg: "Checking for updates to installed development tools..."
+
+    # FZF
+    - name: Get latest fzf version from GitHub
+      uri:
+        url: https://api.github.com/repos/junegunn/fzf/releases/latest
+        return_content: yes
+      register: fzf_latest
+
+    - name: Compare fzf versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'fzf', 'current': fzf_version, 'latest': fzf_latest.json.tag_name}] }}"
+      when: fzf_version != fzf_latest.json.tag_name
+
+    - name: Mark fzf as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['fzf'] }}"
+      when: fzf_version == fzf_latest.json.tag_name
+
+    # UP (Ultimate Plumber)
+    - name: Get latest up version from GitHub
+      uri:
+        url: https://api.github.com/repos/akavel/up/releases/latest
+        return_content: yes
+      register: up_latest
+
+    - name: Compare up versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'up', 'current': up_version, 'latest': up_latest.json.tag_name}] }}"
+      when: up_version != up_latest.json.tag_name
+
+    - name: Mark up as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['up'] }}"
+      when: up_version == up_latest.json.tag_name
+
+    # Ripgrep
+    - name: Get latest ripgrep version from GitHub
+      uri:
+        url: https://api.github.com/repos/BurntSushi/ripgrep/releases/latest
+        return_content: yes
+      register: ripgrep_latest
+
+    - name: Compare ripgrep versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'ripgrep', 'current': ripgrep_version, 'latest': ripgrep_latest.json.tag_name}] }}"
+      when: ripgrep_version != ripgrep_latest.json.tag_name
+
+    - name: Mark ripgrep as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['ripgrep'] }}"
+      when: ripgrep_version == ripgrep_latest.json.tag_name
+
+    # Espanso
+    - name: Get latest espanso version from GitHub
+      uri:
+        url: https://api.github.com/repos/espanso/espanso/releases/latest
+        return_content: yes
+      register: espanso_latest
+
+    - name: Compare espanso versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'espanso', 'current': espanso_version, 'latest': espanso_latest.json.tag_name}] }}"
+      when: espanso_version != espanso_latest.json.tag_name
+
+    - name: Mark espanso as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['espanso'] }}"
+      when: espanso_version == espanso_latest.json.tag_name
+
+    # Dust
+    - name: Get latest dust version from GitHub
+      uri:
+        url: https://api.github.com/repos/bootandy/dust/releases/latest
+        return_content: yes
+      register: dust_latest
+
+    - name: Compare dust versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'dust', 'current': dust_version, 'latest': dust_latest.json.tag_name}] }}"
+      when: dust_version != dust_latest.json.tag_name
+
+    - name: Mark dust as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['dust'] }}"
+      when: dust_version == dust_latest.json.tag_name
+
+    # xh
+    - name: Get latest xh version from GitHub
+      uri:
+        url: https://api.github.com/repos/ducaale/xh/releases/latest
+        return_content: yes
+      register: xh_latest
+
+    - name: Compare xh versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'xh', 'current': xh_version, 'latest': xh_latest.json.tag_name}] }}"
+      when: xh_version != xh_latest.json.tag_name
+
+    - name: Mark xh as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['xh'] }}"
+      when: xh_version == xh_latest.json.tag_name
+
+    # Broot
+    - name: Get latest broot version from GitHub
+      uri:
+        url: https://api.github.com/repos/Canop/broot/releases/latest
+        return_content: yes
+      register: broot_latest
+
+    - name: Compare broot versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'broot', 'current': broot_version, 'latest': broot_latest.json.tag_name}] }}"
+      when: broot_version != broot_latest.json.tag_name
+
+    - name: Mark broot as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['broot'] }}"
+      when: broot_version == broot_latest.json.tag_name
+
+    # Procs
+    - name: Get latest procs version from GitHub
+      uri:
+        url: https://api.github.com/repos/dalance/procs/releases/latest
+        return_content: yes
+      register: procs_latest
+
+    - name: Compare procs versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'procs', 'current': procs_version, 'latest': procs_latest.json.tag_name}] }}"
+      when: procs_version != procs_latest.json.tag_name
+
+    - name: Mark procs as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['procs'] }}"
+      when: procs_version == procs_latest.json.tag_name
+
+    # Bottom
+    - name: Get latest bottom version from GitHub
+      uri:
+        url: https://api.github.com/repos/ClementTsang/bottom/releases/latest
+        return_content: yes
+      register: bottom_latest
+
+    - name: Compare bottom versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'bottom', 'current': bottom_version, 'latest': bottom_latest.json.tag_name}] }}"
+      when: bottom_version != bottom_latest.json.tag_name
+
+    - name: Mark bottom as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['bottom'] }}"
+      when: bottom_version == bottom_latest.json.tag_name
+
+    # Zellij
+    - name: Get latest zellij version from GitHub
+      uri:
+        url: https://api.github.com/repos/zellij-org/zellij/releases/latest
+        return_content: yes
+      register: zellij_latest
+
+    - name: Compare zellij versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zellij', 'current': zellij_version, 'latest': zellij_latest.json.tag_name}] }}"
+      when: zellij_version != zellij_latest.json.tag_name
+
+    - name: Mark zellij as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zellij'] }}"
+      when: zellij_version == zellij_latest.json.tag_name
+
+    # Gping
+    - name: Get latest gping version from GitHub
+      uri:
+        url: https://api.github.com/repos/orf/gping/releases/latest
+        return_content: yes
+      register: gping_latest
+
+    - name: Compare gping versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'gping', 'current': gping_version, 'latest': gping_latest.json.tag_name}] }}"
+      when: gping_version != gping_latest.json.tag_name
+
+    - name: Mark gping as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['gping'] }}"
+      when: gping_version == gping_latest.json.tag_name
+
+    # Bandwhich
+    - name: Get latest bandwhich version from GitHub
+      uri:
+        url: https://api.github.com/repos/imsnif/bandwhich/releases/latest
+        return_content: yes
+      register: bandwhich_latest
+
+    - name: Compare bandwhich versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'bandwhich', 'current': bandwhich_version, 'latest': bandwhich_latest.json.tag_name}] }}"
+      when: bandwhich_version != bandwhich_latest.json.tag_name
+
+    - name: Mark bandwhich as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['bandwhich'] }}"
+      when: bandwhich_version == bandwhich_latest.json.tag_name
+
+    # Bat
+    - name: Get latest bat version from GitHub
+      uri:
+        url: https://api.github.com/repos/sharkdp/bat/releases/latest
+        return_content: yes
+      register: bat_latest
+
+    - name: Compare bat versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'bat', 'current': bat_version, 'latest': bat_latest.json.tag_name}] }}"
+      when: bat_version != bat_latest.json.tag_name
+
+    - name: Mark bat as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['bat'] }}"
+      when: bat_version == bat_latest.json.tag_name
+
+    # Generate Summary Report
+    - name: Display separator
+      debug:
+        msg: "============================================"
+
+    - name: Display summary header
+      debug:
+        msg: "VERSION CHECK SUMMARY"
+
+    - name: Display up to date tools
+      debug:
+        msg: "✓ Up to date ({{ up_to_date | length }}): {{ up_to_date | join(', ') }}"
+      when: up_to_date | length > 0
+
+    - name: Display updates available header
+      debug:
+        msg: "⚠ Updates available ({{ updates_available | length }}):"
+      when: updates_available | length > 0
+
+    - name: Display each update available
+      debug:
+        msg: "  - {{ item.tool }}: {{ item.current }} → {{ item.latest }}"
+      loop: "{{ updates_available }}"
+      when: updates_available | length > 0
+
+    - name: Display no updates message
+      debug:
+        msg: "All tools are up to date!"
+      when: updates_available | length == 0
+
+    - name: Display update instructions
+      debug:
+        msg: "To update versions, edit vars/versions.yml and run dev-setup.yml"
+      when: updates_available | length > 0
+
+    - name: Display separator
+      debug:
+        msg: "============================================"

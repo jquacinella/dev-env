@@ -44,6 +44,8 @@ sudo apt install ansible
 
 ## Usage
 
+### Installing the Development Environment
+
 Run the playbook with:
 
 ```bash
@@ -58,7 +60,59 @@ This will:
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 
+### Checking for Updates
+
+To check if newer versions of tools are available:
+
+```bash
+ansible-playbook version-checks.yml
+```
+
+This will:
+- Query GitHub for the latest version of each tool
+- Compare with your pinned versions in `vars/versions.yml`
+- Display a summary showing which tools are up to date and which have updates available
+
+Example output:
+```
+✓ Up to date (10): fzf, up, dust, xh, broot, procs, bottom, zellij, bandwhich, bat
+⚠ Updates available (3):
+  - ripgrep: 15.1.0 → 15.2.0
+  - espanso: v2.3.0 → v2.4.0
+  - gping: gping-v1.20.1 → gping-v1.21.0
+```
+
 ## Customization
+
+### Managing Tool Versions
+
+All tool versions are centrally managed in `vars/versions.yml`. This approach provides:
+- **Reproducibility**: Same versions installed every time
+- **Speed**: No API calls during installation
+- **Control**: Easy to update or rollback versions
+
+To update a tool version:
+
+1. Check for available updates:
+   ```bash
+   ansible-playbook version-checks.yml
+   ```
+
+2. Edit `vars/versions.yml` and update the desired version(s):
+   ```yaml
+   ripgrep_version: "15.2.0"  # Update from 15.1.0
+   ```
+
+3. Re-run the setup playbook:
+   ```bash
+   ansible-playbook dev-setup.yml --ask-become-pass
+   ```
+
+**Note**: The playbook only installs tools if they don't exist. To force a reinstall, remove the tool binary first:
+```bash
+sudo rm /usr/local/bin/rg  # Example for ripgrep
+ansible-playbook dev-setup.yml --ask-become-pass
+```
 
 ### Adding New Tools
 
@@ -77,21 +131,31 @@ Add to the `Install basic dependencies` task:
 #### For tools requiring installation scripts:
 Follow the pattern used for fzf or bat. Example structure:
 
-```yaml
-- name: Check if tool is installed
-  stat:
-    path: /path/to/tool
-  register: tool_stat
+1. Add the version to `vars/versions.yml`:
+   ```yaml
+   your_tool_version: "v1.2.3"
+   ```
 
-- name: Install tool
-  block:
-    - name: Clone/download tool
-      # ... download steps
-    
-    - name: Run installation
-      # ... install steps
-  when: not tool_stat.stat.exists
-```
+2. Add the installation tasks to `dev-setup.yml`:
+   ```yaml
+   - name: Check if tool is installed
+     stat:
+       path: /usr/local/bin/your-tool
+     register: tool_stat
+
+   - name: Install tool
+     block:
+       - name: Download tool
+         get_url:
+           url: "https://github.com/owner/repo/releases/download/{{ your_tool_version }}/tool.tar.gz"
+           dest: "/tmp/tool.tar.gz"
+
+       - name: Install tool
+         # ... extract and install steps
+     when: not tool_stat.stat.exists
+   ```
+
+3. Add version check to `version-checks.yml` following the existing patterns
 
 ### Customizing Configurations
 
@@ -123,7 +187,10 @@ By default, custom config file deployment is disabled. To enable:
 
 ```
 .
-├── dev-setup.yml          # Main playbook
+├── dev-setup.yml          # Main installation playbook
+├── version-checks.yml     # Version update checker playbook
+├── vars/
+│   └── versions.yml      # Centralized tool version definitions
 ├── configs/
 │   ├── zshrc.j2          # ZSH configuration template
 │   └── tmux.conf.j2      # Tmux configuration template
