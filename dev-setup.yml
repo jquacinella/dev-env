@@ -61,38 +61,6 @@
         creates: "{{ user_home }}/.fzf/bin/fzf"
       become: no
 
-    # BCAT Setup
-    - name: Check if bcat is installed
-      stat:
-        path: /usr/local/bin/bcat
-      register: bcat_stat
-
-    - name: Download and install bcat
-      block:
-        - name: Create temporary directory for bcat
-          tempfile:
-            state: directory
-          register: bcat_temp
-
-        - name: Download bcat
-          get_url:
-            url: https://raw.githubusercontent.com/rtomayko/bcat/master/bin/bcat
-            dest: "{{ bcat_temp.path }}/bcat"
-            mode: '0755'
-
-        - name: Install bcat to /usr/local/bin
-          copy:
-            src: "{{ bcat_temp.path }}/bcat"
-            dest: /usr/local/bin/bcat
-            mode: '0755'
-            remote_src: yes
-
-        - name: Clean up bcat temporary directory
-          file:
-            path: "{{ bcat_temp.path }}"
-            state: absent
-      when: not bcat_stat.stat.exists
-
     # UP (Ultimate Plumber) Setup
     - name: Check if up is installed
       stat:
