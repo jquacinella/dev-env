@@ -1,0 +1,14 @@
+---
+- name: Check if asciinema is installed
+  stat:
+    path: /usr/local/bin/asciinema
+  register: asciinema_stat
+
+- name: Download and install asciinema
+  block:
+    - name: Download asciinema binary
+      get_url:
+        url: "https://github.com/asciinema/asciinema/releases/download/{{ asciinema_version }}/asciinema-x86_64-unknown-linux-musl"
+        dest: /usr/local/bin/asciinema
+        mode: '0755'
+  when: not asciinema_stat.stat.exists

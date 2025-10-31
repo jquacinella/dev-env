@@ -17,10 +17,14 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 - **fzf** - Fuzzy finder for command line
 - **broot** - Modern tree view and directory navigator
 - **direnv** - Environment variable manager per directory
+- **zoxide** - Smarter cd command that learns your habits
 
 #### Search & Text Processing
 - **ripgrep (rg)** - Ultra-fast recursive search tool
 - **up (Ultimate Plumber)** - Interactive pipe building tool
+
+#### Version Control & Git
+- **gitui** - Blazing fast terminal UI for git
 
 #### Utilities
 - **ccze** - Colorizer for log files
@@ -29,6 +33,9 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 - **procs** - Modern replacement for ps with colored output and tree view
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
+- **asciinema** - Terminal session recorder
+- **navi** - Interactive cheatsheet tool for the command-line
+- **ssh-list** - Tool for managing SSH connections
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
@@ -56,7 +63,7 @@ This will:
 1. Install all specified packages
 2. Set up oh-my-zsh
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich)
+4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list)
 5. Register and start Espanso text expander service
 6. Apply your custom configurations
 

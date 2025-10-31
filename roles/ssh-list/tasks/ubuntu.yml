@@ -1,0 +1,44 @@
+---
+- name: Check if ssh-list is installed
+  stat:
+    path: /usr/local/bin/ssh-list
+  register: ssh_list_stat
+
+- name: Download and install ssh-list
+  block:
+    - name: Create temporary directory for ssh-list
+      tempfile:
+        state: directory
+      register: ssh_list_temp
+
+    - name: Download ssh-list tarball
+      get_url:
+        url: "https://github.com/akinoiro/ssh-list/releases/download/{{ ssh_list_version }}/ssh-list-{{ ssh_list_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ ssh_list_temp.path }}/ssh-list.tar.gz"
+
+    - name: Extract ssh-list tarball
+      unarchive:
+        src: "{{ ssh_list_temp.path }}/ssh-list.tar.gz"
+        dest: "{{ ssh_list_temp.path }}"
+        remote_src: yes
+
+    - name: Find ssh-list binary in extracted directory
+      find:
+        paths: "{{ ssh_list_temp.path }}"
+        patterns: "ssh-list"
+        recurse: yes
+        file_type: file
+      register: ssh_list_binary
+
+    - name: Install ssh-list to /usr/local/bin
+      copy:
+        src: "{{ ssh_list_binary.files[0].path }}"
+        dest: /usr/local/bin/ssh-list
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up ssh-list temporary directory
+      file:
+        path: "{{ ssh_list_temp.path }}"
+        state: absent
+  when: not ssh_list_stat.stat.exists
