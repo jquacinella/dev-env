@@ -30,6 +30,8 @@
         - tmux
         - ccze
         - direnv
+        - redshift
+        - xsel
 
     - name: Include zsh role
       include_role:
