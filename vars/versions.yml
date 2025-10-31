@@ -40,3 +40,21 @@ bandwhich_version: "v0.23.1"
 
 # Bat - cat alternative with syntax highlighting
 bat_version: "v0.26.0"
+
+# Zoxide - smarter cd command that learns your habits
+zoxide_version: "v0.9.8"
+
+# GitUI - blazing fast terminal UI for git
+gitui_version: "v0.27.0"
+
+# Asciinema - terminal session recorder
+asciinema_version: "v3.0.1"
+
+# Navi - interactive cheatsheet tool for the command-line
+navi_version: "v2.24.0"
+
+# SSH-List - tool for managing SSH connections
+ssh_list_version: "v1.5.1"
+
+# NVM - Node Version Manager
+nvm_version: "v0.40.3"

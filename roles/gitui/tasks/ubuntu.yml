@@ -1,0 +1,44 @@
+---
+- name: Check if gitui is installed
+  stat:
+    path: /usr/local/bin/gitui
+  register: gitui_stat
+
+- name: Download and install gitui
+  block:
+    - name: Create temporary directory for gitui
+      tempfile:
+        state: directory
+      register: gitui_temp
+
+    - name: Download gitui tarball
+      get_url:
+        url: "https://github.com/gitui-org/gitui/releases/download/{{ gitui_version }}/gitui-linux-x86_64.tar.gz"
+        dest: "{{ gitui_temp.path }}/gitui.tar.gz"
+
+    - name: Extract gitui tarball
+      unarchive:
+        src: "{{ gitui_temp.path }}/gitui.tar.gz"
+        dest: "{{ gitui_temp.path }}"
+        remote_src: yes
+
+    - name: Find gitui binary in extracted directory
+      find:
+        paths: "{{ gitui_temp.path }}"
+        patterns: "gitui"
+        recurse: yes
+        file_type: file
+      register: gitui_binary
+
+    - name: Install gitui to /usr/local/bin
+      copy:
+        src: "{{ gitui_binary.files[0].path }}"
+        dest: /usr/local/bin/gitui
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up gitui temporary directory
+      file:
+        path: "{{ gitui_temp.path }}"
+        state: absent
+  when: not gitui_stat.stat.exists

@@ -1,0 +1,44 @@
+---
+- name: Check if navi is installed
+  stat:
+    path: /usr/local/bin/navi
+  register: navi_stat
+
+- name: Download and install navi
+  block:
+    - name: Create temporary directory for navi
+      tempfile:
+        state: directory
+      register: navi_temp
+
+    - name: Download navi tarball
+      get_url:
+        url: "https://github.com/denisidoro/navi/releases/download/{{ navi_version }}/navi-{{ navi_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ navi_temp.path }}/navi.tar.gz"
+
+    - name: Extract navi tarball
+      unarchive:
+        src: "{{ navi_temp.path }}/navi.tar.gz"
+        dest: "{{ navi_temp.path }}"
+        remote_src: yes
+
+    - name: Find navi binary in extracted directory
+      find:
+        paths: "{{ navi_temp.path }}"
+        patterns: "navi"
+        recurse: yes
+        file_type: file
+      register: navi_binary
+
+    - name: Install navi to /usr/local/bin
+      copy:
+        src: "{{ navi_binary.files[0].path }}"
+        dest: /usr/local/bin/navi
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up navi temporary directory
+      file:
+        path: "{{ navi_temp.path }}"
+        state: absent
+  when: not navi_stat.stat.exists
