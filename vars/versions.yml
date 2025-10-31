@@ -1,0 +1,42 @@
+---
+# Tool version variables for dev-setup.yml
+# Update these versions as needed to control which versions are installed
+
+# FZF - fuzzy finder
+fzf_version: "v0.66.1"
+
+# UP - Ultimate Plumber - tool for building command pipelines interactively
+up_version: "v0.4"
+
+# Ripgrep - fast grep alternative
+ripgrep_version: "15.1.0"
+
+# Espanso - text expander
+espanso_version: "v2.3.0"
+
+# Dust - du alternative
+dust_version: "v1.2.3"
+
+# xh - HTTPie-like HTTP client
+xh_version: "v0.25.0"
+
+# Broot - directory tree viewer
+broot_version: "v1.51.0"
+
+# Procs - ps alternative
+procs_version: "v0.14.10"
+
+# Bottom - system monitor (btm)
+bottom_version: "0.11.2"
+
+# Zellij - terminal workspace manager
+zellij_version: "v0.43.1"
+
+# Gping - ping with a graph
+gping_version: "gping-v1.20.1"
+
+# Bandwhich - network utilization monitor
+bandwhich_version: "v0.23.1"
+
+# Bat - cat alternative with syntax highlighting
+bat_version: "v0.26.0"

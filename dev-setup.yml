@@ -3,10 +3,12 @@
   hosts: localhost
   connection: local
   become: yes
+  vars_files:
+    - vars/versions.yml
   vars:
     user_name: "{{ ansible_env.SUDO_USER | default(ansible_env.USER) }}"
     user_home: "{{ ansible_env.HOME }}"
-    
+
   tasks:
     - name: Update apt cache
       apt:
@@ -51,6 +53,7 @@
       git:
         repo: 'https://github.com/junegunn/fzf.git'
         dest: "{{ user_home }}/.fzf"
+        version: "{{ fzf_version }}"
         depth: 1
         update: yes
       become: no
@@ -69,16 +72,6 @@
 
     - name: Download and install up (Ultimate Plumber)
       block:
-        - name: Get latest up release info
-          uri:
-            url: https://api.github.com/repos/akavel/up/releases/latest
-            return_content: yes
-          register: up_release
-
-        - name: Set up download URL
-          set_fact:
-            up_download_url: "{{ up_release.json.assets | selectattr('name', 'match', '.*linux_amd64.*') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for up
           tempfile:
             state: directory
@@ -86,7 +79,7 @@
 
         - name: Download up tarball
           get_url:
-            url: "{{ up_download_url }}"
+            url: "https://github.com/akavel/up/releases/download/{{ up_version }}/up-{{ up_version }}-linux_amd64.tar.gz"
             dest: "{{ up_temp.path }}/up.tar.gz"
 
         - name: Extract up binary
@@ -116,16 +109,6 @@
 
     - name: Download and install ripgrep
       block:
-        - name: Get latest ripgrep release info
-          uri:
-            url: https://api.github.com/repos/BurntSushi/ripgrep/releases/latest
-            return_content: yes
-          register: ripgrep_release
-
-        - name: Set ripgrep download URL
-          set_fact:
-            ripgrep_download_url: "{{ ripgrep_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for ripgrep
           tempfile:
             state: directory
@@ -133,7 +116,7 @@
 
         - name: Download ripgrep tarball
           get_url:
-            url: "{{ ripgrep_download_url }}"
+            url: "https://github.com/BurntSushi/ripgrep/releases/download/{{ ripgrep_version }}/ripgrep-{{ ripgrep_version }}-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ ripgrep_temp.path }}/ripgrep.tar.gz"
 
         - name: Extract ripgrep tarball
@@ -180,16 +163,6 @@
 
     - name: Download and install Espanso
       block:
-        - name: Get latest Espanso release info
-          uri:
-            url: https://api.github.com/repos/espanso/espanso/releases/latest
-            return_content: yes
-          register: espanso_release
-
-        - name: Set Espanso download URL
-          set_fact:
-            espanso_download_url: "{{ espanso_release.json.assets | selectattr('name', 'match', '.*Espanso-Debian.*\\.deb$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for Espanso
           tempfile:
             state: directory
@@ -197,7 +170,7 @@
 
         - name: Download Espanso .deb package
           get_url:
-            url: "{{ espanso_download_url }}"
+            url: "https://github.com/espanso/espanso/releases/download/{{ espanso_version }}/Espanso-Debian-X11-{{ espanso_version }}.deb"
             dest: "{{ espanso_temp.path }}/espanso.deb"
 
         - name: Install Espanso package
@@ -233,16 +206,6 @@
 
     - name: Download and install dust
       block:
-        - name: Get latest dust release info
-          uri:
-            url: https://api.github.com/repos/bootandy/dust/releases/latest
-            return_content: yes
-          register: dust_release
-
-        - name: Set dust download URL
-          set_fact:
-            dust_download_url: "{{ dust_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for dust
           tempfile:
             state: directory
@@ -250,7 +213,7 @@
 
         - name: Download dust tarball
           get_url:
-            url: "{{ dust_download_url }}"
+            url: "https://github.com/bootandy/dust/releases/download/{{ dust_version }}/dust-{{ dust_version }}-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ dust_temp.path }}/dust.tar.gz"
 
         - name: Extract dust tarball
@@ -288,16 +251,6 @@
 
     - name: Download and install xh
       block:
-        - name: Get latest xh release info
-          uri:
-            url: https://api.github.com/repos/ducaale/xh/releases/latest
-            return_content: yes
-          register: xh_release
-
-        - name: Set xh download URL
-          set_fact:
-            xh_download_url: "{{ xh_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for xh
           tempfile:
             state: directory
@@ -305,7 +258,7 @@
 
         - name: Download xh tarball
           get_url:
-            url: "{{ xh_download_url }}"
+            url: "https://github.com/ducaale/xh/releases/download/{{ xh_version }}/xh-{{ xh_version }}-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ xh_temp.path }}/xh.tar.gz"
 
         - name: Extract xh tarball
@@ -343,16 +296,6 @@
 
     - name: Download and install broot
       block:
-        - name: Get latest broot release info
-          uri:
-            url: https://api.github.com/repos/Canop/broot/releases/latest
-            return_content: yes
-          register: broot_release
-
-        - name: Set broot download URL
-          set_fact:
-            broot_download_url: "{{ broot_release.json.assets | selectattr('name', 'match', '.*x86_64-linux.zip$') | map(attribute='browser_download_url') | first }}"
-
         - name: Install unzip if not present
           apt:
             name: unzip
@@ -365,7 +308,7 @@
 
         - name: Download broot zip
           get_url:
-            url: "{{ broot_download_url }}"
+            url: "https://github.com/Canop/broot/releases/download/{{ broot_version }}/broot-{{ broot_version }}-x86_64-linux.zip"
             dest: "{{ broot_temp.path }}/broot.zip"
 
         - name: Extract broot zip
@@ -403,16 +346,6 @@
 
     - name: Download and install procs
       block:
-        - name: Get latest procs release info
-          uri:
-            url: https://api.github.com/repos/dalance/procs/releases/latest
-            return_content: yes
-          register: procs_release
-
-        - name: Set procs download URL
-          set_fact:
-            procs_download_url: "{{ procs_release.json.assets | selectattr('name', 'match', '.*x86_64-lnx.zip$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for procs
           tempfile:
             state: directory
@@ -420,7 +353,7 @@
 
         - name: Download procs zip
           get_url:
-            url: "{{ procs_download_url }}"
+            url: "https://github.com/dalance/procs/releases/download/{{ procs_version }}/procs-{{ procs_version }}-x86_64-lnx.zip"
             dest: "{{ procs_temp.path }}/procs.zip"
 
         - name: Extract procs zip
@@ -458,16 +391,6 @@
 
     - name: Download and install bottom
       block:
-        - name: Get latest bottom release info
-          uri:
-            url: https://api.github.com/repos/ClementTsang/bottom/releases/latest
-            return_content: yes
-          register: bottom_release
-
-        - name: Set bottom download URL
-          set_fact:
-            bottom_download_url: "{{ bottom_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for bottom
           tempfile:
             state: directory
@@ -475,7 +398,7 @@
 
         - name: Download bottom tarball
           get_url:
-            url: "{{ bottom_download_url }}"
+            url: "https://github.com/ClementTsang/bottom/releases/download/{{ bottom_version }}/bottom_x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ bottom_temp.path }}/bottom.tar.gz"
 
         - name: Extract bottom tarball
@@ -513,16 +436,6 @@
 
     - name: Download and install zellij
       block:
-        - name: Get latest zellij release info
-          uri:
-            url: https://api.github.com/repos/zellij-org/zellij/releases/latest
-            return_content: yes
-          register: zellij_release
-
-        - name: Set zellij download URL
-          set_fact:
-            zellij_download_url: "{{ zellij_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for zellij
           tempfile:
             state: directory
@@ -530,7 +443,7 @@
 
         - name: Download zellij tarball
           get_url:
-            url: "{{ zellij_download_url }}"
+            url: "https://github.com/zellij-org/zellij/releases/download/{{ zellij_version }}/zellij-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ zellij_temp.path }}/zellij.tar.gz"
 
         - name: Extract zellij tarball
@@ -568,16 +481,6 @@
 
     - name: Download and install gping
       block:
-        - name: Get latest gping release info
-          uri:
-            url: https://api.github.com/repos/orf/gping/releases/latest
-            return_content: yes
-          register: gping_release
-
-        - name: Set gping download URL
-          set_fact:
-            gping_download_url: "{{ gping_release.json.assets | selectattr('name', 'match', '.*Linux-x86_64.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for gping
           tempfile:
             state: directory
@@ -585,7 +488,7 @@
 
         - name: Download gping tarball
           get_url:
-            url: "{{ gping_download_url }}"
+            url: "https://github.com/orf/gping/releases/download/{{ gping_version }}/gping-Linux-x86_64.tar.gz"
             dest: "{{ gping_temp.path }}/gping.tar.gz"
 
         - name: Extract gping tarball
@@ -623,16 +526,6 @@
 
     - name: Download and install bandwhich
       block:
-        - name: Get latest bandwhich release info
-          uri:
-            url: https://api.github.com/repos/imsnif/bandwhich/releases/latest
-            return_content: yes
-          register: bandwhich_release
-
-        - name: Set bandwhich download URL
-          set_fact:
-            bandwhich_download_url: "{{ bandwhich_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for bandwhich
           tempfile:
             state: directory
@@ -640,7 +533,7 @@
 
         - name: Download bandwhich tarball
           get_url:
-            url: "{{ bandwhich_download_url }}"
+            url: "https://github.com/imsnif/bandwhich/releases/download/{{ bandwhich_version }}/bandwhich-{{ bandwhich_version }}-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ bandwhich_temp.path }}/bandwhich.tar.gz"
 
         - name: Extract bandwhich tarball
@@ -678,16 +571,6 @@
 
     - name: Download and install bat
       block:
-        - name: Get latest bat release info
-          uri:
-            url: https://api.github.com/repos/sharkdp/bat/releases/latest
-            return_content: yes
-          register: bat_release
-
-        - name: Set bat download URL
-          set_fact:
-            bat_download_url: "{{ bat_release.json.assets | selectattr('name', 'match', '.*x86_64-unknown-linux-musl.tar.gz$') | map(attribute='browser_download_url') | first }}"
-
         - name: Create temporary directory for bat
           tempfile:
             state: directory
@@ -695,7 +578,7 @@
 
         - name: Download bat tarball
           get_url:
-            url: "{{ bat_download_url }}"
+            url: "https://github.com/sharkdp/bat/releases/download/{{ bat_version }}/bat-{{ bat_version }}-x86_64-unknown-linux-musl.tar.gz"
             dest: "{{ bat_temp.path }}/bat.tar.gz"
 
         - name: Extract bat tarball
