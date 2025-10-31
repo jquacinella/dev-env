@@ -30,6 +30,8 @@
         - tmux
         - ccze
         - direnv
+        - redshift
+        - xsel
 
     - name: Include zsh role
       include_role:
@@ -152,6 +154,12 @@
         name: tldr
       tags:
         - tldr
+        
+    - name: Include nvm role
+      include_role:
+        name: nvm
+      tags:
+        - nvm
 
     - name: Include config role
       include_role:

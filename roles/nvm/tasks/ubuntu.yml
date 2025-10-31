@@ -1,0 +1,30 @@
+---
+- name: Check if nvm is installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+  register: nvm_stat
+  become: no
+
+- name: Download and install nvm
+  block:
+    - name: Download nvm install script
+      get_url:
+        url: "https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh"
+        dest: "/tmp/nvm_install.sh"
+        mode: '0755'
+      become: no
+
+    - name: Run nvm install script
+      shell: bash /tmp/nvm_install.sh
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+      environment:
+        HOME: "{{ ansible_env.HOME }}"
+      become: no
+
+    - name: Clean up nvm install script
+      file:
+        path: /tmp/nvm_install.sh
+        state: absent
+      become: no
+  when: not nvm_stat.stat.exists
