@@ -1,28 +1,34 @@
 ---
 - name: Check if zoxide is installed
+  tags: ["zoxide"]
   stat:
     path: /usr/local/bin/zoxide
   register: zoxide_stat
 
 - name: Download and install zoxide
+  tags: ["zoxide"]
   block:
     - name: Create temporary directory for zoxide
+      tags: ["zoxide"]
       tempfile:
         state: directory
       register: zoxide_temp
 
     - name: Download zoxide tarball
+      tags: ["zoxide"]
       get_url:
-        url: "https://github.com/ajeetdsouza/zoxide/releases/download/{{ zoxide_version }}/zoxide-{{ zoxide_version }}-x86_64-unknown-linux-musl.tar.gz"
+        url: "https://github.com/ajeetdsouza/zoxide/releases/download/v{{ zoxide_version }}/zoxide-{{ zoxide_version }}-x86_64-unknown-linux-musl.tar.gz"
         dest: "{{ zoxide_temp.path }}/zoxide.tar.gz"
 
     - name: Extract zoxide tarball
+      tags: ["zoxide"]
       unarchive:
         src: "{{ zoxide_temp.path }}/zoxide.tar.gz"
         dest: "{{ zoxide_temp.path }}"
         remote_src: yes
 
     - name: Find zoxide binary in extracted directory
+      tags: ["zoxide"]
       find:
         paths: "{{ zoxide_temp.path }}"
         patterns: "zoxide"
@@ -31,6 +37,7 @@
       register: zoxide_binary
 
     - name: Install zoxide to /usr/local/bin
+      tags: ["zoxide"]
       copy:
         src: "{{ zoxide_binary.files[0].path }}"
         dest: /usr/local/bin/zoxide
@@ -38,6 +45,7 @@
         remote_src: yes
 
     - name: Clean up zoxide temporary directory
+      tags: ["zoxide"]
       file:
         path: "{{ zoxide_temp.path }}"
         state: absent

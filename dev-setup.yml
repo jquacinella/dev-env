@@ -8,11 +8,13 @@
   
   tasks:
     - name: Use environment lookup to get the current system user
+      tags: ["always"]
       ansible.builtin.set_fact:
         user_name: "{{ lookup('ansible.builtin.env', 'USER') }}"
         user_home: "/home/{{ lookup('ansible.builtin.env', 'USER') }}"
 
     - name: Display the local username
+      tags: ["always"]
       ansible.builtin.debug:
         msg: "The user running the playbook on the control node is: {{ user_name }}"
 
@@ -44,6 +46,16 @@
         name: zsh
       tags:
         - zsh
+    
+    - name: Include config role
+      include_role:
+        name: config
+      tags:
+        - config
+        - zsh
+        - tmux
+        - direnv
+
 
     - name: Include fzf role
       include_role:
@@ -167,15 +179,7 @@
       tags:
         - nvm
 
-    - name: Include config role
-      include_role:
-        name: config
-      tags:
-        - config
-        - zsh
-        - tmux
-        - direnv
-
+    
   handlers:
     - name: reload shell
       debug:

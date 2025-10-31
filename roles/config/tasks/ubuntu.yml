@@ -1,5 +1,6 @@
 ---
 - name: Create config directory
+  tags: ['config']
   file:
     path: "{{ user_home }}/.config"
     state: directory
@@ -8,24 +9,27 @@
   become: no
 
 - name: Copy custom zshrc
+  tags: ['config']
   template:
     src: ./configs/zshrc.j2
     dest: "{{ user_home }}/.zshrc"
     owner: "{{ user_name }}"
     mode: '0644'
   become: no
-  when: false  # Enable this when you create the config file
+  # when: false  # Enable this when you create the config file
 
 - name: Copy custom tmux.conf
+  tags: ['config']
   template:
     src: ./configs/tmux.conf.j2
     dest: "{{ user_home }}/.tmux.conf"
     owner: "{{ user_name }}"
     mode: '0644'
   become: no
-  when: false  # Enable this when you create the config file
+  # when: false  # Enable this when you create the config file
 
 - name: Setup direnv hook for zsh
+  tags: ['config']
   lineinfile:
     path: "{{ user_home }}/.zshrc"
     line: 'eval "$(direnv hook zsh)"'

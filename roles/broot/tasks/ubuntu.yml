@@ -1,33 +1,40 @@
 ---
 - name: Check if broot is installed
+  tags: ['broot']
   stat:
     path: /usr/local/bin/broot
   register: broot_stat
 
 - name: Download and install broot
+  tags: ['broot']
   block:
     - name: Install unzip if not present
+      tags: ['broot']
       apt:
         name: unzip
         state: present
 
     - name: Create temporary directory for broot
+      tags: ['broot']
       tempfile:
         state: directory
       register: broot_temp
 
     - name: Download broot zip
+      tags: ['broot']
       get_url:
-        url: "https://github.com/Canop/broot/releases/download/{{ broot_version }}/broot-{{ broot_version }}-x86_64-linux.zip"
+        url: "https://github.com/Canop/broot/releases/download/v{{ broot_version }}/broot_{{ broot_version }}.zip"
         dest: "{{ broot_temp.path }}/broot.zip"
 
     - name: Extract broot zip
+      tags: ['broot']
       unarchive:
         src: "{{ broot_temp.path }}/broot.zip"
         dest: "{{ broot_temp.path }}"
         remote_src: yes
 
     - name: Find broot binary in extracted directory
+      tags: ['broot']
       find:
         paths: "{{ broot_temp.path }}"
         patterns: "broot"
@@ -36,6 +43,7 @@
       register: broot_binary
 
     - name: Install broot to /usr/local/bin
+      tags: ['broot']
       copy:
         src: "{{ broot_binary.files[0].path }}"
         dest: /usr/local/bin/broot
@@ -43,6 +51,7 @@
         remote_src: yes
 
     - name: Clean up broot temporary directory
+      tags: ['broot']
       file:
         path: "{{ broot_temp.path }}"
         state: absent

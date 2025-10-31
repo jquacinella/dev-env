@@ -1,18 +1,22 @@
 ---
 - name: Check if tldr is installed
+  tags: ["tldr"]
   stat:
     path: /usr/local/bin/tldr
   register: tldr_stat
 
 - name: Download and install tldr (tealdeer)
+  tags: ["tldr"]
   block:
     - name: Download tealdeer binary
+      tags: ["tldr"]
       get_url:
         url: "https://github.com/tealdeer-rs/tealdeer/releases/download/{{ tldr_version }}/tealdeer-linux-x86_64-musl"
         dest: /usr/local/bin/tldr
         mode: '0755'
 
     - name: Initialize tldr cache
+      tags: ["tldr"]
       command: /usr/local/bin/tldr --update
       become: no
       become_user: "{{ user_name }}"
