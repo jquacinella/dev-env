@@ -117,6 +117,36 @@
       tags:
         - bat
 
+    - name: Include zoxide role
+      include_role:
+        name: zoxide
+      tags:
+        - zoxide
+
+    - name: Include gitui role
+      include_role:
+        name: gitui
+      tags:
+        - gitui
+
+    - name: Include asciinema role
+      include_role:
+        name: asciinema
+      tags:
+        - asciinema
+
+    - name: Include navi role
+      include_role:
+        name: navi
+      tags:
+        - navi
+
+    - name: Include ssh-list role
+      include_role:
+        name: ssh-list
+      tags:
+        - ssh-list
+
     - name: Include config role
       include_role:
         name: config
