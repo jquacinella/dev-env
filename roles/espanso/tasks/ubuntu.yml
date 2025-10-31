@@ -1,43 +1,51 @@
 ---
 - name: Install Espanso dependencies
+  tags: ["espanso"]
   apt:
     name:
       - libx11-dev
       - libxtst-dev
       - libxkbcommon-dev
       - libdbus-1-dev
-      - libwxgtk3.0-gtk3-dev
+      # - libwxgtk3.2-gtk3-dev
     state: present
 
 - name: Check if Espanso is installed
+  tags: ["espanso"]
   stat:
-    path: /usr/local/bin/espanso
+    path: /usr/bin/espanso
   register: espanso_stat
 
 - name: Download and install Espanso
+  tags: ["espanso"]
   block:
     - name: Create temporary directory for Espanso
+      tags: ["espanso"]
       tempfile:
         state: directory
       register: espanso_temp
 
     - name: Download Espanso .deb package
+      tags: ["espanso"]
       get_url:
-        url: "https://github.com/espanso/espanso/releases/download/{{ espanso_version }}/Espanso-Debian-X11-{{ espanso_version }}.deb"
+        url: "https://github.com/espanso/espanso/releases/download/{{ espanso_version }}/espanso-debian-x11-amd64.deb"
         dest: "{{ espanso_temp.path }}/espanso.deb"
 
     - name: Install Espanso package
+      tags: ["espanso"]
       apt:
         deb: "{{ espanso_temp.path }}/espanso.deb"
         state: present
 
     - name: Clean up Espanso temporary directory
+      tags: ["espanso"]
       file:
         path: "{{ espanso_temp.path }}"
         state: absent
   when: not espanso_stat.stat.exists
 
 - name: Register Espanso systemd service for user
+  tags: ["espanso"]
   shell: espanso service register
   become: no
   register: espanso_register
@@ -46,6 +54,7 @@
   when: not espanso_stat.stat.exists
 
 - name: Start Espanso service
+  tags: ["espanso"]
   shell: espanso start
   become: no
   ignore_errors: yes
