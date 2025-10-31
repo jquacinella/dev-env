@@ -14,6 +14,9 @@
       apt:
         update_cache: yes
         cache_valid_time: 3600
+      tags:
+        - always
+        - system
 
     - name: Install basic dependencies
       apt:
@@ -27,6 +30,16 @@
           - ccze
           - direnv
         state: present
+      tags:
+        - basics
+        - git
+        - curl
+        - wget
+        - build-essential
+        - zsh
+        - tmux
+        - ccze
+        - direnv
 
     # ZSH Setup
     - name: Check if oh-my-zsh is installed
@@ -34,6 +47,8 @@
         path: "{{ user_home }}/.oh-my-zsh"
       register: ohmyzsh_stat
       become: no
+      tags:
+        - zsh
 
     - name: Install oh-my-zsh
       shell: |
@@ -42,11 +57,15 @@
         creates: "{{ user_home }}/.oh-my-zsh"
       become: no
       when: not ohmyzsh_stat.stat.exists
+      tags:
+        - zsh
 
     - name: Set zsh as default shell
       user:
         name: "{{ user_name }}"
         shell: /usr/bin/zsh
+      tags:
+        - zsh
 
     # FZF Setup
     - name: Clone fzf repository
@@ -57,18 +76,24 @@
         depth: 1
         update: yes
       become: no
+      tags:
+        - fzf
 
     - name: Install fzf
       shell: "{{ user_home }}/.fzf/install --all --no-bash --no-fish"
       args:
         creates: "{{ user_home }}/.fzf/bin/fzf"
       become: no
+      tags:
+        - fzf
 
     # UP (Ultimate Plumber) Setup
     - name: Check if up is installed
       stat:
         path: /usr/local/bin/up
       register: up_stat
+      tags:
+        - up
 
     - name: Download and install up (Ultimate Plumber)
       block:
@@ -100,12 +125,17 @@
             path: "{{ up_temp.path }}"
             state: absent
       when: not up_stat.stat.exists
+      tags:
+        - up
 
     # Ripgrep Setup
     - name: Check if ripgrep is installed
       stat:
         path: /usr/local/bin/rg
       register: ripgrep_stat
+      tags:
+        - ripgrep
+        - rg
 
     - name: Download and install ripgrep
       block:
@@ -145,6 +175,9 @@
             path: "{{ ripgrep_temp.path }}"
             state: absent
       when: not ripgrep_stat.stat.exists
+      tags:
+        - ripgrep
+        - rg
     # Espanso Setup
     - name: Install Espanso dependencies
       apt:
@@ -155,11 +188,15 @@
           - libdbus-1-dev
           - libwxgtk3.0-gtk3-dev
         state: present
+      tags:
+        - espanso
 
     - name: Check if Espanso is installed
       stat:
         path: /usr/local/bin/espanso
       register: espanso_stat
+      tags:
+        - espanso
 
     - name: Download and install Espanso
       block:
@@ -183,6 +220,8 @@
             path: "{{ espanso_temp.path }}"
             state: absent
       when: not espanso_stat.stat.exists
+      tags:
+        - espanso
 
     - name: Register Espanso systemd service for user
       shell: espanso service register
@@ -191,18 +230,24 @@
       failed_when: espanso_register.rc != 0 and 'already registered' not in espanso_register.stderr
       changed_when: espanso_register.rc == 0
       when: not espanso_stat.stat.exists
+      tags:
+        - espanso
 
     - name: Start Espanso service
       shell: espanso start
       become: no
       ignore_errors: yes
       when: not espanso_stat.stat.exists
+      tags:
+        - espanso
 
     # Dust Setup
     - name: Check if dust is installed
       stat:
         path: /usr/local/bin/dust
       register: dust_stat
+      tags:
+        - dust
 
     - name: Download and install dust
       block:
@@ -242,12 +287,16 @@
             path: "{{ dust_temp.path }}"
             state: absent
       when: not dust_stat.stat.exists
+      tags:
+        - dust
 
     # xh Setup
     - name: Check if xh is installed
       stat:
         path: /usr/local/bin/xh
       register: xh_stat
+      tags:
+        - xh
 
     - name: Download and install xh
       block:
@@ -287,12 +336,16 @@
             path: "{{ xh_temp.path }}"
             state: absent
       when: not xh_stat.stat.exists
+      tags:
+        - xh
 
     # broot Setup
     - name: Check if broot is installed
       stat:
         path: /usr/local/bin/broot
       register: broot_stat
+      tags:
+        - broot
 
     - name: Download and install broot
       block:
@@ -337,12 +390,16 @@
             path: "{{ broot_temp.path }}"
             state: absent
       when: not broot_stat.stat.exists
+      tags:
+        - broot
 
     # procs Setup
     - name: Check if procs is installed
       stat:
         path: /usr/local/bin/procs
       register: procs_stat
+      tags:
+        - procs
 
     - name: Download and install procs
       block:
@@ -382,12 +439,17 @@
             path: "{{ procs_temp.path }}"
             state: absent
       when: not procs_stat.stat.exists
+      tags:
+        - procs
 
     # bottom Setup
     - name: Check if bottom is installed
       stat:
         path: /usr/local/bin/btm
       register: bottom_stat
+      tags:
+        - bottom
+        - btm
 
     - name: Download and install bottom
       block:
@@ -427,12 +489,17 @@
             path: "{{ bottom_temp.path }}"
             state: absent
       when: not bottom_stat.stat.exists
+      tags:
+        - bottom
+        - btm
 
     # Zellij Setup
     - name: Check if zellij is installed
       stat:
         path: /usr/local/bin/zellij
       register: zellij_stat
+      tags:
+        - zellij
 
     - name: Download and install zellij
       block:
@@ -472,12 +539,16 @@
             path: "{{ zellij_temp.path }}"
             state: absent
       when: not zellij_stat.stat.exists
+      tags:
+        - zellij
     
     # gping Setup
     - name: Check if gping is installed
       stat:
         path: /usr/local/bin/gping
       register: gping_stat
+      tags:
+        - gping
 
     - name: Download and install gping
       block:
@@ -517,12 +588,16 @@
             path: "{{ gping_temp.path }}"
             state: absent
       when: not gping_stat.stat.exists
+      tags:
+        - gping
     
     # bandwhich Setup
     - name: Check if bandwhich is installed
       stat:
         path: /usr/local/bin/bandwhich
       register: bandwhich_stat
+      tags:
+        - bandwhich
 
     - name: Download and install bandwhich
       block:
@@ -562,12 +637,16 @@
             path: "{{ bandwhich_temp.path }}"
             state: absent
       when: not bandwhich_stat.stat.exists
+      tags:
+        - bandwhich
 
     # bat (batcat) Setup
     - name: Check if bat is installed
       stat:
         path: /usr/local/bin/bat
       register: bat_stat
+      tags:
+        - bat
 
     - name: Download and install bat
       block:
@@ -607,6 +686,8 @@
             path: "{{ bat_temp.path }}"
             state: absent
       when: not bat_stat.stat.exists
+      tags:
+        - bat
 
     # Configuration Files
     - name: Create config directory
@@ -616,6 +697,8 @@
         owner: "{{ user_name }}"
         mode: '0755'
       become: no
+      tags:
+        - config
 
     - name: Copy custom zshrc
       template:
@@ -625,6 +708,9 @@
         mode: '0644'
       become: no
       when: false  # Enable this when you create the config file
+      tags:
+        - config
+        - zsh
 
     - name: Copy custom tmux.conf
       template:
@@ -634,6 +720,9 @@
         mode: '0644'
       become: no
       when: false  # Enable this when you create the config file
+      tags:
+        - config
+        - tmux
 
     - name: Setup direnv hook for zsh
       lineinfile:
@@ -642,6 +731,10 @@
         create: yes
         owner: "{{ user_name }}"
       become: no
+      tags:
+        - config
+        - direnv
+        - zsh
 
   handlers:
     - name: reload shell
