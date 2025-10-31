@@ -25,6 +25,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 #### Utilities
 - **ccze** - Colorizer for log files
 - **bcat** - Browser-based pipe viewer
+- **bat** - Cat clone with syntax highlighting and Git integration
 - **dust** - Modern disk usage analyzer
 - **procs** - Modern replacement for ps with colored output and tree view
 - **xh** - Friendly HTTP client (HTTPie-like)
@@ -143,20 +144,6 @@ By default, custom config file deployment is disabled. To enable:
   apt:
     name: neovim
     state: present
-```
-
-### bat (cat with syntax highlighting)
-```yaml
-- name: Install bat
-  block:
-    - name: Download bat
-      get_url:
-        url: https://github.com/sharkdp/bat/releases/download/v0.24.0/bat_0.24.0_amd64.deb
-        dest: /tmp/bat.deb
-
-    - name: Install bat package
-      apt:
-        deb: /tmp/bat.deb
 ```
 
 ### Node.js (via NodeSource)
