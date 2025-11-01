@@ -1,10 +1,12 @@
 ---
 - name: Check if gitui is installed
+  tags: ['gitui']
   stat:
     path: /usr/local/bin/gitui
   register: gitui_stat
 
 - name: Download and install gitui
+  tags: ['gitui']
   block:
     - name: Create temporary directory for gitui
       tempfile:

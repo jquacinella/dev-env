@@ -1,5 +1,6 @@
 ---
 - name: Clone zsh-autosuggestions repository
+  tags: ['zsh', 'zsh-plugins', 'zsh-autosuggestions']
   git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
     dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"

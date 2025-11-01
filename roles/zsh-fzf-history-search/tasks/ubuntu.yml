@@ -1,5 +1,6 @@
 ---
 - name: Clone zsh-fzf-history-search repository
+  tags: ['zsh', 'zsh-plugins', 'zsh-fzf-history-search']
   git:
     repo: 'https://github.com/joshskidmore/zsh-fzf-history-search.git'
     dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-fzf-history-search"

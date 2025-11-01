@@ -1,5 +1,6 @@
 ---
 - name: Clone zsh-completions repository
+  tags: ['zsh', 'zsh-plugins', 'zsh-completions']
   git:
     repo: 'https://github.com/zsh-users/zsh-completions.git'
     dest: "{{ user_home }}/.oh-my-zsh/custom/plugins/zsh-completions"

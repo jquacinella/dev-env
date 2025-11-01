@@ -1,5 +1,6 @@
 ---
 - name: Clone fzf repository
+  tags: ['fzf']
   git:
     repo: 'https://github.com/junegunn/fzf.git'
     dest: "{{ user_home }}/.fzf"
@@ -9,6 +10,7 @@
   become: no
 
 - name: Install fzf
+  tags: ['fzf']
   shell: "{{ user_home }}/.fzf/install --all --no-bash --no-fish"
   args:
     creates: "{{ user_home }}/.fzf/bin/fzf"

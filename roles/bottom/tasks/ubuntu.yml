@@ -1,10 +1,12 @@
 ---
 - name: Check if bottom is installed
+  tags: ['bottom', 'btm']
   stat:
     path: /usr/local/bin/btm
   register: bottom_stat
 
 - name: Download and install bottom
+  tags: ['bottom', 'btm']
   block:
     - name: Create temporary directory for bottom
       tempfile:

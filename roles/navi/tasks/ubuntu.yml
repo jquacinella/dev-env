@@ -1,10 +1,12 @@
 ---
 - name: Check if navi is installed
+  tags: ['navi']
   stat:
     path: /usr/local/bin/navi
   register: navi_stat
 
 - name: Download and install navi
+  tags: ['navi']
   block:
     - name: Create temporary directory for navi
       tempfile:

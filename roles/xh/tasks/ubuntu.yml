@@ -1,10 +1,12 @@
 ---
 - name: Check if xh is installed
+  tags: ['xh']
   stat:
     path: /usr/local/bin/xh
   register: xh_stat
 
 - name: Download and install xh
+  tags: ['xh']
   block:
     - name: Create temporary directory for xh
       tempfile:

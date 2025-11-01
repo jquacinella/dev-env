@@ -1,10 +1,12 @@
 ---
 - name: Check if ripgrep is installed
+  tags: ['ripgrep', 'rg']
   stat:
     path: /usr/local/bin/rg
   register: ripgrep_stat
 
 - name: Download and install ripgrep
+  tags: ['ripgrep', 'rg']
   block:
     - name: Create temporary directory for ripgrep
       tempfile:

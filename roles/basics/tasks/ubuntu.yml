@@ -1,5 +1,6 @@
 ---
 - name: Install basic dependencies
+  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel']
   apt:
     name:
       - git
