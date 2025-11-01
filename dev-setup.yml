@@ -40,7 +40,7 @@
         - direnv
         - redshift
         - xsel
-        - fonts-ibm-plex
+        - fonts
 
     - name: Include zsh role
       include_role:

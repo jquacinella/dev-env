@@ -1,6 +1,6 @@
 ---
 - name: Install basic dependencies
-  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel']
+  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel', 'fonts']
   apt:
     name:
       - git
@@ -11,4 +11,7 @@
       - tmux
       - ccze
       - direnv
+      - redshift
+      - xsel
+      - fonts-ibm-plex
     state: present

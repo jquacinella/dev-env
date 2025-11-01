@@ -1,5 +1,5 @@
 ---
 - name: Include OS-specific tasks
-  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel']
+  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel', 'fonts']
   include_tasks: "{{ ansible_distribution | lower }}.yml"
   when: ansible_distribution == "Ubuntu"
