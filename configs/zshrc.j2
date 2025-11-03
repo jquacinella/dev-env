@@ -34,9 +34,13 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# Sapceship custom prompt
 export SPACESHIP_TIME_SHOW=true
 export SPACESHIP_TIME_FORMAT="%D @ %T"
 export SPACESHIP_HOST_SHOW="always"
+
+# Autocompletions
+autoload -U compinit && compinit
 
 # User configuration
 export EDITOR='vim'
