@@ -13,4 +13,4 @@
         url: "https://github.com/asciinema/asciinema/releases/download/{{ asciinema_version }}/asciinema-x86_64-unknown-linux-musl"
         dest: /usr/local/bin/asciinema
         mode: '0755'
-  when: not asciinema_stat.stat.exists
+  when: not asciinema_stat.stat.exists or (force_update | default(false) | bool)

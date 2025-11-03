@@ -43,4 +43,4 @@
       file:
         path: "{{ dust_temp.path }}"
         state: absent
-  when: not dust_stat.stat.exists
+  when: not dust_stat.stat.exists or (force_update | default(false) | bool)

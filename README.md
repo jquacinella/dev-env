@@ -192,16 +192,22 @@ To update a tool version:
    ripgrep_version: "15.2.0"  # Update from 15.1.0
    ```
 
-3. Re-run the setup playbook:
+3. Re-run the setup playbook with the `force_update` flag:
    ```bash
-   ansible-playbook dev-setup.yml --ask-become-pass
+   ansible-playbook dev-setup.yml --ask-become-pass -e force_update=true
    ```
 
-**Note**: The playbook only installs tools if they don't exist. To force a reinstall, remove the tool binary first:
+**Alternative Method (Manual Removal)**:
+If you prefer not to use `force_update`, you can manually remove the binary first:
 ```bash
 sudo rm /usr/local/bin/rg  # Example for ripgrep
 ansible-playbook dev-setup.yml --ask-become-pass
 ```
+
+**Important Notes**:
+- **Using `force_update=true`**: Forces reinstallation of all tools, even if they already exist. This is the easiest way to update tools.
+- **ZSH plugins**: Automatically update to the version specified in `vars/versions.yml` due to `update: yes` in their Git configuration (no force_update needed).
+- **Without force_update**: Binary tools only install if they don't exist, requiring manual removal first.
 
 ### Adding New Tools
 

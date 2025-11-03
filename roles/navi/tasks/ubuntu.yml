@@ -43,4 +43,4 @@
       file:
         path: "{{ navi_temp.path }}"
         state: absent
-  when: not navi_stat.stat.exists
+  when: not navi_stat.stat.exists or (force_update | default(false) | bool)

@@ -49,4 +49,4 @@
       file:
         path: "{{ zoxide_temp.path }}"
         state: absent
-  when: not zoxide_stat.stat.exists
+  when: not zoxide_stat.stat.exists or (force_update | default(false) | bool)

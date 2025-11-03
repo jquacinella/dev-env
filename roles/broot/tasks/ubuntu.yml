@@ -55,4 +55,4 @@
       file:
         path: "{{ broot_temp.path }}"
         state: absent
-  when: not broot_stat.stat.exists
+  when: not broot_stat.stat.exists or (force_update | default(false) | bool)

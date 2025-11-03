@@ -49,4 +49,4 @@
       file:
         path: "{{ gping_temp.path }}"
         state: absent
-  when: not gping_stat.stat.exists
+  when: not gping_stat.stat.exists or (force_update | default(false) | bool)

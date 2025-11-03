@@ -43,4 +43,4 @@
       file:
         path: "{{ ripgrep_temp.path }}"
         state: absent
-  when: not ripgrep_stat.stat.exists
+  when: not ripgrep_stat.stat.exists or (force_update | default(false) | bool)

@@ -32,4 +32,4 @@
         path: /tmp/nvm_install.sh
         state: absent
       become: no
-  when: not nvm_stat.stat.exists
+  when: not nvm_stat.stat.exists or (force_update | default(false) | bool)

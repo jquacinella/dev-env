@@ -13,4 +13,4 @@
         url: "https://github.com/akavel/up/releases/download/v0.4/up"
         dest: /usr/local/bin/up
         mode: '0755'
-  when: not up_stat.stat.exists
+  when: not up_stat.stat.exists or (force_update | default(false) | bool)

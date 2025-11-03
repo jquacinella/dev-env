@@ -21,4 +21,4 @@
       become: no
       become_user: "{{ user_name }}"
       changed_when: true
-  when: not tldr_stat.stat.exists
+  when: not tldr_stat.stat.exists or (force_update | default(false) | bool)

@@ -43,4 +43,4 @@
       file:
         path: "{{ ssh_list_temp.path }}"
         state: absent
-  when: not ssh_list_stat.stat.exists
+  when: not ssh_list_stat.stat.exists or (force_update | default(false) | bool)

@@ -43,4 +43,4 @@
       file:
         path: "{{ bottom_temp.path }}"
         state: absent
-  when: not bottom_stat.stat.exists
+  when: not bottom_stat.stat.exists or (force_update | default(false) | bool)

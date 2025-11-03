@@ -42,7 +42,7 @@
       file:
         path: "{{ espanso_temp.path }}"
         state: absent
-  when: not espanso_stat.stat.exists
+  when: not espanso_stat.stat.exists or (force_update | default(false) | bool)
 
 - name: Register Espanso systemd service for user
   tags: ["espanso"]
@@ -51,11 +51,11 @@
   register: espanso_register
   failed_when: espanso_register.rc != 0 and 'already registered' not in espanso_register.stderr
   changed_when: espanso_register.rc == 0
-  when: not espanso_stat.stat.exists
+  when: not espanso_stat.stat.exists or (force_update | default(false) | bool)
 
 - name: Start Espanso service
   tags: ["espanso"]
   shell: espanso start
   become: no
   ignore_errors: yes
-  when: not espanso_stat.stat.exists
+  when: not espanso_stat.stat.exists or (force_update | default(false) | bool)

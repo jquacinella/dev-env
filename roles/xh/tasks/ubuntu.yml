@@ -43,4 +43,4 @@
       file:
         path: "{{ xh_temp.path }}"
         state: absent
-  when: not xh_stat.stat.exists
+  when: not xh_stat.stat.exists or (force_update | default(false) | bool)

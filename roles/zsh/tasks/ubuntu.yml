@@ -13,7 +13,7 @@
   args:
     creates: "{{ user_home }}/.oh-my-zsh"
   become: no
-  when: not ohmyzsh_stat.stat.exists
+  when: not ohmyzsh_stat.stat.exists or (force_update | default(false) | bool)
 
 - name: Set zsh as default shell
   tags: ['zsh']
