@@ -338,6 +338,35 @@
         up_to_date: "{{ up_to_date + ['eza'] }}"
       when: eza_version == eza_latest.json.tag_name
 
+    # Spaceship Prompt
+    - name: Get latest spaceship-prompt version from GitHub
+      uri:
+        url: https://api.github.com/repos/spaceship-prompt/spaceship-prompt/releases/latest
+        return_content: yes
+      register: spaceship_prompt_latest
+      tags:
+        - spaceship-prompt
+        - zsh
+        - zsh-theme
+
+    - name: Compare spaceship-prompt versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'spaceship-prompt', 'current': spaceship_prompt_version, 'latest': spaceship_prompt_latest.json.tag_name}] }}"
+      when: spaceship_prompt_version != spaceship_prompt_latest.json.tag_name
+      tags:
+        - spaceship-prompt
+        - zsh
+        - zsh-theme
+
+    - name: Mark spaceship-prompt as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['spaceship-prompt'] }}"
+      when: spaceship_prompt_version == spaceship_prompt_latest.json.tag_name
+      tags:
+        - spaceship-prompt
+        - zsh
+        - zsh-theme
+
     # Generate Summary Report
     - name: Display separator
       debug:
