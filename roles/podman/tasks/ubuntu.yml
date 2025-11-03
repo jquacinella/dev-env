@@ -105,3 +105,117 @@
   debug:
     msg: "Podman test completed successfully"
   when: podman_test is succeeded
+
+- name: Setup Portainer for container management
+  tags: ['podman', 'portainer']
+  block:
+    - name: Enable and start podman socket for rootless user
+      become_user: "{{ user_name }}"
+      systemd:
+        name: podman.socket
+        state: started
+        enabled: yes
+        scope: user
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['user_uid'] | default(lookup('pipe', 'id -u ' + user_name)) }}"
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ ansible_facts['user_uid'] | default(lookup('pipe', 'id -u ' + user_name)) }}/bus"
+
+    - name: Get user UID for XDG_RUNTIME_DIR
+      command: id -u {{ user_name }}
+      register: user_uid
+      changed_when: false
+
+    - name: Create Portainer data volume
+      become_user: "{{ user_name }}"
+      containers.podman.podman_volume:
+        name: portainer_data
+        state: present
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+
+    - name: Pull Portainer image
+      become_user: "{{ user_name }}"
+      containers.podman.podman_image:
+        name: docker.io/portainer/portainer-ce
+        tag: latest
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+
+    - name: Run Portainer container
+      become_user: "{{ user_name }}"
+      containers.podman.podman_container:
+        name: portainer
+        image: docker.io/portainer/portainer-ce:latest
+        state: started
+        recreate: no
+        restart_policy: always
+        ports:
+          - "9443:9443"
+          - "8000:8000"
+        volumes:
+          - portainer_data:/data
+          - /run/user/{{ user_uid.stdout }}/podman/podman.sock:/var/run/docker.sock:ro
+        label:
+          io.containers.autoupdate: registry
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+      register: portainer_container
+
+    - name: Create systemd directory for user services
+      file:
+        path: "{{ user_home }}/.config/systemd/user"
+        state: directory
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0755'
+
+    - name: Generate systemd service for Portainer
+      become_user: "{{ user_name }}"
+      command: podman generate systemd --name portainer --files --new
+      args:
+        chdir: "{{ user_home }}/.config/systemd/user"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+      changed_when: true
+
+    - name: Enable linger for user to keep services running
+      command: loginctl enable-linger {{ user_name }}
+      changed_when: true
+
+    - name: Reload systemd user daemon
+      become_user: "{{ user_name }}"
+      systemd:
+        daemon_reload: yes
+        scope: user
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ user_uid.stdout }}/bus"
+
+    - name: Enable Portainer systemd service
+      become_user: "{{ user_name }}"
+      systemd:
+        name: container-portainer
+        enabled: yes
+        scope: user
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ user_uid.stdout }}/bus"
+
+    - name: Display Portainer access information
+      debug:
+        msg:
+          - "=========================================="
+          - "Portainer is now running!"
+          - "=========================================="
+          - "Access Portainer at: https://localhost:9443"
+          - "On first access, you'll need to create an admin account"
+          - ""
+          - "The Portainer container is managed by systemd and will:"
+          - "  - Start automatically on boot"
+          - "  - Restart if it fails"
+          - ""
+          - "Useful commands:"
+          - "  podman ps                           - View running containers"
+          - "  systemctl --user status container-portainer  - Check service status"
+          - "  systemctl --user restart container-portainer - Restart Portainer"
+          - "=========================================="
