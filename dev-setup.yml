@@ -88,13 +88,13 @@
         - zsh-plugins
         - zsh-completions
 
-    - name: Include powerlevel10k role
+    - name: Include spaceship-prompt role
       include_role:
-        name: powerlevel10k
+        name: spaceship-prompt
       tags:
         - zsh
         - zsh-theme
-        - powerlevel10k
+        - spaceship-prompt
     
     - name: Include config role
       include_role:
