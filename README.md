@@ -2,6 +2,23 @@
 
 An Ansible playbook to automatically configure your Ubuntu development environment with modern CLI tools and configurations.
 
+## Quick Start
+
+Get started in 3 simple steps:
+
+```bash
+# 1. Run the setup script (installs uv and creates virtual environment)
+./setup.sh
+
+# 2. Activate the virtual environment
+source activate.sh
+
+# 3. Run the Ansible playbook
+ansible-playbook dev-setup.yml --ask-become-pass
+```
+
+That's it! The setup script handles all prerequisites automatically.
+
 ## What's Included
 
 ### Installed Tools
@@ -55,17 +72,87 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 
 ## Prerequisites
 
+### Automated Setup (Recommended)
+
+The included [`setup.sh`](setup.sh) script automatically handles all prerequisites:
+
+1. **Checks your OS** - Verifies Ubuntu/Debian compatibility
+2. **Installs uv** - Fast Python package manager (if not already installed)
+3. **Creates virtual environment** - Local `.venv` directory for isolated Python packages
+4. **Installs Ansible** - Along with required dependencies (jinja2, pyyaml)
+5. **Creates activation helper** - [`activate.sh`](activate.sh) for easy environment activation
+
+Simply run:
+
 ```bash
+./setup.sh
+```
+
+The script is idempotent and safe to run multiple times.
+
+### Manual Setup (Alternative)
+
+If you prefer to set up manually or already have Ansible installed system-wide:
+
+```bash
+sudo apt update
 sudo apt install ansible
 ```
+
+## Setup
+
+### First-Time Setup
+
+1. **Clone this repository:**
+   ```bash
+   git clone <repository-url>
+   cd dev-env
+   ```
+
+2. **Run the setup script:**
+   ```bash
+   ./setup.sh
+   ```
+   
+   This will:
+   - Install uv package manager (if needed)
+   - Create a local virtual environment in `.venv/`
+   - Install Ansible and dependencies
+   - Create an `activate.sh` helper script
+
+3. **Activate the virtual environment:**
+   ```bash
+   source activate.sh
+   ```
+   
+   You'll need to do this each time you open a new terminal session.
+
+### Troubleshooting Setup
+
+**If uv installation fails:**
+- Ensure you have `curl` installed: `sudo apt install curl`
+- Check your internet connection
+- Try installing uv manually: https://github.com/astral-sh/uv
+
+**If the virtual environment already exists:**
+- The setup script will ask if you want to recreate it
+- Or manually remove it: `rm -rf .venv` then run `./setup.sh` again
+
+**If you see "command not found: uv":**
+- Restart your terminal or run: `source ~/.bashrc` (or `~/.zshrc`)
+- The uv binary is installed to `~/.local/bin/`
 
 ## Usage
 
 ### Installing the Development Environment
 
-Run the playbook with:
+**Important:** Always activate the virtual environment first!
 
 ```bash
+# Activate the environment (do this in each new terminal session)
+source activate.sh
+
+# Run the full playbook
 ansible-playbook dev-setup.yml --ask-become-pass
 ```
 
@@ -79,57 +166,68 @@ This will:
 
 ### Other Install Examples
 
+**Remember:** Activate the virtual environment first with `source activate.sh`
+
 #### Install only fzf
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags fzf
 ```
 
 #### Setup only ZSH (includes oh-my-zsh, shell change, theme, plugins, and related config)
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags zsh
 ```
 
 #### Install only ZSH plugins
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags zsh-plugins
 ```
 
 #### Install spaceship-prompt theme
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags spaceship-prompt
 ```
 
 #### Install a specific ZSH plugin
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags zsh-autosuggestions
 ```
 
 #### Install multiple specific tools
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags "ripgrep,bat,dust"
 ```
 
 #### Only run configuration tasks
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags config
 ```
 
 #### Install basics and a few tools
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --tags "basics,fzf,ripgrep"
 ```
 
 #### Skip certain tags
 
 ```bash
+source activate.sh
 ansible-playbook dev-setup.yml --skip-tags espanso
 ```
 
@@ -140,6 +238,7 @@ ansible-playbook dev-setup.yml --skip-tags espanso
 To check if newer versions of tools are available:
 
 ```bash
+source activate.sh
 ansible-playbook version-checks.yml
 ```
 
@@ -152,6 +251,8 @@ This will:
 
 You can also check specific tools or categories:
 ```bash
+source activate.sh
+
 # Check only ZSH-related tools
 ansible-playbook version-checks.yml --tags zsh
 
@@ -184,6 +285,7 @@ To update a tool version:
 
 1. Check for available updates:
    ```bash
+   source activate.sh
    ansible-playbook version-checks.yml
    ```
 
@@ -194,6 +296,7 @@ To update a tool version:
 
 3. Re-run the setup playbook with the `force_update` flag:
    ```bash
+   source activate.sh
    ansible-playbook dev-setup.yml --ask-become-pass -e force_update=true -t ripgrep
    ```
 
@@ -201,6 +304,7 @@ To update a tool version:
 If you prefer not to use `force_update`, you can manually remove the binary first:
 ```bash
 sudo rm /usr/local/bin/rg  # Example for ripgrep
+source activate.sh
 ansible-playbook dev-setup.yml --ask-become-pass
 ```
 
@@ -282,6 +386,9 @@ By default, custom config file deployment is disabled. To enable:
 
 ```
 .
+├── setup.sh               # Setup script (installs uv, creates venv, installs Ansible)
+├── activate.sh            # Virtual environment activation helper (generated by setup.sh)
+├── .venv/                 # Python virtual environment (created by setup.sh)
 ├── dev-setup.yml          # Main installation playbook
 ├── version-checks.yml     # Version update checker playbook
 ├── vars/
@@ -363,7 +470,10 @@ roles/<tool_name>/
 
 ## Tips
 
+- **Always activate the virtual environment** before running Ansible commands: `source activate.sh`
 - Run the playbook multiple times safely (it's idempotent)
 - Test in a VM or container first
 - Commit your customized configs to version control
-- After running, restart your terminal or run `source ~/.zshrc`
+- After running the playbook, restart your terminal or run `source ~/.zshrc`
+- The `.venv/` directory is local to this project and won't interfere with system Python packages
+- You can safely delete `.venv/` and re-run `./setup.sh` if you encounter issues
