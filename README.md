@@ -39,7 +39,6 @@ That's it! The setup script handles all prerequisites automatically.
 #### File & Directory Navigation
 - **fzf** - Fuzzy finder for command line
 - **broot** - Modern tree view and directory navigator
-- **direnv** - Environment variable manager per directory
 - **zoxide** - Smarter cd command that learns your habits
 - **eza** - Modern replacement for ls with colors and git integration
 
@@ -58,17 +57,21 @@ That's it! The setup script handles all prerequisites automatically.
 - **bat** - Cat clone with syntax highlighting and Git integration
 - **dust** - Modern disk usage analyzer
 - **procs** - Modern replacement for ps with colored output and tree view
+- **bottom** - Cross-platform graphical process/system monitor
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
 - **asciinema** - Terminal session recorder
 - **navi** - Interactive cheatsheet tool for the command-line
 - **ssh-list** - Tool for managing SSH connections
+- **zellij** - Modern terminal workspace with layouts and panes
+- **gping** - Ping tool with a graph
+- **bandwhich** - Terminal bandwidth utilization tool
+- **podman** - Daemonless container engine
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
 - Custom `.tmux.conf` with improved keybindings
 - FZF integration with zsh
-- Direnv hook for automatic environment loading
 
 ## Prerequisites
 
@@ -231,8 +234,6 @@ source activate.sh
 ansible-playbook dev-setup.yml --skip-tags espanso
 ```
 
-
-
 ### Checking for Updates
 
 To check if newer versions of tools are available:
@@ -243,7 +244,7 @@ ansible-playbook version-checks.yml
 ```
 
 This will:
-- Query GitHub for the latest version of each tool (all 27 tools and plugins)
+- Query GitHub for the latest version of each tool (all tools and plugins)
 - Compare with your pinned versions in `vars/versions.yml`
 - Display a summary showing which tools are up to date and which have updates available
 
@@ -315,28 +316,34 @@ ansible-playbook dev-setup.yml --ask-become-pass
 
 ### Adding New Tools
 
-To add a new tool, edit `dev-setup.yml`:
+This project uses a modular role-based structure. To add a new tool:
 
 #### For apt packages:
-Add to the `Install basic dependencies` task:
-```yaml
-- name: Install basic dependencies
-  apt:
-    name:
-      - existing-package
-      - your-new-package  # Add here
-```
+Add to the `Install basic dependencies` task in the basics role or create a new role.
 
 #### For tools requiring installation scripts:
-Follow the pattern used for fzf or bat. Example structure:
+Create a new role following the existing pattern. Example structure:
 
-1. Add the version to `vars/versions.yml`:
+1. Create the role directory structure:
+   ```bash
+   mkdir -p roles/your-tool/tasks
+   ```
+
+2. Add the version to `vars/versions.yml`:
    ```yaml
    your_tool_version: "v1.2.3"
    ```
 
-2. Add the installation tasks to `dev-setup.yml`:
+3. Create `roles/your-tool/tasks/main.yml`:
    ```yaml
+   ---
+   - name: Include OS-specific tasks
+     include_tasks: "{{ ansible_distribution | lower }}.yml"
+   ```
+
+4. Create `roles/your-tool/tasks/ubuntu.yml` with installation tasks:
+   ```yaml
+   ---
    - name: Check if tool is installed
      stat:
        path: /usr/local/bin/your-tool
@@ -351,10 +358,16 @@ Follow the pattern used for fzf or bat. Example structure:
 
        - name: Install tool
          # ... extract and install steps
-     when: not tool_stat.stat.exists
+     when: not tool_stat.stat.exists or force_update | default(false)
    ```
 
-3. Add version check to `version-checks.yml` following the existing patterns
+5. Add the role to `dev-setup.yml`:
+   ```yaml
+   - role: your-tool
+     tags: your-tool
+   ```
+
+6. Add version check to `version-checks.yml` following the existing patterns
 
 ### Customizing Configurations
 
