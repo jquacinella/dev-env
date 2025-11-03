@@ -42,6 +42,13 @@
         - xsel
         - fonts
 
+    - name: Include podman role
+      include_role:
+        name: podman
+      tags:
+        - podman
+        - containers
+
     - name: Include zsh role
       include_role:
         name: zsh

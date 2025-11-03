@@ -1,0 +1,107 @@
+---
+- name: Check if podman is installed
+  tags: ['podman']
+  command: which podman
+  register: podman_check
+  failed_when: false
+  changed_when: false
+
+- name: Install podman
+  tags: ['podman']
+  block:
+    - name: Install required dependencies for podman
+      apt:
+        name:
+          - software-properties-common
+          - dirmngr
+          - apt-transport-https
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: yes
+
+    - name: Add Kubic repository GPG key
+      apt_key:
+        url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+        state: present
+
+    - name: Add Kubic repository
+      apt_repository:
+        repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/ /"
+        state: present
+        filename: kubic-libcontainers
+
+    - name: Update apt cache after adding repository
+      apt:
+        update_cache: yes
+
+    - name: Install podman and related packages
+      apt:
+        name:
+          - podman
+          - buildah
+          - skopeo
+        state: present
+
+    - name: Ensure podman is running (if service exists)
+      systemd:
+        name: podman
+        state: started
+        enabled: yes
+      failed_when: false
+
+  when: podman_check.rc != 0
+
+- name: Verify podman installation
+  tags: ['podman']
+  command: podman --version
+  register: podman_version
+  changed_when: false
+
+- name: Display podman version
+  tags: ['podman']
+  debug:
+    msg: "Podman version: {{ podman_version.stdout }}"
+
+- name: Configure podman for rootless use
+  tags: ['podman']
+  block:
+    - name: Ensure user has appropriate subuid and subgid ranges
+      lineinfile:
+        path: /etc/subuid
+        line: "{{ user_name }}:100000:65536"
+        create: yes
+        state: present
+
+    - name: Ensure user has appropriate subgid ranges
+      lineinfile:
+        path: /etc/subgid
+        line: "{{ user_name }}:100000:65536"
+        create: yes
+        state: present
+
+    - name: Create podman config directory for user
+      file:
+        path: "{{ user_home }}/.config/containers"
+        state: directory
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: '0755'
+
+- name: Test podman with a simple container run
+  tags: ['podman', 'podman-test']
+  become_user: "{{ user_name }}"
+  containers.podman.podman_container:
+    name: hello-test
+    image: docker.io/library/hello-world:latest
+    state: started
+    detach: false
+    rm: true
+  register: podman_test
+  failed_when: false
+
+- name: Display podman test result
+  tags: ['podman', 'podman-test']
+  debug:
+    msg: "Podman test completed successfully"
+  when: podman_test is succeeded

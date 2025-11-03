@@ -177,6 +177,33 @@ install_ansible() {
     deactivate
 }
 
+# Install Ansible Galaxy collections
+install_ansible_collections() {
+    print_header "Installing Ansible Galaxy Collections"
+
+    print_info "Installing containers.podman collection..."
+
+    # Activate virtual environment for installation
+    source .venv/bin/activate
+
+    if ansible-galaxy collection install containers.podman; then
+        print_success "containers.podman collection installed successfully"
+
+        # Verify installation
+        print_info "Verifying installation..."
+        if ansible-galaxy collection list | grep -q "containers.podman"; then
+            print_success "Verified: containers.podman collection is installed"
+        else
+            print_warning "Collection installed but not showing in list"
+        fi
+    else
+        print_error "Failed to install containers.podman collection"
+        exit 1
+    fi
+
+    deactivate
+}
+
 # Create activation helper script
 create_activate_script() {
     print_header "Creating Activation Helper"
@@ -236,7 +263,8 @@ main() {
     echo "  2. Install uv package manager (if needed)"
     echo "  3. Create a local virtual environment (.venv)"
     echo "  4. Install Ansible and dependencies"
-    echo "  5. Create an activation helper script"
+    echo "  5. Install Ansible Galaxy collections (containers.podman)"
+    echo "  6. Create an activation helper script"
     echo ""
     
     # Run setup steps
@@ -245,6 +273,7 @@ main() {
     install_uv
     create_venv
     install_ansible
+    install_ansible_collections
     create_activate_script
     
     # Final success message
