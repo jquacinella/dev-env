@@ -11,7 +11,7 @@ An Ansible playbook to automatically configure your Ubuntu development environme
 
 #### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
-- **powerlevel10k** - Fast and flexible zsh theme with extensive customization
+- **spaceship-prompt** - Minimalistic, powerful and customizable Zsh prompt
 - **tmux** - Terminal multiplexer with custom configuration
 - **zsh-autosuggestions** - Fish-like autosuggestions for zsh
 - **zsh-syntax-highlighting** - Fish-like syntax highlighting for zsh
@@ -97,10 +97,10 @@ ansible-playbook dev-setup.yml --tags zsh
 ansible-playbook dev-setup.yml --tags zsh-plugins
 ```
 
-#### Install powerlevel10k theme
+#### Install spaceship-prompt theme
 
 ```bash
-ansible-playbook dev-setup.yml --tags powerlevel10k
+ansible-playbook dev-setup.yml --tags spaceship-prompt
 ```
 
 #### Install a specific ZSH plugin
@@ -144,13 +144,27 @@ ansible-playbook version-checks.yml
 ```
 
 This will:
-- Query GitHub for the latest version of each tool
+- Query GitHub for the latest version of each tool (all 27 tools and plugins)
 - Compare with your pinned versions in `vars/versions.yml`
 - Display a summary showing which tools are up to date and which have updates available
 
+**Coverage**: All tools including CLI utilities, ZSH plugins (autosuggestions, syntax-highlighting, history-substring-search, fzf-history-search, completions), spaceship-prompt theme, and NVM are checked for updates.
+
+You can also check specific tools or categories:
+```bash
+# Check only ZSH-related tools
+ansible-playbook version-checks.yml --tags zsh
+
+# Check only plugins
+ansible-playbook version-checks.yml --tags zsh-plugins
+
+# Check a specific tool
+ansible-playbook version-checks.yml --tags gitui
+```
+
 Example output:
 ```
-✓ Up to date (10): fzf, up, dust, xh, broot, procs, bottom, zellij, bandwhich, bat
+✓ Up to date (24): fzf, up, dust, xh, broot, procs, bottom, zellij, bandwhich, bat, ...
 ⚠ Updates available (3):
   - ripgrep: 15.1.0 → 15.2.0
   - espanso: v2.3.0 → v2.4.0
@@ -279,7 +293,7 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── zsh-history-substring-search/  # ZSH plugin
 │   ├── zsh-fzf-history-search/     # ZSH plugin
 │   ├── zsh-completions/   # ZSH plugin
-│   ├── powerlevel10k/     # ZSH theme
+│   ├── spaceship-prompt/  # ZSH theme
 │   ├── config/            # Configuration files deployment
 │   ├── fzf/               # Fuzzy finder
 │   ├── up/                # Ultimate Plumber
