@@ -194,7 +194,7 @@ To update a tool version:
 
 3. Re-run the setup playbook with the `force_update` flag:
    ```bash
-   ansible-playbook dev-setup.yml --ask-become-pass -e force_update=true
+   ansible-playbook dev-setup.yml --ask-become-pass -e force_update=true -t ripgrep
    ```
 
 **Alternative Method (Manual Removal)**:
