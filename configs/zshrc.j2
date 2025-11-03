@@ -21,6 +21,7 @@ plugins=(
   jsontools
   sudo
   supervisor
+  spaceship
   vagrant
   vscode
   zsh-autosuggestions
@@ -32,6 +33,10 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+export SPACESHIP_TIME_SHOW=true
+export SPACESHIP_TIME_FORMAT="%D @ %T"
+export SPACESHIP_HOST_SHOW="always"
 
 # User configuration
 export EDITOR='vim'
