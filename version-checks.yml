@@ -338,6 +338,167 @@
         up_to_date: "{{ up_to_date + ['eza'] }}"
       when: eza_version == eza_latest.json.tag_name
 
+    # Zoxide
+    - name: Get latest zoxide version from GitHub
+      uri:
+        url: https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest
+        return_content: yes
+      register: zoxide_latest
+      tags:
+        - zoxide
+
+    - name: Compare zoxide versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zoxide', 'current': zoxide_version, 'latest': zoxide_latest.json.tag_name}] }}"
+      when: zoxide_version != zoxide_latest.json.tag_name
+      tags:
+        - zoxide
+
+    - name: Mark zoxide as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zoxide'] }}"
+      when: zoxide_version == zoxide_latest.json.tag_name
+      tags:
+        - zoxide
+
+    # GitUI
+    - name: Get latest gitui version from GitHub
+      uri:
+        url: https://api.github.com/repos/gitui-org/gitui/releases/latest
+        return_content: yes
+      register: gitui_latest
+      tags:
+        - gitui
+
+    - name: Compare gitui versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'gitui', 'current': gitui_version, 'latest': gitui_latest.json.tag_name}] }}"
+      when: gitui_version != gitui_latest.json.tag_name
+      tags:
+        - gitui
+
+    - name: Mark gitui as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['gitui'] }}"
+      when: gitui_version == gitui_latest.json.tag_name
+      tags:
+        - gitui
+
+    # Asciinema
+    - name: Get latest asciinema version from GitHub
+      uri:
+        url: https://api.github.com/repos/asciinema/asciinema/releases/latest
+        return_content: yes
+      register: asciinema_latest
+      tags:
+        - asciinema
+
+    - name: Compare asciinema versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'asciinema', 'current': asciinema_version, 'latest': asciinema_latest.json.tag_name}] }}"
+      when: asciinema_version != asciinema_latest.json.tag_name
+      tags:
+        - asciinema
+
+    - name: Mark asciinema as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['asciinema'] }}"
+      when: asciinema_version == asciinema_latest.json.tag_name
+      tags:
+        - asciinema
+
+    # Navi
+    - name: Get latest navi version from GitHub
+      uri:
+        url: https://api.github.com/repos/denisidoro/navi/releases/latest
+        return_content: yes
+      register: navi_latest
+      tags:
+        - navi
+
+    - name: Compare navi versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'navi', 'current': navi_version, 'latest': navi_latest.json.tag_name}] }}"
+      when: navi_version != navi_latest.json.tag_name
+      tags:
+        - navi
+
+    - name: Mark navi as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['navi'] }}"
+      when: navi_version == navi_latest.json.tag_name
+      tags:
+        - navi
+
+    # SSH-List
+    - name: Get latest ssh-list version from GitHub
+      uri:
+        url: https://api.github.com/repos/akinoiro/ssh-list/releases/latest
+        return_content: yes
+      register: ssh_list_latest
+      tags:
+        - ssh-list
+
+    - name: Compare ssh-list versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'ssh-list', 'current': ssh_list_version, 'latest': ssh_list_latest.json.tag_name}] }}"
+      when: ssh_list_version != ssh_list_latest.json.tag_name
+      tags:
+        - ssh-list
+
+    - name: Mark ssh-list as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['ssh-list'] }}"
+      when: ssh_list_version == ssh_list_latest.json.tag_name
+      tags:
+        - ssh-list
+
+    # TLDR (Tealdeer)
+    - name: Get latest tldr version from GitHub
+      uri:
+        url: https://api.github.com/repos/tealdeer-rs/tealdeer/releases/latest
+        return_content: yes
+      register: tldr_latest
+      tags:
+        - tldr
+
+    - name: Compare tldr versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'tldr', 'current': tldr_version, 'latest': tldr_latest.json.tag_name}] }}"
+      when: tldr_version != tldr_latest.json.tag_name
+      tags:
+        - tldr
+
+    - name: Mark tldr as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['tldr'] }}"
+      when: tldr_version == tldr_latest.json.tag_name
+      tags:
+        - tldr
+
+    # NVM
+    - name: Get latest nvm version from GitHub
+      uri:
+        url: https://api.github.com/repos/nvm-sh/nvm/releases/latest
+        return_content: yes
+      register: nvm_latest
+      tags:
+        - nvm
+
+    - name: Compare nvm versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'nvm', 'current': nvm_version, 'latest': nvm_latest.json.tag_name}] }}"
+      when: nvm_version != nvm_latest.json.tag_name
+      tags:
+        - nvm
+
+    - name: Mark nvm as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['nvm'] }}"
+      when: nvm_version == nvm_latest.json.tag_name
+      tags:
+        - nvm
+
     # Spaceship Prompt
     - name: Get latest spaceship-prompt version from GitHub
       uri:
@@ -366,6 +527,151 @@
         - spaceship-prompt
         - zsh
         - zsh-theme
+
+    # ZSH Autosuggestions
+    - name: Get latest zsh-autosuggestions version from GitHub
+      uri:
+        url: https://api.github.com/repos/zsh-users/zsh-autosuggestions/releases/latest
+        return_content: yes
+      register: zsh_autosuggestions_latest
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-autosuggestions
+
+    - name: Compare zsh-autosuggestions versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zsh-autosuggestions', 'current': zsh_autosuggestions_version, 'latest': zsh_autosuggestions_latest.json.tag_name}] }}"
+      when: zsh_autosuggestions_version != zsh_autosuggestions_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-autosuggestions
+
+    - name: Mark zsh-autosuggestions as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zsh-autosuggestions'] }}"
+      when: zsh_autosuggestions_version == zsh_autosuggestions_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-autosuggestions
+
+    # ZSH Syntax Highlighting
+    - name: Get latest zsh-syntax-highlighting version from GitHub
+      uri:
+        url: https://api.github.com/repos/zsh-users/zsh-syntax-highlighting/releases/latest
+        return_content: yes
+      register: zsh_syntax_highlighting_latest
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-syntax-highlighting
+
+    - name: Compare zsh-syntax-highlighting versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zsh-syntax-highlighting', 'current': zsh_syntax_highlighting_version, 'latest': zsh_syntax_highlighting_latest.json.tag_name}] }}"
+      when: zsh_syntax_highlighting_version != zsh_syntax_highlighting_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-syntax-highlighting
+
+    - name: Mark zsh-syntax-highlighting as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zsh-syntax-highlighting'] }}"
+      when: zsh_syntax_highlighting_version == zsh_syntax_highlighting_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-syntax-highlighting
+
+    # ZSH History Substring Search
+    - name: Get latest zsh-history-substring-search version from GitHub
+      uri:
+        url: https://api.github.com/repos/zsh-users/zsh-history-substring-search/releases/latest
+        return_content: yes
+      register: zsh_history_substring_search_latest
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-history-substring-search
+
+    - name: Compare zsh-history-substring-search versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zsh-history-substring-search', 'current': zsh_history_substring_search_version, 'latest': zsh_history_substring_search_latest.json.tag_name}] }}"
+      when: zsh_history_substring_search_version != zsh_history_substring_search_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-history-substring-search
+
+    - name: Mark zsh-history-substring-search as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zsh-history-substring-search'] }}"
+      when: zsh_history_substring_search_version == zsh_history_substring_search_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-history-substring-search
+
+    # ZSH FZF History Search
+    - name: Get latest zsh-fzf-history-search version from GitHub
+      uri:
+        url: https://api.github.com/repos/joshskidmore/zsh-fzf-history-search/releases/latest
+        return_content: yes
+      register: zsh_fzf_history_search_latest
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-fzf-history-search
+
+    - name: Compare zsh-fzf-history-search versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zsh-fzf-history-search', 'current': zsh_fzf_history_search_version, 'latest': zsh_fzf_history_search_latest.json.tag_name}] }}"
+      when: zsh_fzf_history_search_version != zsh_fzf_history_search_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-fzf-history-search
+
+    - name: Mark zsh-fzf-history-search as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zsh-fzf-history-search'] }}"
+      when: zsh_fzf_history_search_version == zsh_fzf_history_search_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-fzf-history-search
+
+    # ZSH Completions
+    - name: Get latest zsh-completions version from GitHub
+      uri:
+        url: https://api.github.com/repos/zsh-users/zsh-completions/releases/latest
+        return_content: yes
+      register: zsh_completions_latest
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-completions
+
+    - name: Compare zsh-completions versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zsh-completions', 'current': zsh_completions_version, 'latest': zsh_completions_latest.json.tag_name}] }}"
+      when: zsh_completions_version != zsh_completions_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-completions
+
+    - name: Mark zsh-completions as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zsh-completions'] }}"
+      when: zsh_completions_version == zsh_completions_latest.json.tag_name
+      tags:
+        - zsh
+        - zsh-plugins
+        - zsh-completions
 
     # Generate Summary Report
     - name: Display separator
