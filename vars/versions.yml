@@ -53,6 +53,9 @@ gitui_version: "v0.27.0"
 # Lazygit - simple terminal UI for git commands
 lazygit_version: "v0.56.0"
 
+# Lazysql - terminal UI for database management
+lazysql_version: "v0.4.3"
+
 # Asciinema - terminal session recorder
 asciinema_version: "v3.0.1"
 

@@ -1,0 +1,46 @@
+---
+- name: Check if lazysql is installed
+  tags: ['lazysql']
+  stat:
+    path: /usr/local/bin/lazysql
+  register: lazysql_stat
+
+- name: Download and install lazysql
+  tags: ['lazysql']
+  block:
+    - name: Create temporary directory for lazysql
+      tempfile:
+        state: directory
+      register: lazysql_temp
+
+    - name: Download lazysql tarball
+      get_url:
+        url: "https://github.com/jorgerojas26/lazysql/releases/download/{{ lazysql_version }}/lazysql_Linux_x86_64.tar.gz"
+        dest: "{{ lazysql_temp.path }}/lazysql.tar.gz"
+
+    - name: Extract lazysql tarball
+      unarchive:
+        src: "{{ lazysql_temp.path }}/lazysql.tar.gz"
+        dest: "{{ lazysql_temp.path }}"
+        remote_src: yes
+
+    - name: Find lazysql binary in extracted directory
+      find:
+        paths: "{{ lazysql_temp.path }}"
+        patterns: "lazysql"
+        recurse: yes
+        file_type: file
+      register: lazysql_binary
+
+    - name: Install lazysql to /usr/local/bin
+      copy:
+        src: "{{ lazysql_binary.files[0].path }}"
+        dest: /usr/local/bin/lazysql
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up lazysql temporary directory
+      file:
+        path: "{{ lazysql_temp.path }}"
+        state: absent
+  when: not lazysql_stat.stat.exists or (force_update | default(false) | bool)
