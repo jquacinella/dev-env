@@ -211,6 +211,12 @@
       tags:
         - gitui
 
+    - name: Include lazygit role
+      include_role:
+        name: lazygit
+      tags:
+        - lazygit
+
     - name: Include asciinema role
       include_role:
         name: asciinema

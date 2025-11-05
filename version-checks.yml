@@ -384,6 +384,29 @@
       tags:
         - gitui
 
+    # Lazygit
+    - name: Get latest lazygit version from GitHub
+      uri:
+        url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
+        return_content: yes
+      register: lazygit_latest
+      tags:
+        - lazygit
+
+    - name: Compare lazygit versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'lazygit', 'current': lazygit_version, 'latest': lazygit_latest.json.tag_name}] }}"
+      when: lazygit_version != lazygit_latest.json.tag_name
+      tags:
+        - lazygit
+
+    - name: Mark lazygit as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['lazygit'] }}"
+      when: lazygit_version == lazygit_latest.json.tag_name
+      tags:
+        - lazygit
+
     # Asciinema
     - name: Get latest asciinema version from GitHub
       uri:
