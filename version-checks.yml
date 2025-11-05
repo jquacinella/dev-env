@@ -407,6 +407,29 @@
       tags:
         - lazygit
 
+    # Lazysql
+    - name: Get latest lazysql version from GitHub
+      uri:
+        url: https://api.github.com/repos/jorgerojas26/lazysql/releases/latest
+        return_content: yes
+      register: lazysql_latest
+      tags:
+        - lazysql
+
+    - name: Compare lazysql versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'lazysql', 'current': lazysql_version, 'latest': lazysql_latest.json.tag_name}] }}"
+      when: lazysql_version != lazysql_latest.json.tag_name
+      tags:
+        - lazysql
+
+    - name: Mark lazysql as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['lazysql'] }}"
+      when: lazysql_version == lazysql_latest.json.tag_name
+      tags:
+        - lazysql
+
     # Asciinema
     - name: Get latest asciinema version from GitHub
       uri:

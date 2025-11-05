@@ -217,6 +217,12 @@
       tags:
         - lazygit
 
+    - name: Include lazysql role
+      include_role:
+        name: lazysql
+      tags:
+        - lazysql
+
     - name: Include asciinema role
       include_role:
         name: asciinema
