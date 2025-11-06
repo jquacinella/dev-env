@@ -44,6 +44,9 @@ bandwhich_version: "v0.23.1"
 # Bat - cat alternative with syntax highlighting
 bat_version: "v0.26.0"
 
+# Helix - post-modern modal text editor
+helix_version: "25.07.1"
+
 # Eza - modern replacement for ls
 eza_version: "v0.23.4"
 
