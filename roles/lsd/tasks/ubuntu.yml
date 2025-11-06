@@ -1,0 +1,46 @@
+---
+- name: Check if lsd is installed
+  tags: ['lsd']
+  stat:
+    path: /usr/local/bin/lsd
+  register: lsd_stat
+
+- name: Download and install lsd
+  tags: ['lsd']
+  block:
+    - name: Create temporary directory for lsd
+      tempfile:
+        state: directory
+      register: lsd_temp
+
+    - name: Download lsd tarball
+      get_url:
+        url: "https://github.com/lsd-rs/lsd/releases/download/{{ lsd_version }}/lsd-{{ lsd_version }}-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "{{ lsd_temp.path }}/lsd.tar.gz"
+
+    - name: Extract lsd tarball
+      unarchive:
+        src: "{{ lsd_temp.path }}/lsd.tar.gz"
+        dest: "{{ lsd_temp.path }}"
+        remote_src: yes
+
+    - name: Find lsd binary in extracted directory
+      find:
+        paths: "{{ lsd_temp.path }}"
+        patterns: "lsd"
+        recurse: yes
+        file_type: file
+      register: lsd_binary
+
+    - name: Install lsd to /usr/local/bin
+      copy:
+        src: "{{ lsd_binary.files[0].path }}"
+        dest: /usr/local/bin/lsd
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up lsd temporary directory
+      file:
+        path: "{{ lsd_temp.path }}"
+        state: absent
+  when: not lsd_stat.stat.exists or (force_update | default(false) | bool)

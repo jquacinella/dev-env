@@ -199,6 +199,12 @@
       tags:
         - eza
 
+    - name: Include lsd role
+      include_role:
+        name: lsd
+      tags:
+        - lsd
+
     - name: Include zoxide role
       include_role:
         name: zoxide
