@@ -298,6 +298,29 @@
       tags:
         - zellij
 
+    # Zeco
+    - name: Get latest zeco version from crates.io
+      uri:
+        url: https://crates.io/api/v1/crates/zeco
+        return_content: yes
+      register: zeco_latest
+      tags:
+        - zeco
+
+    - name: Compare zeco versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zeco', 'current': zeco_version, 'latest': zeco_latest.json.crate.newest_version}] }}"
+      when: zeco_version != zeco_latest.json.crate.newest_version
+      tags:
+        - zeco
+
+    - name: Mark zeco as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zeco'] }}"
+      when: zeco_version == zeco_latest.json.crate.newest_version
+      tags:
+        - zeco
+
     # Gping
     - name: Get latest gping version from GitHub
       uri:

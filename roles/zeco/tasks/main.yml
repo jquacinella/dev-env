@@ -1,0 +1,5 @@
+---
+- name: Include OS-specific tasks
+  tags: ['zeco']
+  include_tasks: "{{ ansible_distribution | lower }}.yml"
+  when: ansible_distribution == "Ubuntu"

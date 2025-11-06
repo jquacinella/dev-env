@@ -99,6 +99,9 @@ podman_tui_version: "v1.9.0"
 # Distrobox - Use any Linux distribution inside your terminal
 distrobox_version: "1.8.2.0"
 
+# Zeco - Zellij session sharing via P2P, E2E encrypted
+zeco_version: "0.5.1"
+
 # Oh-My-Zsh Plugins and Themes
 zsh_autosuggestions_version: "v0.7.1"
 zsh_syntax_highlighting_version: "0.8.0"
