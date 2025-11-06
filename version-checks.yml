@@ -111,6 +111,29 @@
       tags:
         - fd
 
+    # watchexec
+    - name: Get latest watchexec version from GitHub
+      uri:
+        url: https://api.github.com/repos/watchexec/watchexec/releases/latest
+        return_content: yes
+      register: watchexec_latest
+      tags:
+        - watchexec
+
+    - name: Compare watchexec versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'watchexec', 'current': watchexec_version, 'latest': watchexec_latest.json.tag_name}] }}"
+      when: watchexec_version != watchexec_latest.json.tag_name
+      tags:
+        - watchexec
+
+    - name: Mark watchexec as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['watchexec'] }}"
+      when: watchexec_version == watchexec_latest.json.tag_name
+      tags:
+        - watchexec
+
     # Espanso
     - name: Get latest espanso version from GitHub
       uri:
