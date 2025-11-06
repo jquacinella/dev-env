@@ -1,0 +1,44 @@
+---
+- name: Check if distrobox is installed
+  tags: ['distrobox']
+  stat:
+    path: /usr/local/bin/distrobox
+  register: distrobox_stat
+
+- name: Download and install distrobox
+  tags: ['distrobox']
+  block:
+    - name: Create temporary directory for distrobox
+      tempfile:
+        state: directory
+      register: distrobox_temp
+
+    - name: Download distrobox tarball
+      get_url:
+        url: "https://api.github.com/repos/89luca89/distrobox/tarball/{{ distrobox_version }}"
+        dest: "{{ distrobox_temp.path }}/distrobox.tar.gz"
+
+    - name: Extract distrobox tarball
+      unarchive:
+        src: "{{ distrobox_temp.path }}/distrobox.tar.gz"
+        dest: "{{ distrobox_temp.path }}"
+        remote_src: yes
+
+    - name: Find distrobox install script
+      find:
+        paths: "{{ distrobox_temp.path }}"
+        patterns: "install"
+        recurse: yes
+        file_type: file
+      register: distrobox_install_script
+
+    - name: Install distrobox to /usr/local
+      shell: "sh {{ distrobox_install_script.files[0].path }} --prefix /usr/local"
+      args:
+        executable: /bin/sh
+
+    - name: Clean up distrobox temporary directory
+      file:
+        path: "{{ distrobox_temp.path }}"
+        state: absent
+  when: not distrobox_stat.stat.exists or (force_update | default(false) | bool)

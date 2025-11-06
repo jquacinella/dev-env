@@ -57,6 +57,13 @@
         - podman
         - containers
 
+    - name: Include distrobox role
+      include_role:
+        name: distrobox
+      tags:
+        - distrobox
+        - containers
+
     - name: Include zsh role
       include_role:
         name: zsh
@@ -146,6 +153,12 @@
       tags:
         - fd
 
+    - name: Include watchexec role
+      include_role:
+        name: watchexec
+      tags:
+        - watchexec
+
     - name: Include espanso role
       include_role:
         name: espanso
@@ -212,6 +225,12 @@
         name: hexyl
       tags:
         - hexyl
+        
+    - name: Include helix role
+      include_role:
+        name: helix
+      tags:
+        - helix
 
     - name: Include eza role
       include_role:

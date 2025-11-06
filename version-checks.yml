@@ -111,6 +111,29 @@
       tags:
         - fd
 
+    # watchexec
+    - name: Get latest watchexec version from GitHub
+      uri:
+        url: https://api.github.com/repos/watchexec/watchexec/releases/latest
+        return_content: yes
+      register: watchexec_latest
+      tags:
+        - watchexec
+
+    - name: Compare watchexec versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'watchexec', 'current': watchexec_version, 'latest': watchexec_latest.json.tag_name}] }}"
+      when: watchexec_version != watchexec_latest.json.tag_name
+      tags:
+        - watchexec
+
+    - name: Mark watchexec as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['watchexec'] }}"
+      when: watchexec_version == watchexec_latest.json.tag_name
+      tags:
+        - watchexec
+
     # Espanso
     - name: Get latest espanso version from GitHub
       uri:
@@ -366,6 +389,29 @@
       when: hexyl_version == hexyl_latest.json.tag_name
       tags:
         - hexyl
+        
+    # Helix
+    - name: Get latest helix version from GitHub
+      uri:
+        url: https://api.github.com/repos/helix-editor/helix/releases/latest
+        return_content: yes
+      register: helix_latest
+      tags:
+        - helix
+
+    - name: Compare helix versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'helix', 'current': helix_version, 'latest': helix_latest.json.tag_name}] }}"
+      when: helix_version != helix_latest.json.tag_name
+      tags:
+        - helix
+
+    - name: Mark helix as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['helix'] }}"
+      when: helix_version == helix_latest.json.tag_name
+      tags:
+        - helix
 
     # Eza
     - name: Get latest eza version from GitHub
@@ -705,6 +751,32 @@
       tags:
         - podman-tui
         - podman
+        - containers
+
+    # Distrobox
+    - name: Get latest distrobox version from GitHub
+      uri:
+        url: https://api.github.com/repos/89luca89/distrobox/releases/latest
+        return_content: yes
+      register: distrobox_latest
+      tags:
+        - distrobox
+        - containers
+
+    - name: Compare distrobox versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'distrobox', 'current': distrobox_version, 'latest': distrobox_latest.json.tag_name}] }}"
+      when: distrobox_version != distrobox_latest.json.tag_name
+      tags:
+        - distrobox
+        - containers
+
+    - name: Mark distrobox as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['distrobox'] }}"
+      when: distrobox_version == distrobox_latest.json.tag_name
+      tags:
+        - distrobox
         - containers
 
     # Spaceship Prompt

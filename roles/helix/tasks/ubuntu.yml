@@ -1,0 +1,68 @@
+---
+- name: Check if helix is installed
+  tags: ['helix']
+  stat:
+    path: /usr/local/bin/hx
+  register: helix_stat
+
+- name: Download and install helix
+  tags: ['helix']
+  block:
+    - name: Create temporary directory for helix
+      tempfile:
+        state: directory
+      register: helix_temp
+
+    - name: Download helix tarball
+      get_url:
+        url: "https://github.com/helix-editor/helix/releases/download/{{ helix_version }}/helix-{{ helix_version }}-x86_64-linux.tar.xz"
+        dest: "{{ helix_temp.path }}/helix.tar.xz"
+
+    - name: Extract helix tarball
+      unarchive:
+        src: "{{ helix_temp.path }}/helix.tar.xz"
+        dest: "{{ helix_temp.path }}"
+        remote_src: yes
+
+    - name: Find helix binary in extracted directory
+      find:
+        paths: "{{ helix_temp.path }}"
+        patterns: "hx"
+        recurse: yes
+        file_type: file
+      register: helix_binary
+
+    - name: Install helix binary to /usr/local/bin
+      copy:
+        src: "{{ helix_binary.files[0].path }}"
+        dest: /usr/local/bin/hx
+        mode: '0755'
+        remote_src: yes
+
+    - name: Find helix runtime directory
+      find:
+        paths: "{{ helix_temp.path }}"
+        patterns: "runtime"
+        recurse: yes
+        file_type: directory
+      register: helix_runtime_dir
+
+    - name: Create helix config directory
+      file:
+        path: /usr/local/lib/helix
+        state: directory
+        mode: '0755'
+
+    - name: Copy helix runtime files
+      copy:
+        src: "{{ helix_runtime_dir.files[0].path }}/"
+        dest: /usr/local/lib/helix/runtime
+        mode: '0755'
+        remote_src: yes
+      when: helix_runtime_dir.files | length > 0
+
+    - name: Clean up helix temporary directory
+      file:
+        path: "{{ helix_temp.path }}"
+        state: absent
+  when: not helix_stat.stat.exists or (force_update | default(false) | bool)
