@@ -11,6 +11,9 @@ up_version: "v0.4"
 # Ripgrep - fast grep alternative
 ripgrep_version: "15.1.0"
 
+# fd - fast find alternative
+fd_version: "v10.3.0"
+
 # Espanso - text expander
 espanso_version: "v2.3.0"
 

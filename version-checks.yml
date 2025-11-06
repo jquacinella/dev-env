@@ -88,6 +88,29 @@
         - ripgrep
         - rg
 
+    # fd
+    - name: Get latest fd version from GitHub
+      uri:
+        url: https://api.github.com/repos/sharkdp/fd/releases/latest
+        return_content: yes
+      register: fd_latest
+      tags:
+        - fd
+
+    - name: Compare fd versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'fd', 'current': fd_version, 'latest': fd_latest.json.tag_name}] }}"
+      when: fd_version != fd_latest.json.tag_name
+      tags:
+        - fd
+
+    - name: Mark fd as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['fd'] }}"
+      when: fd_version == fd_latest.json.tag_name
+      tags:
+        - fd
+
     # Espanso
     - name: Get latest espanso version from GitHub
       uri:
