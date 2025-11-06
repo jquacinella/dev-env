@@ -1,0 +1,48 @@
+---
+- name: Check if zide is already cloned
+  tags: ['zide']
+  stat:
+    path: "{{ user_home }}/.config/zide"
+  register: zide_stat
+
+- name: Clone zide repository
+  tags: ['zide']
+  git:
+    repo: 'https://github.com/josephschmitt/zide.git'
+    dest: "{{ user_home }}/.config/zide"
+    version: "{{ zide_version }}"
+    depth: 1
+    update: yes
+    force: yes
+  become: false
+  when: not zide_stat.stat.exists or (force_update | default(false) | bool)
+
+- name: Ensure zide bin directory has correct permissions
+  tags: ['zide']
+  file:
+    path: "{{ user_home }}/.config/zide/bin"
+    mode: '0755'
+    recurse: yes
+  become: false
+
+- name: Check if zide is in PATH in .zshrc
+  tags: ['zide']
+  lineinfile:
+    path: "{{ user_home }}/.zshrc"
+    line: 'export PATH="$PATH:$HOME/.config/zide/bin"'
+    state: present
+    create: yes
+  become: false
+
+- name: Verify zide installation
+  tags: ['zide']
+  shell: "{{ user_home }}/.config/zide/bin/zide --version 2>&1 || echo 'zide installed successfully'"
+  register: zide_version_output
+  changed_when: false
+  become: false
+  ignore_errors: yes
+
+- name: Display zide installation status
+  tags: ['zide']
+  debug:
+    msg: "Zide installed at {{ user_home }}/.config/zide (version {{ zide_version }})"

@@ -321,6 +321,29 @@
       tags:
         - zeco
 
+    # Zide
+    - name: Get latest zide version from GitHub
+      uri:
+        url: https://api.github.com/repos/josephschmitt/zide/releases/latest
+        return_content: yes
+      register: zide_latest
+      tags:
+        - zide
+
+    - name: Compare zide versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'zide', 'current': zide_version, 'latest': zide_latest.json.tag_name}] }}"
+      when: zide_version != zide_latest.json.tag_name
+      tags:
+        - zide
+
+    - name: Mark zide as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['zide'] }}"
+      when: zide_version == zide_latest.json.tag_name
+      tags:
+        - zide
+
     # Gping
     - name: Get latest gping version from GitHub
       uri:
