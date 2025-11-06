@@ -1,0 +1,57 @@
+---
+- name: Check if zeco is installed
+  tags: ['zeco']
+  stat:
+    path: "{{ user_home }}/.cargo/bin/zeco"
+  register: zeco_stat
+
+- name: Check if cargo is available
+  tags: ['zeco']
+  shell: command -v cargo
+  register: cargo_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Rust and Cargo if not available
+  tags: ['zeco']
+  block:
+    - name: Download Rust installation script
+      get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/rustup-init.sh
+        mode: '0755'
+
+    - name: Install Rust and Cargo
+      become: no
+      shell: /tmp/rustup-init.sh -y --no-modify-path
+      args:
+        creates: "{{ user_home }}/.cargo/bin/cargo"
+
+    - name: Clean up Rust installation script
+      file:
+        path: /tmp/rustup-init.sh
+        state: absent
+  when: cargo_check.rc != 0
+
+- name: Install zeco via cargo
+  tags: ['zeco']
+  become: no
+  shell: "{{ user_home }}/.cargo/bin/cargo install zeco --version {{ zeco_version }}"
+  environment:
+    CARGO_HOME: "{{ user_home }}/.cargo"
+    RUSTUP_HOME: "{{ user_home }}/.rustup"
+  args:
+    creates: "{{ user_home }}/.cargo/bin/zeco"
+  when: not zeco_stat.stat.exists or (force_update | default(false) | bool)
+
+- name: Verify zeco installation
+  tags: ['zeco']
+  become: no
+  shell: "{{ user_home }}/.cargo/bin/zeco --version"
+  register: zeco_version_output
+  changed_when: false
+
+- name: Display zeco version
+  tags: ['zeco']
+  debug:
+    msg: "Installed zeco: {{ zeco_version_output.stdout }}"

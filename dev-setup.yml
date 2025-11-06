@@ -202,6 +202,12 @@
       tags:
         - zellij
 
+    - name: Include zeco role
+      include_role:
+        name: zeco
+      tags:
+        - zeco
+
     - name: Include gping role
       include_role:
         name: gping
