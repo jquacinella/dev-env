@@ -684,6 +684,32 @@
         - podman
         - containers
 
+    # Distrobox
+    - name: Get latest distrobox version from GitHub
+      uri:
+        url: https://api.github.com/repos/89luca89/distrobox/releases/latest
+        return_content: yes
+      register: distrobox_latest
+      tags:
+        - distrobox
+        - containers
+
+    - name: Compare distrobox versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'distrobox', 'current': distrobox_version, 'latest': distrobox_latest.json.tag_name}] }}"
+      when: distrobox_version != distrobox_latest.json.tag_name
+      tags:
+        - distrobox
+        - containers
+
+    - name: Mark distrobox as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['distrobox'] }}"
+      when: distrobox_version == distrobox_latest.json.tag_name
+      tags:
+        - distrobox
+        - containers
+
     # Spaceship Prompt
     - name: Get latest spaceship-prompt version from GitHub
       uri:

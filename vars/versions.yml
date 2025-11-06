@@ -87,6 +87,8 @@ nvm_version: "v0.40.3"
 # Podman-TUI - Terminal UI for Podman
 podman_tui_version: "v1.9.0"
 
+# Distrobox - Use any Linux distribution inside your terminal
+distrobox_version: "1.8.2.0"
 
 # Oh-My-Zsh Plugins and Themes
 zsh_autosuggestions_version: "v0.7.1"
