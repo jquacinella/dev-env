@@ -49,6 +49,14 @@
         - podman
         - containers
 
+    - name: Include podman-tui role
+      include_role:
+        name: podman-tui
+      tags:
+        - podman-tui
+        - podman
+        - containers
+
     - name: Include zsh role
       include_role:
         name: zsh
