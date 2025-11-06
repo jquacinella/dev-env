@@ -42,6 +42,12 @@
         - xsel
         - fonts
 
+    - name: Include augeas role
+      include_role:
+        name: augeas
+      tags:
+        - augeas
+
     - name: Include podman role
       include_role:
         name: podman

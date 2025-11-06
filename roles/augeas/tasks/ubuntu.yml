@@ -1,0 +1,9 @@
+---
+- name: Install augeas packages
+  tags: ['augeas']
+  apt:
+    name:
+      - augeas-tools
+      - libaugeas0
+      - augeas-lenses
+    state: present
