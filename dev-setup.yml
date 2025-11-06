@@ -57,6 +57,13 @@
         - podman
         - containers
 
+    - name: Include distrobox role
+      include_role:
+        name: distrobox
+      tags:
+        - distrobox
+        - containers
+
     - name: Include zsh role
       include_role:
         name: zsh
