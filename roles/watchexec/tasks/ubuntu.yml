@@ -1,0 +1,46 @@
+---
+- name: Check if watchexec is installed
+  tags: ['watchexec']
+  stat:
+    path: /usr/local/bin/watchexec
+  register: watchexec_stat
+
+- name: Download and install watchexec
+  tags: ['watchexec']
+  block:
+    - name: Create temporary directory for watchexec
+      tempfile:
+        state: directory
+      register: watchexec_temp
+
+    - name: Download watchexec tarball
+      get_url:
+        url: "https://github.com/watchexec/watchexec/releases/download/{{ watchexec_version }}/watchexec-{{ watchexec_version | regex_replace('^v', '') }}-x86_64-unknown-linux-musl.tar.xz"
+        dest: "{{ watchexec_temp.path }}/watchexec.tar.xz"
+
+    - name: Extract watchexec tarball
+      unarchive:
+        src: "{{ watchexec_temp.path }}/watchexec.tar.xz"
+        dest: "{{ watchexec_temp.path }}"
+        remote_src: yes
+
+    - name: Find watchexec binary in extracted directory
+      find:
+        paths: "{{ watchexec_temp.path }}"
+        patterns: "watchexec"
+        recurse: yes
+        file_type: file
+      register: watchexec_binary
+
+    - name: Install watchexec to /usr/local/bin
+      copy:
+        src: "{{ watchexec_binary.files[0].path }}"
+        dest: /usr/local/bin/watchexec
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up watchexec temporary directory
+      file:
+        path: "{{ watchexec_temp.path }}"
+        state: absent
+  when: not watchexec_stat.stat.exists or (force_update | default(false) | bool)

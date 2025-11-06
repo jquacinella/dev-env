@@ -146,6 +146,12 @@
       tags:
         - fd
 
+    - name: Include watchexec role
+      include_role:
+        name: watchexec
+      tags:
+        - watchexec
+
     - name: Include espanso role
       include_role:
         name: espanso
