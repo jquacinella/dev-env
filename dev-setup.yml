@@ -262,6 +262,12 @@
       tags:
         - zoxide
 
+    - name: Include atuin role
+      include_role:
+        name: atuin
+      tags:
+        - atuin
+
     - name: Include gitui role
       include_role:
         name: gitui

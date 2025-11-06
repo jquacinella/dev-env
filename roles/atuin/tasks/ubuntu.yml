@@ -1,0 +1,52 @@
+---
+- name: Check if atuin is installed
+  tags: ["atuin"]
+  stat:
+    path: /usr/local/bin/atuin
+  register: atuin_stat
+
+- name: Download and install atuin
+  tags: ["atuin"]
+  block:
+    - name: Create temporary directory for atuin
+      tags: ["atuin"]
+      tempfile:
+        state: directory
+      register: atuin_temp
+
+    - name: Download atuin tarball
+      tags: ["atuin"]
+      get_url:
+        url: "https://github.com/atuinsh/atuin/releases/download/{{ atuin_version }}/atuin-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ atuin_temp.path }}/atuin.tar.gz"
+
+    - name: Extract atuin tarball
+      tags: ["atuin"]
+      unarchive:
+        src: "{{ atuin_temp.path }}/atuin.tar.gz"
+        dest: "{{ atuin_temp.path }}"
+        remote_src: yes
+
+    - name: Find atuin binary in extracted directory
+      tags: ["atuin"]
+      find:
+        paths: "{{ atuin_temp.path }}"
+        patterns: "atuin"
+        recurse: yes
+        file_type: file
+      register: atuin_binary
+
+    - name: Install atuin to /usr/local/bin
+      tags: ["atuin"]
+      copy:
+        src: "{{ atuin_binary.files[0].path }}"
+        dest: /usr/local/bin/atuin
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up atuin temporary directory
+      tags: ["atuin"]
+      file:
+        path: "{{ atuin_temp.path }}"
+        state: absent
+  when: not atuin_stat.stat.exists or (force_update | default(false) | bool)
