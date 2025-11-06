@@ -145,7 +145,7 @@ create_venv() {
     
     print_info "Creating virtual environment in $VENV_DIR..."
     
-    if uv venv "$VENV_DIR"; then
+    if uv --native-tls venv "$VENV_DIR"; then
         print_success "Virtual environment created successfully"
     else
         print_error "Failed to create virtual environment"
@@ -162,7 +162,7 @@ install_ansible() {
     # Activate virtual environment for installation
     source .venv/bin/activate
     
-    if uv pip install ansible jinja2 pyyaml; then
+    if uv --native-tls pip install ansible jinja2 pyyaml; then
         print_success "Ansible and dependencies installed successfully"
         
         # Verify installation
