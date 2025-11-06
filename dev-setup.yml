@@ -223,6 +223,12 @@
       tags:
         - lazysql
 
+    - name: Include slumber role
+      include_role:
+        name: slumber
+      tags:
+        - slumber
+
     - name: Include asciinema role
       include_role:
         name: asciinema
