@@ -50,6 +50,15 @@ zoxide_version: "0.9.8"
 # GitUI - blazing fast terminal UI for git
 gitui_version: "v0.27.0"
 
+# Lazygit - simple terminal UI for git commands
+lazygit_version: "v0.56.0"
+
+# Lazysql - terminal UI for database management
+lazysql_version: "v0.4.3"
+
+# Slumber - terminal-based HTTP/REST client
+slumber_version: "v4.2.0"
+
 # Asciinema - terminal session recorder
 asciinema_version: "v3.0.1"
 
@@ -60,7 +69,7 @@ navi_version: "v2.24.0"
 ssh_list_version: "v1.5.1"
 
 # TLDR - simplified and community-driven man pages (tealdeer client)
-tldr_version: "v1.8.0"
+tldr_version: "v2.3.0"
 
 # NVM - Node Version Manager
 nvm_version: "v0.40.3"

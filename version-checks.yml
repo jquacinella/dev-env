@@ -384,6 +384,75 @@
       tags:
         - gitui
 
+    # Lazygit
+    - name: Get latest lazygit version from GitHub
+      uri:
+        url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
+        return_content: yes
+      register: lazygit_latest
+      tags:
+        - lazygit
+
+    - name: Compare lazygit versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'lazygit', 'current': lazygit_version, 'latest': lazygit_latest.json.tag_name}] }}"
+      when: lazygit_version != lazygit_latest.json.tag_name
+      tags:
+        - lazygit
+
+    - name: Mark lazygit as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['lazygit'] }}"
+      when: lazygit_version == lazygit_latest.json.tag_name
+      tags:
+        - lazygit
+
+    # Lazysql
+    - name: Get latest lazysql version from GitHub
+      uri:
+        url: https://api.github.com/repos/jorgerojas26/lazysql/releases/latest
+        return_content: yes
+      register: lazysql_latest
+      tags:
+        - lazysql
+
+    - name: Compare lazysql versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'lazysql', 'current': lazysql_version, 'latest': lazysql_latest.json.tag_name}] }}"
+      when: lazysql_version != lazysql_latest.json.tag_name
+      tags:
+        - lazysql
+
+    - name: Mark lazysql as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['lazysql'] }}"
+      when: lazysql_version == lazysql_latest.json.tag_name
+      tags:
+        - lazysql
+
+    # Slumber
+    - name: Get latest slumber version from GitHub
+      uri:
+        url: https://api.github.com/repos/LucasPickering/slumber/releases/latest
+        return_content: yes
+      register: slumber_latest
+      tags:
+        - slumber
+
+    - name: Compare slumber versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'slumber', 'current': slumber_version, 'latest': slumber_latest.json.tag_name}] }}"
+      when: slumber_version != slumber_latest.json.tag_name
+      tags:
+        - slumber
+
+    - name: Mark slumber as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['slumber'] }}"
+      when: slumber_version == slumber_latest.json.tag_name
+      tags:
+        - slumber
+
     # Asciinema
     - name: Get latest asciinema version from GitHub
       uri:

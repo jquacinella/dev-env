@@ -1,6 +1,21 @@
 ---
 - name: Install basic dependencies
-  tags: ['basics', 'git', 'curl', 'wget', 'build-essential', 'zsh', 'tmux', 'ccze', 'direnv', 'redshift', 'xsel', 'fonts']
+  tags:
+    [
+      "basics",
+      "git",
+      "curl",
+      "wget",
+      "build-essential",
+      "zsh",
+      "tmux",
+      "ccze",
+      "direnv",
+      "redshift",
+      "xsel",
+      "fonts",
+      "ncdu",
+    ]
   apt:
     name:
       - git
@@ -14,4 +29,5 @@
       - redshift
       - xsel
       - fonts-ibm-plex
+      - ncdu
     state: present

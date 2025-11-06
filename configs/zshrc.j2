@@ -21,7 +21,6 @@ plugins=(
   jsontools
   sudo
   supervisor
-  spaceship
   vagrant
   vscode
   zsh-autosuggestions
@@ -34,16 +33,20 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# Sapceship custom prompt
 export SPACESHIP_TIME_SHOW=true
 export SPACESHIP_TIME_FORMAT="%D @ %T"
 export SPACESHIP_HOST_SHOW="always"
+
+# Autocompletions
+autoload -U compinit && compinit
 
 # User configuration
 export EDITOR='vim'
 export VISUAL='vim'
 
 # Dim the Screen
-/usr/bin/redshift -P -b 1.0 -O 3000
+# /usr/bin/redshift -P -b 1.0 -O 3000
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
@@ -58,10 +61,10 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 eval "$(direnv hook zsh)"
 
 # Custom aliases
-alias ll='ls -lahFG'
+alias la='ls -lahFG'
+alias ll="eza --all --long --header --git"
 alias reload='source ~/.zshrc'
-alias zshconfig='vim ~/.zshrc'
-alias la="exa --long --header --git"
+alias zconfig='vim ~/.zshrc'
 alias gitl='git log --all --decorate --oneline --graph'
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
@@ -76,3 +79,8 @@ SAVEHIST=50000
 setopt SHARE_HISTORY
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_SPACE
+
+# Shell integrations
+# eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"

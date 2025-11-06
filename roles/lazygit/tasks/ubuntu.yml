@@ -1,0 +1,46 @@
+---
+- name: Check if lazygit is installed
+  tags: ['lazygit']
+  stat:
+    path: /usr/local/bin/lazygit
+  register: lazygit_stat
+
+- name: Download and install lazygit
+  tags: ['lazygit']
+  block:
+    - name: Create temporary directory for lazygit
+      tempfile:
+        state: directory
+      register: lazygit_temp
+
+    - name: Download lazygit tarball
+      get_url:
+        url: "https://github.com/jesseduffield/lazygit/releases/download/{{ lazygit_version }}/lazygit_{{ lazygit_version | replace('v', '') }}_linux_x86_64.tar.gz"
+        dest: "{{ lazygit_temp.path }}/lazygit.tar.gz"
+
+    - name: Extract lazygit tarball
+      unarchive:
+        src: "{{ lazygit_temp.path }}/lazygit.tar.gz"
+        dest: "{{ lazygit_temp.path }}"
+        remote_src: yes
+
+    - name: Find lazygit binary in extracted directory
+      find:
+        paths: "{{ lazygit_temp.path }}"
+        patterns: "lazygit"
+        recurse: yes
+        file_type: file
+      register: lazygit_binary
+
+    - name: Install lazygit to /usr/local/bin
+      copy:
+        src: "{{ lazygit_binary.files[0].path }}"
+        dest: /usr/local/bin/lazygit
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up lazygit temporary directory
+      file:
+        path: "{{ lazygit_temp.path }}"
+        state: absent
+  when: not lazygit_stat.stat.exists or (force_update | default(false) | bool)
