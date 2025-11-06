@@ -13,42 +13,49 @@
       apt:
         name:
           - software-properties-common
-          - dirmngr
-          - apt-transport-https
           - ca-certificates
           - curl
+          - gnupg
         state: present
         update_cache: yes
 
-    - name: Add Kubic repository GPG key
-      apt_key:
-        url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
-        state: present
+    - name: Check Ubuntu version
+      set_fact:
+        ubuntu_version: "{{ ansible_distribution_version }}"
 
-    - name: Add Kubic repository
-      apt_repository:
-        repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_{{ ansible_distribution_version }}/ /"
-        state: present
-        filename: kubic-libcontainers
-
-    - name: Update apt cache after adding repository
-      apt:
-        update_cache: yes
-
-    - name: Install podman and related packages
+    - name: Install podman from official repositories (Ubuntu 20.10+)
       apt:
         name:
           - podman
           - buildah
           - skopeo
         state: present
+        update_cache: yes
+      when: ubuntu_version is version('20.10', '>=')
 
-    - name: Ensure podman is running (if service exists)
-      systemd:
-        name: podman
-        state: started
-        enabled: yes
+    - name: Add Podman PPA for older Ubuntu versions
+      apt_repository:
+        repo: ppa:projectatomic/ppa
+        state: present
+        update_cache: yes
+      when: ubuntu_version is version('20.10', '<')
       failed_when: false
+
+    - name: Install podman from PPA (Ubuntu < 20.10)
+      apt:
+        name:
+          - podman
+        state: present
+        update_cache: yes
+      when: ubuntu_version is version('20.10', '<')
+      failed_when: false
+
+    - name: Display installation note for older Ubuntu versions
+      debug:
+        msg: |
+          Note: For Ubuntu versions older than 20.10, podman may not be available
+          in official repositories. Consider upgrading Ubuntu or using Docker instead.
+      when: ubuntu_version is version('20.10', '<')
 
   when: podman_check.rc != 0
 

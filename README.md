@@ -66,7 +66,7 @@ That's it! The setup script handles all prerequisites automatically.
 - **zellij** - Modern terminal workspace with layouts and panes
 - **gping** - Ping tool with a graph
 - **bandwhich** - Terminal bandwidth utilization tool
-- **podman** - Daemonless container engine
+- **podman** - Daemonless container engine (requires Ubuntu 20.10+, installed from official repositories)
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
@@ -248,7 +248,9 @@ This will:
 - Compare with your pinned versions in `vars/versions.yml`
 - Display a summary showing which tools are up to date and which have updates available
 
-**Coverage**: All tools including CLI utilities, ZSH plugins (autosuggestions, syntax-highlighting, history-substring-search, fzf-history-search, completions), spaceship-prompt theme, and NVM are checked for updates.
+**Coverage**: All tools including CLI utilities, ZSH plugins (autosuggestions, syntax-highlighting, history-substring-search, fzf-history-search, completions), spaceship-prompt theme, NVM, and Podman are checked for updates.
+
+**Note**: Podman is installed from Ubuntu's official repositories, so the version check compares your installed version against the latest upstream release. To update podman, use `sudo apt update && sudo apt upgrade podman`.
 
 You can also check specific tools or categories:
 ```bash

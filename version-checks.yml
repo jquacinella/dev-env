@@ -498,6 +498,48 @@
       when: nvm_version == nvm_latest.json.tag_name
       tags:
         - nvm
+    # Podman (from Ubuntu repositories)
+    - name: Get installed podman version
+      shell: podman --version 2>/dev/null | grep -oP '\d+\.\d+\.\d+' || echo "not installed"
+      register: podman_installed
+      changed_when: false
+      failed_when: false
+      tags:
+        - podman
+
+    - name: Get latest podman version from GitHub
+      uri:
+        url: https://api.github.com/repos/containers/podman/releases/latest
+        return_content: yes
+      register: podman_latest
+      tags:
+        - podman
+
+    - name: Compare podman versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'podman', 'current': podman_installed.stdout, 'latest': podman_latest.json.tag_name}] }}"
+      when: 
+        - podman_installed.stdout != "not installed"
+        - podman_installed.stdout not in podman_latest.json.tag_name
+      tags:
+        - podman
+
+    - name: Mark podman as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['podman'] }}"
+      when: 
+        - podman_installed.stdout != "not installed"
+        - podman_installed.stdout in podman_latest.json.tag_name
+      tags:
+        - podman
+
+    - name: Mark podman as not installed
+      debug:
+        msg: "Podman is not currently installed"
+      when: podman_installed.stdout == "not installed"
+      tags:
+        - podman
+
 
     # Spaceship Prompt
     - name: Get latest spaceship-prompt version from GitHub
