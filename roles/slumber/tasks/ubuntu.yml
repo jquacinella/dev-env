@@ -1,0 +1,46 @@
+---
+- name: Check if slumber is installed
+  tags: ['slumber']
+  stat:
+    path: /usr/local/bin/slumber
+  register: slumber_stat
+
+- name: Download and install slumber
+  tags: ['slumber']
+  block:
+    - name: Create temporary directory for slumber
+      tempfile:
+        state: directory
+      register: slumber_temp
+
+    - name: Download slumber tarball
+      get_url:
+        url: "https://github.com/LucasPickering/slumber/releases/download/{{ slumber_version }}/slumber-x86_64-unknown-linux-gnu.tar.xz"
+        dest: "{{ slumber_temp.path }}/slumber.tar.xz"
+
+    - name: Extract slumber tarball
+      unarchive:
+        src: "{{ slumber_temp.path }}/slumber.tar.xz"
+        dest: "{{ slumber_temp.path }}"
+        remote_src: yes
+
+    - name: Find slumber binary in extracted directory
+      find:
+        paths: "{{ slumber_temp.path }}"
+        patterns: "slumber"
+        recurse: yes
+        file_type: file
+      register: slumber_binary
+
+    - name: Install slumber to /usr/local/bin
+      copy:
+        src: "{{ slumber_binary.files[0].path }}"
+        dest: /usr/local/bin/slumber
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up slumber temporary directory
+      file:
+        path: "{{ slumber_temp.path }}"
+        state: absent
+  when: not slumber_stat.stat.exists or (force_update | default(false) | bool)

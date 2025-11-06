@@ -56,6 +56,9 @@ lazygit_version: "v0.56.0"
 # Lazysql - terminal UI for database management
 lazysql_version: "v0.4.3"
 
+# Slumber - terminal-based HTTP/REST client
+slumber_version: "v4.2.0"
+
 # Asciinema - terminal session recorder
 asciinema_version: "v3.0.1"
 

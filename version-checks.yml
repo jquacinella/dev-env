@@ -430,6 +430,29 @@
       tags:
         - lazysql
 
+    # Slumber
+    - name: Get latest slumber version from GitHub
+      uri:
+        url: https://api.github.com/repos/LucasPickering/slumber/releases/latest
+        return_content: yes
+      register: slumber_latest
+      tags:
+        - slumber
+
+    - name: Compare slumber versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'slumber', 'current': slumber_version, 'latest': slumber_latest.json.tag_name}] }}"
+      when: slumber_version != slumber_latest.json.tag_name
+      tags:
+        - slumber
+
+    - name: Mark slumber as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['slumber'] }}"
+      when: slumber_version == slumber_latest.json.tag_name
+      tags:
+        - slumber
+
     # Asciinema
     - name: Get latest asciinema version from GitHub
       uri:
