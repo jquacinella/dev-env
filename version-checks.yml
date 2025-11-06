@@ -609,6 +609,34 @@
       tags:
         - podman
 
+    # Podman-TUI
+    - name: Get latest podman-tui version from GitHub
+      uri:
+        url: https://api.github.com/repos/containers/podman-tui/releases/latest
+        return_content: yes
+      register: podman_tui_latest
+      tags:
+        - podman-tui
+        - podman
+        - containers
+
+    - name: Compare podman-tui versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'podman-tui', 'current': podman_tui_version, 'latest': podman_tui_latest.json.tag_name}] }}"
+      when: podman_tui_version != podman_tui_latest.json.tag_name
+      tags:
+        - podman-tui
+        - podman
+        - containers
+
+    - name: Mark podman-tui as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['podman-tui'] }}"
+      when: podman_tui_version == podman_tui_latest.json.tag_name
+      tags:
+        - podman-tui
+        - podman
+        - containers
 
     # Spaceship Prompt
     - name: Get latest spaceship-prompt version from GitHub

@@ -1,0 +1,46 @@
+---
+- name: Check if podman-tui is installed
+  tags: ['podman-tui']
+  stat:
+    path: /usr/local/bin/podman-tui
+  register: podman_tui_stat
+
+- name: Download and install podman-tui
+  tags: ['podman-tui']
+  block:
+    - name: Create temporary directory for podman-tui
+      tempfile:
+        state: directory
+      register: podman_tui_temp
+
+    - name: Download podman-tui zip file
+      get_url:
+        url: "https://github.com/containers/podman-tui/releases/download/{{ podman_tui_version }}/podman-tui-release-linux_amd64.zip"
+        dest: "{{ podman_tui_temp.path }}/podman-tui.zip"
+
+    - name: Extract podman-tui zip file
+      unarchive:
+        src: "{{ podman_tui_temp.path }}/podman-tui.zip"
+        dest: "{{ podman_tui_temp.path }}"
+        remote_src: yes
+
+    - name: Find podman-tui binary in extracted directory
+      find:
+        paths: "{{ podman_tui_temp.path }}"
+        patterns: "podman-tui"
+        recurse: yes
+        file_type: file
+      register: podman_tui_binary
+
+    - name: Install podman-tui to /usr/local/bin
+      copy:
+        src: "{{ podman_tui_binary.files[0].path }}"
+        dest: /usr/local/bin/podman-tui
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up podman-tui temporary directory
+      file:
+        path: "{{ podman_tui_temp.path }}"
+        state: absent
+  when: not podman_tui_stat.stat.exists or (force_update | default(false) | bool)
