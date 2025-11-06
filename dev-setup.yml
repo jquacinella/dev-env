@@ -207,6 +207,12 @@
       tags:
         - bat
 
+    - name: Include helix role
+      include_role:
+        name: helix
+      tags:
+        - helix
+
     - name: Include eza role
       include_role:
         name: eza
