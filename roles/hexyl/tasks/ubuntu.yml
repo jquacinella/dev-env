@@ -1,0 +1,41 @@
+---
+- name: Check if hexyl is installed
+  tags: ['hexyl']
+  command: which hexyl
+  register: hexyl_check
+  failed_when: false
+  changed_when: false
+
+- name: Install hexyl
+  tags: ['hexyl']
+  block:
+    - name: Check Ubuntu version
+      set_fact:
+        ubuntu_version: "{{ ansible_distribution_version }}"
+
+    - name: Install hexyl from official repositories (Ubuntu 19.10+)
+      apt:
+        name: hexyl
+        state: present
+        update_cache: yes
+      when: ubuntu_version is version('19.10', '>=')
+
+    - name: Display installation note for older Ubuntu versions
+      debug:
+        msg: |
+          Note: hexyl requires Ubuntu 19.10 or newer to install from official repositories.
+          For older versions, consider upgrading Ubuntu or building from source.
+      when: ubuntu_version is version('19.10', '<')
+
+  when: hexyl_check.rc != 0
+
+- name: Verify hexyl installation
+  tags: ['hexyl']
+  command: hexyl --version
+  register: hexyl_version_output
+  changed_when: false
+
+- name: Display hexyl version
+  tags: ['hexyl']
+  debug:
+    msg: "Hexyl version: {{ hexyl_version_output.stdout }}"

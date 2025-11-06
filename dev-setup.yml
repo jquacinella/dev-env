@@ -220,6 +220,12 @@
       tags:
         - bat
 
+    - name: Include hexyl role
+      include_role:
+        name: hexyl
+      tags:
+        - hexyl
+        
     - name: Include helix role
       include_role:
         name: helix
