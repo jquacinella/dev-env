@@ -207,6 +207,12 @@
       tags:
         - bat
 
+    - name: Include hexyl role
+      include_role:
+        name: hexyl
+      tags:
+        - hexyl
+
     - name: Include eza role
       include_role:
         name: eza

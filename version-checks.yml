@@ -344,6 +344,29 @@
       tags:
         - bat
 
+    # Hexyl
+    - name: Get latest hexyl version from GitHub
+      uri:
+        url: https://api.github.com/repos/sharkdp/hexyl/releases/latest
+        return_content: yes
+      register: hexyl_latest
+      tags:
+        - hexyl
+
+    - name: Compare hexyl versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'hexyl', 'current': hexyl_version, 'latest': hexyl_latest.json.tag_name}] }}"
+      when: hexyl_version != hexyl_latest.json.tag_name
+      tags:
+        - hexyl
+
+    - name: Mark hexyl as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['hexyl'] }}"
+      when: hexyl_version == hexyl_latest.json.tag_name
+      tags:
+        - hexyl
+
     # Eza
     - name: Get latest eza version from GitHub
       uri:
