@@ -361,6 +361,29 @@
         up_to_date: "{{ up_to_date + ['eza'] }}"
       when: eza_version == eza_latest.json.tag_name
 
+    # LSD
+    - name: Get latest lsd version from GitHub
+      uri:
+        url: https://api.github.com/repos/lsd-rs/lsd/releases/latest
+        return_content: yes
+      register: lsd_latest
+      tags:
+        - lsd
+
+    - name: Compare lsd versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'lsd', 'current': lsd_version, 'latest': lsd_latest.json.tag_name}] }}"
+      when: lsd_version != lsd_latest.json.tag_name
+      tags:
+        - lsd
+
+    - name: Mark lsd as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['lsd'] }}"
+      when: lsd_version == lsd_latest.json.tag_name
+      tags:
+        - lsd
+
     # Zoxide
     - name: Get latest zoxide version from GitHub
       uri:

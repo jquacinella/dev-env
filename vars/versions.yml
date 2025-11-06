@@ -47,6 +47,9 @@ bat_version: "v0.26.0"
 # Eza - modern replacement for ls
 eza_version: "v0.23.4"
 
+# LSD - LSDeluxe - next gen ls command
+lsd_version: "v1.2.0"
+
 # Zoxide - smarter cd command that learns your habits
 zoxide_version: "0.9.8"
 
