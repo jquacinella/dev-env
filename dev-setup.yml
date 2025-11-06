@@ -132,6 +132,12 @@
         - ripgrep
         - rg
 
+    - name: Include fd role
+      include_role:
+        name: fd
+      tags:
+        - fd
+
     - name: Include espanso role
       include_role:
         name: espanso
