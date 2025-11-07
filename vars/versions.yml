@@ -62,6 +62,9 @@ lsd_version: "v1.2.0"
 # Zoxide - smarter cd command that learns your habits
 zoxide_version: "0.9.8"
 
+# Atuin - magical shell history
+atuin_version: "v18.10.0"
+
 # GitUI - blazing fast terminal UI for git
 gitui_version: "v0.27.0"
 

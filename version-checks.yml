@@ -522,6 +522,29 @@
       tags:
         - zoxide
 
+    # Atuin
+    - name: Get latest atuin version from GitHub
+      uri:
+        url: https://api.github.com/repos/atuinsh/atuin/releases/latest
+        return_content: yes
+      register: atuin_latest
+      tags:
+        - atuin
+
+    - name: Compare atuin versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'atuin', 'current': atuin_version, 'latest': atuin_latest.json.tag_name}] }}"
+      when: atuin_version != atuin_latest.json.tag_name
+      tags:
+        - atuin
+
+    - name: Mark atuin as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['atuin'] }}"
+      when: atuin_version == atuin_latest.json.tag_name
+      tags:
+        - atuin
+
     # GitUI
     - name: Get latest gitui version from GitHub
       uri:
