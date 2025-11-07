@@ -363,6 +363,7 @@ Create a new role following the existing pattern. Example structure:
    ```yaml
    ---
    - name: Include OS-specific tasks
+     tags: your-tool
      include_tasks: "{{ ansible_distribution | lower }}.yml"
    ```
 
@@ -370,13 +371,16 @@ Create a new role following the existing pattern. Example structure:
    ```yaml
    ---
    - name: Check if tool is installed
+     tags: your-tool
      stat:
        path: /usr/local/bin/your-tool
      register: tool_stat
 
    - name: Install tool
+     tags: your-tool
      block:
        - name: Download tool
+         tags: your-tool
          get_url:
            url: "https://github.com/owner/repo/releases/download/{{ your_tool_version }}/tool.tar.gz"
            dest: "/tmp/tool.tar.gz"
@@ -388,8 +392,11 @@ Create a new role following the existing pattern. Example structure:
 
 5. Add the role to `dev-setup.yml`:
    ```yaml
-   - role: your-tool
-     tags: your-tool
+   - name: Include your-tool role
+      include_role:
+        name: your-tool
+      tags:
+        - your-tool
    ```
 
 6. Add version check to `version-checks.yml` following the existing patterns
