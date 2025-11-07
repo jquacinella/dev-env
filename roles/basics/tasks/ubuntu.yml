@@ -15,6 +15,9 @@
       "xsel",
       "fonts",
       "ncdu",
+      "nmon",
+      "iotop",
+      "iftop",
     ]
   apt:
     name:
@@ -30,4 +33,7 @@
       - xsel
       - fonts-ibm-plex
       - ncdu
+      - nmon
+      - iotop
+      - iftop
     state: present

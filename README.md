@@ -62,6 +62,9 @@ That's it! The setup script handles all prerequisites automatically.
 - **bottom** - Cross-platform graphical process/system monitor
 - **gping** - Ping tool with a graph
 - **bandwhich** - Terminal bandwidth utilization tool
+- **nmon** - System performance monitoring tool for Linux
+- **iotop** - I/O monitoring tool for processes
+- **iftop** - Network bandwidth monitoring tool
 
 #### Version Control & Git
 - **gitui** - Blazing fast terminal UI for git
