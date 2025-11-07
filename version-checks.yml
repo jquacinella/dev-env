@@ -344,6 +344,29 @@
       tags:
         - zide
 
+    # Yazi
+    - name: Get latest yazi version from GitHub
+      uri:
+        url: https://api.github.com/repos/sxyazi/yazi/releases/latest
+        return_content: yes
+      register: yazi_latest
+      tags:
+        - yazi
+
+    - name: Compare yazi versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'yazi', 'current': yazi_version, 'latest': yazi_latest.json.tag_name}] }}"
+      when: yazi_version != yazi_latest.json.tag_name
+      tags:
+        - yazi
+
+    - name: Mark yazi as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['yazi'] }}"
+      when: yazi_version == yazi_latest.json.tag_name
+      tags:
+        - yazi
+
     # Gping
     - name: Get latest gping version from GitHub
       uri:

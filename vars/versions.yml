@@ -108,6 +108,9 @@ zeco_version: "0.5.1"
 # Zide - Terminal-based IDE combining Zellij with file pickers and editors
 zide_version: "v3.2.0"
 
+# Yazi - blazing fast terminal file manager
+yazi_version: "v25.5.31"
+
 # Oh-My-Zsh Plugins and Themes
 zsh_autosuggestions_version: "v0.7.1"
 zsh_syntax_highlighting_version: "0.8.0"
