@@ -214,6 +214,12 @@
       tags:
         - zeco
 
+    - name: Include zide role
+      include_role:
+        name: zide
+      tags:
+        - zide
+
     - name: Include gping role
       include_role:
         name: gping

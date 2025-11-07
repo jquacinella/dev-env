@@ -25,6 +25,7 @@ That's it! The setup script handles all prerequisites automatically.
 
 #### Essential Development Tools
 - **git**, **curl**, **wget**, **build-essential** - Core development utilities
+- **augeas** - Configuration file editing tool
 
 #### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
@@ -35,38 +36,59 @@ That's it! The setup script handles all prerequisites automatically.
 - **zsh-history-substring-search** - Fish-like history search feature
 - **zsh-fzf-history-search** - FZF-powered history search
 - **zsh-completions** - Additional completion definitions for zsh
+- **zellij** - Modern terminal workspace with layouts and panes
+
+#### Containers & Virtualization
+- **podman** - Daemonless container engine (requires Ubuntu 20.10+)
+- **podman-tui** - Terminal UI for Podman
+- **distrobox** - Container system integration for running any Linux distribution
 
 #### File & Directory Navigation
 - **fzf** - Fuzzy finder for command line
+- **fd** - Fast and user-friendly alternative to find
 - **broot** - Modern tree view and directory navigator
 - **zoxide** - Smarter cd command that learns your habits
 - **eza** - Modern replacement for ls with colors and git integration
+- **lsd** - Modern ls replacement with icons and colors
 
 #### Search & Text Processing
 - **ripgrep (rg)** - Ultra-fast recursive search tool
 - **up (Ultimate Plumber)** - Interactive pipe building tool
+- **bat** - Cat clone with syntax highlighting and Git integration
+- **hexyl** - Command-line hex viewer with colored output
+
+#### Process & System Monitoring
+- **procs** - Modern replacement for ps with colored output and tree view
+- **bottom** - Cross-platform graphical process/system monitor
+- **gping** - Ping tool with a graph
+- **bandwhich** - Terminal bandwidth utilization tool
 
 #### Version Control & Git
 - **gitui** - Blazing fast terminal UI for git
+- **lazygit** - Simple terminal UI for git commands
+
+#### Development Tools & Editors
+- **helix** - Post-modern modal text editor
+- **nvm** - Node Version Manager
+- **zeco** - Development environment container manager
+- **zide** - Terminal-based IDE
+
+#### Database & API Tools
+- **lazysql** - Terminal UI for SQL databases
+- **slumber** - Terminal-based API client
 
 #### Documentation & Help
 - **tldr** - Simplified and community-driven man pages with practical examples
+- **navi** - Interactive cheatsheet tool for the command-line
 
-#### Utilities
+#### Productivity & Utilities
 - **ccze** - Colorizer for log files
-- **bat** - Cat clone with syntax highlighting and Git integration
 - **dust** - Modern disk usage analyzer
-- **procs** - Modern replacement for ps with colored output and tree view
-- **bottom** - Cross-platform graphical process/system monitor
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
+- **watchexec** - Executes commands in response to file modifications
 - **asciinema** - Terminal session recorder
-- **navi** - Interactive cheatsheet tool for the command-line
 - **ssh-list** - Tool for managing SSH connections
-- **zellij** - Modern terminal workspace with layouts and panes
-- **gping** - Ping tool with a graph
-- **bandwhich** - Terminal bandwidth utilization tool
-- **podman** - Daemonless container engine (requires Ubuntu 20.10+, installed from official repositories)
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
@@ -161,11 +183,12 @@ ansible-playbook dev-setup.yml --ask-become-pass
 
 This will:
 1. Install all specified packages
-2. Set up oh-my-zsh
+2. Set up oh-my-zsh with spaceship-prompt and plugins
 3. Configure zsh as your default shell
-4. Install tools from GitHub (fzf, up, ripgrep, espanso, dust, xh, broot, procs, bat, eza, zellij, gping, bandwhich, zoxide, gitui, asciinema, navi, ssh-list, tldr)
-5. Register and start Espanso text expander service
-6. Apply your custom configurations
+4. Install container tools (podman, podman-tui, distrobox)
+5. Install CLI tools from GitHub (fzf, fd, ripgrep, watchexec, espanso, dust, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, asciinema, navi, ssh-list, tldr, zeco, zide)
+6. Register and start Espanso text expander service
+7. Apply your custom configurations
 
 ### Other Install Examples
 
@@ -415,6 +438,8 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── README.md          # Roles documentation
 │   ├── system/            # System-level setup
 │   ├── basics/            # Basic development tools
+│   ├── augeas/            # Configuration file editor
+│   ├── config/            # Configuration files deployment
 │   ├── zsh/               # Oh-my-zsh installation
 │   ├── zsh-autosuggestions/        # ZSH plugin
 │   ├── zsh-syntax-highlighting/    # ZSH plugin
@@ -422,10 +447,14 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── zsh-fzf-history-search/     # ZSH plugin
 │   ├── zsh-completions/   # ZSH plugin
 │   ├── spaceship-prompt/  # ZSH theme
-│   ├── config/            # Configuration files deployment
+│   ├── podman/            # Container engine
+│   ├── podman-tui/        # Podman terminal UI
+│   ├── distrobox/         # Container system integration
 │   ├── fzf/               # Fuzzy finder
+│   ├── fd/                # Fast find alternative
 │   ├── up/                # Ultimate Plumber
 │   ├── ripgrep/           # Fast search tool
+│   ├── watchexec/         # File watcher
 │   ├── espanso/           # Text expander
 │   ├── dust/              # Disk usage analyzer
 │   ├── xh/                # HTTP client
@@ -433,12 +462,20 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── procs/             # Process viewer
 │   ├── bottom/            # System monitor
 │   ├── zellij/            # Terminal multiplexer
+│   ├── zeco/              # Development container manager
+│   ├── zide/              # Terminal IDE
 │   ├── gping/             # Graphical ping
 │   ├── bandwhich/         # Network monitor
 │   ├── bat/               # Better cat
+│   ├── hexyl/             # Hex viewer
+│   ├── helix/             # Text editor
 │   ├── eza/               # Modern ls replacement
+│   ├── lsd/               # Modern ls with icons
 │   ├── zoxide/            # Smarter cd
 │   ├── gitui/             # Git terminal UI
+│   ├── lazygit/           # Git terminal UI
+│   ├── lazysql/           # SQL terminal UI
+│   ├── slumber/           # API client
 │   ├── asciinema/         # Terminal recorder
 │   ├── navi/              # Interactive cheatsheet
 │   ├── ssh-list/          # SSH connection manager
