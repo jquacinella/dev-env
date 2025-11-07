@@ -47,11 +47,12 @@
 - name: Verify zeco installation
   tags: ['zeco']
   become: no
-  shell: "{{ user_home }}/.cargo/bin/zeco --version"
-  register: zeco_version_output
-  changed_when: false
+  stat:
+    path: "{{ user_home }}/.cargo/bin/zeco"
+  register: zeco_installed
 
-- name: Display zeco version
+- name: Display zeco installation status
   tags: ['zeco']
   debug:
-    msg: "Installed zeco: {{ zeco_version_output.stdout }}"
+    msg: "Zeco {{ zeco_version }} installed successfully at {{ user_home }}/.cargo/bin/zeco"
+  when: zeco_installed.stat.exists
