@@ -30,7 +30,6 @@ That's it! The setup script handles all prerequisites automatically.
 #### Shell & Terminal
 - **zsh** - Modern shell with oh-my-zsh framework
 - **spaceship-prompt** - Minimalistic, powerful and customizable Zsh prompt
-- **tmux** - Terminal multiplexer with custom configuration
 - **zsh-autosuggestions** - Fish-like autosuggestions for zsh
 - **zsh-syntax-highlighting** - Fish-like syntax highlighting for zsh
 - **zsh-history-substring-search** - Fish-like history search feature
@@ -50,6 +49,7 @@ That's it! The setup script handles all prerequisites automatically.
 - **zoxide** - Smarter cd command that learns your habits
 - **eza** - Modern replacement for ls with colors and git integration
 - **lsd** - Modern ls replacement with icons and colors
+- **yazi** - Blazing fast terminal file manager
 
 #### Search & Text Processing
 - **ripgrep (rg)** - Ultra-fast recursive search tool
@@ -92,7 +92,7 @@ That's it! The setup script handles all prerequisites automatically.
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
-- Custom `.tmux.conf` with improved keybindings
+- Custom `zellij/config.kdl` with clipboard integration
 - FZF integration with zsh
 
 ## Prerequisites
@@ -406,11 +406,11 @@ Create a new role following the existing pattern. Example structure:
 1. **ZSH Configuration**: Edit `configs/zshrc.j2`
    - Change theme, plugins, aliases
    - Add custom environment variables
-   
-2. **Tmux Configuration**: Edit `configs/tmux.conf.j2`
+
+2. **Zellij Configuration**: Edit `configs/zellij.kdl.j2`
    - Modify keybindings
-   - Customize status bar
-   - Adjust colors
+   - Customize copy command
+   - Adjust theme and layout
 
 ### Enabling Configuration Files
 
@@ -440,7 +440,7 @@ By default, custom config file deployment is disabled. To enable:
 │   └── versions.yml       # Centralized tool version definitions
 ├── configs/
 │   ├── zshrc.j2           # ZSH configuration template
-│   └── tmux.conf.j2       # Tmux configuration template
+│   └── zellij.kdl.j2      # Zellij configuration template
 ├── roles/                 # Modular Ansible roles for each tool
 │   ├── README.md          # Roles documentation
 │   ├── system/            # System-level setup
@@ -487,6 +487,7 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── navi/              # Interactive cheatsheet
 │   ├── ssh-list/          # SSH connection manager
 │   ├── tldr/              # Simplified man pages
+│   ├── yazi/              # Terminal file manager
 │   └── nvm/               # Node Version Manager
 └── README.md              # This file
 ```

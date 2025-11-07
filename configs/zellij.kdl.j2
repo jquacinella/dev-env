@@ -1,0 +1,65 @@
+// Zellij Configuration
+
+// Set the copy command to use xsel for clipboard integration
+copy_command "xsel --clipboard --input"
+
+// Enable mouse mode
+mouse_mode true
+
+// Set the default shell
+default_shell "zsh"
+
+// Pane frames configuration
+pane_frames true
+
+// Enable simplified UI
+simplified_ui false
+
+// Default layout
+default_layout "compact"
+
+// Theme configuration
+theme "default"
+
+// Keybindings
+keybinds {
+    normal {
+        // Pane navigation
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt l" { MoveFocus "Right"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+
+        // Pane splitting
+        bind "Alt |" { NewPane "Right"; }
+        bind "Alt -" { NewPane "Down"; }
+
+        // Tab navigation
+        bind "Alt n" { GoToNextTab; }
+        bind "Alt p" { GoToPreviousTab; }
+
+        // New tab
+        bind "Alt t" { NewTab; }
+
+        // Close pane
+        bind "Alt x" { CloseFocus; }
+    }
+
+    shared_except "locked" {
+        // Quick reload
+        bind "Ctrl r" {
+            Run "zellij" "action" "reload-config" {
+                close_on_exit true
+            }
+        }
+    }
+}
+
+// Scrollback buffer
+scroll_buffer_size 10000
+
+// Copy on selection
+copy_on_select true
+
+// Clipboard provider
+copy_clipboard "primary"
