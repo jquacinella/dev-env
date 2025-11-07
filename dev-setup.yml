@@ -220,6 +220,12 @@
       tags:
         - zide
 
+    - name: Include yazi role
+      include_role:
+        name: yazi
+      tags:
+        - yazi
+
     - name: Include gping role
       include_role:
         name: gping

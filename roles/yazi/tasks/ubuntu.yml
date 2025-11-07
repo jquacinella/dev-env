@@ -1,0 +1,62 @@
+---
+- name: Check if yazi is installed
+  tags: ['yazi']
+  stat:
+    path: /usr/local/bin/yazi
+  register: yazi_stat
+
+- name: Download and install yazi
+  tags: ['yazi']
+  block:
+    - name: Create temporary directory for yazi
+      tempfile:
+        state: directory
+      register: yazi_temp
+
+    - name: Download yazi zip file
+      get_url:
+        url: "https://github.com/sxyazi/yazi/releases/download/{{ yazi_version }}/yazi-x86_64-unknown-linux-musl.zip"
+        dest: "{{ yazi_temp.path }}/yazi.zip"
+
+    - name: Extract yazi zip file
+      unarchive:
+        src: "{{ yazi_temp.path }}/yazi.zip"
+        dest: "{{ yazi_temp.path }}"
+        remote_src: yes
+
+    - name: Find yazi binary in extracted directory
+      find:
+        paths: "{{ yazi_temp.path }}"
+        patterns: "yazi"
+        recurse: yes
+        file_type: file
+      register: yazi_binary
+
+    - name: Install yazi to /usr/local/bin
+      copy:
+        src: "{{ yazi_binary.files[0].path }}"
+        dest: /usr/local/bin/yazi
+        mode: '0755'
+        remote_src: yes
+
+    - name: Find ya helper binary in extracted directory
+      find:
+        paths: "{{ yazi_temp.path }}"
+        patterns: "ya"
+        recurse: yes
+        file_type: file
+      register: ya_binary
+
+    - name: Install ya helper to /usr/local/bin
+      copy:
+        src: "{{ ya_binary.files[0].path }}"
+        dest: /usr/local/bin/ya
+        mode: '0755'
+        remote_src: yes
+      when: ya_binary.matched > 0
+
+    - name: Clean up yazi temporary directory
+      file:
+        path: "{{ yazi_temp.path }}"
+        state: absent
+  when: not yazi_stat.stat.exists or (force_update | default(false) | bool)
