@@ -180,6 +180,29 @@
       tags:
         - dust
 
+    # Diskonaut
+    - name: Get latest diskonaut version from GitHub
+      uri:
+        url: https://api.github.com/repos/imsnif/diskonaut/releases/latest
+        return_content: yes
+      register: diskonaut_latest
+      tags:
+        - diskonaut
+
+    - name: Compare diskonaut versions
+      set_fact:
+        updates_available: "{{ updates_available + [{'tool': 'diskonaut', 'current': diskonaut_version, 'latest': diskonaut_latest.json.tag_name}] }}"
+      when: diskonaut_version != diskonaut_latest.json.tag_name
+      tags:
+        - diskonaut
+
+    - name: Mark diskonaut as up to date
+      set_fact:
+        up_to_date: "{{ up_to_date + ['diskonaut'] }}"
+      when: diskonaut_version == diskonaut_latest.json.tag_name
+      tags:
+        - diskonaut
+
     # xh
     - name: Get latest xh version from GitHub
       uri:

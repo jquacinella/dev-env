@@ -177,6 +177,12 @@
       tags:
         - dust
 
+    - name: Include diskonaut role
+      include_role:
+        name: diskonaut
+      tags:
+        - diskonaut
+
     - name: Include xh role
       include_role:
         name: xh

@@ -87,6 +87,7 @@ That's it! The setup script handles all prerequisites automatically.
 #### Productivity & Utilities
 - **ccze** - Colorizer for log files
 - **dust** - Modern disk usage analyzer
+- **diskonaut** - Terminal disk space navigator
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
 - **watchexec** - Executes commands in response to file modifications
@@ -189,7 +190,7 @@ This will:
 2. Set up oh-my-zsh with spaceship-prompt and plugins
 3. Configure zsh as your default shell
 4. Install container tools (podman, podman-tui, distrobox)
-5. Install CLI tools from GitHub (fzf, fd, ripgrep, watchexec, espanso, dust, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, asciinema, navi, ssh-list, tldr, zeco, zide)
+5. Install CLI tools from GitHub (fzf, fd, ripgrep, watchexec, espanso, dust, diskonaut, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, asciinema, navi, ssh-list, tldr, zeco, zide)
 6. Register and start Espanso text expander service
 7. Apply your custom configurations
 
@@ -467,6 +468,7 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── watchexec/         # File watcher
 │   ├── espanso/           # Text expander
 │   ├── dust/              # Disk usage analyzer
+│   ├── diskonaut/         # Terminal disk space navigator
 │   ├── xh/                # HTTP client
 │   ├── broot/             # Directory navigator
 │   ├── procs/             # Process viewer
