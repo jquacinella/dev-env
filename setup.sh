@@ -157,12 +157,12 @@ create_venv() {
 install_ansible() {
     print_header "Installing Ansible and Dependencies"
     
-    print_info "Installing packages: ansible, jinja2, pyyaml"
-    
+    print_info "Installing packages: ansible, jinja2, pyyaml, rich"
+
     # Activate virtual environment for installation
     source .venv/bin/activate
-    
-    if uv --native-tls pip install ansible jinja2 pyyaml; then
+
+    if uv --native-tls pip install ansible jinja2 pyyaml rich; then
         print_success "Ansible and dependencies installed successfully"
         
         # Verify installation
@@ -245,7 +245,7 @@ echo ""
 echo -e "${BLUE}Available commands:${NC}"
 echo "  ansible-playbook dev-setup.yml --ask-become-pass  # Run full setup"
 echo "  ansible-playbook dev-setup.yml --tags fzf         # Install specific tool"
-echo "  ansible-playbook version-checks.yml               # Check for updates"
+echo "  python3 scripts/update-versions.py                # Check for updates"
 echo "  deactivate                                        # Exit virtual environment"
 echo ""
 EOF
