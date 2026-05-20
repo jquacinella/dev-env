@@ -802,7 +802,7 @@ alias curl='xh'  # for simple requests
 5. **Pair sessions**: Help teammates get comfortable with new tools
 
 ### Version Management
-- Check for updates: `ansible-playbook version-checks.yml`
+- Check for updates: `python3 scripts/update-versions.py`
 - Update specific tool: Edit `vars/versions.yml` and run playbook with `force_update=true`
 
 ---

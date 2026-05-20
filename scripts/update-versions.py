@@ -14,6 +14,9 @@ Usage:
 Set GITHUB_TOKEN (or GH_TOKEN) to raise the GitHub API rate limit from
 60 to 5000 requests/hour. Without it, ~40 unauthenticated calls per run
 will work but repeated runs may hit the limit.
+
+Output is colorized with Rich when it is installed (`pip install rich`);
+otherwise it falls back to plain text.
 """
 
 import argparse
@@ -23,6 +26,17 @@ import re
 import sys
 import urllib.error
 import urllib.request
+
+try:
+    from rich import box
+    from rich.console import Console
+    from rich.table import Table
+
+    _console = Console()
+    HAVE_RICH = True
+except ImportError:
+    _console = None
+    HAVE_RICH = False
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSIONS_FILE = os.path.join(REPO_ROOT, "vars", "versions.yml")
@@ -150,6 +164,63 @@ def fetch_latest(kind, ident, token):
     raise ValueError(f"unknown source kind: {kind}")
 
 
+def emit(text, style=None):
+    """Print a line, applying a Rich style when Rich is available."""
+    if HAVE_RICH and style:
+        _console.print(text, style=style)
+    else:
+        print(text)
+
+
+def report(updates, uptodate, errors):
+    """Render the check results, colorized with Rich when available."""
+    if HAVE_RICH:
+        if updates:
+            table = Table(
+                title=f"Updates available ({len(updates)})",
+                title_style="bold dark_orange",
+                title_justify="left",
+                box=box.SIMPLE_HEAD,
+                header_style="bold",
+            )
+            table.add_column("Tool")
+            table.add_column("Current", style="dim")
+            table.add_column("", justify="center")
+            table.add_column("Latest", style="bold green")
+            for var, cur, new in updates:
+                table.add_row(var, cur, "->", new)
+            _console.print(table)
+        else:
+            _console.print("All checked tools are up to date.", style="bold green")
+        _console.print(f"Up to date: {len(uptodate)}", style="green")
+        if errors:
+            table = Table(
+                title=f"Could not check ({len(errors)})",
+                title_style="bold red",
+                title_justify="left",
+                box=box.SIMPLE_HEAD,
+                header_style="bold",
+            )
+            table.add_column("Tool")
+            table.add_column("Reason", style="red")
+            for var, msg in errors:
+                table.add_row(var, msg)
+            _console.print(table)
+        return
+
+    if updates:
+        print(f"Updates available ({len(updates)}):")
+        for var, cur, new in updates:
+            print(f"  {var:<40} {cur:<16} -> {new}")
+    else:
+        print("All checked tools are up to date.")
+    print(f"\nUp to date: {len(uptodate)}")
+    if errors:
+        print(f"\nCould not check ({len(errors)}):")
+        for var, msg in errors:
+            print(f"  {var:<40} {msg}")
+
+
 def parse_args():
     p = argparse.ArgumentParser(
         description="Check upstream sources and update vars/versions.yml."
@@ -213,19 +284,7 @@ def main():
             (var, current[var], new)
         )
 
-    if updates:
-        print(f"Updates available ({len(updates)}):")
-        for var, cur, new in updates:
-            print(f"  {var:<40} {cur:<16} -> {new}")
-    else:
-        print("All checked tools are up to date.")
-
-    print(f"\nUp to date: {len(uptodate)}")
-
-    if errors:
-        print(f"\nCould not check ({len(errors)}):")
-        for var, msg in errors:
-            print(f"  {var:<40} {msg}")
+    report(updates, uptodate, errors)
 
     if updates and args.write:
         new_text = text
@@ -238,9 +297,12 @@ def main():
         with open(VERSIONS_FILE, "w", encoding="utf-8") as f:
             f.write(new_text)
         rel = os.path.relpath(VERSIONS_FILE, REPO_ROOT)
-        print(f"\nWrote {len(updates)} update(s) to {rel}.")
+        emit(f"\nWrote {len(updates)} update(s) to {rel}.", style="bold green")
     elif updates:
-        print("\nRun again with --write to apply these changes to vars/versions.yml.")
+        emit(
+            "\nRun again with --write to apply these changes to vars/versions.yml.",
+            style="dark_orange",
+        )
 
     return 1 if errors else 0
 

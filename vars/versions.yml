@@ -94,7 +94,6 @@ tldr_version: "v1.8.1"
 nvm_version: "v0.40.4"
 # Podman - container engine (installed from Ubuntu repositories, version depends on Ubuntu version)
 # Note: Podman is not pinned to a specific version as it's installed via apt from official repos
-# Use 'ansible-playbook version-checks.yml --tags podman' to check for updates
 # Update with: sudo apt update && sudo apt upgrade podman
 
 # Podman-TUI - Terminal UI for Podman

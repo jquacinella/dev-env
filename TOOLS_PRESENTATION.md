@@ -962,7 +962,7 @@ Gradual replacement of muscle memory!
 
 **Version Management:**
 ```bash
-ansible-playbook version-checks.yml     # Check for updates
+python3 scripts/update-versions.py     # Check for updates
 ```
 
 ---
