@@ -327,7 +327,19 @@
         name: tldr
       tags:
         - tldr
-        
+
+    - name: Include pv role
+      include_role:
+        name: pv
+      tags:
+        - pv
+
+    - name: Include column role
+      include_role:
+        name: column
+      tags:
+        - column
+
     - name: Include nvm role
       include_role:
         name: nvm
