@@ -1,0 +1,26 @@
+---
+- name: Check if pv is installed
+  tags: ['pv']
+  command: which pv
+  register: pv_check
+  failed_when: false
+  changed_when: false
+
+- name: Install pv (Pipe Viewer)
+  tags: ['pv']
+  apt:
+    name: pv
+    state: present
+    update_cache: yes
+  when: pv_check.rc != 0
+
+- name: Verify pv installation
+  tags: ['pv']
+  command: pv --version
+  register: pv_version_output
+  changed_when: false
+
+- name: Display pv version
+  tags: ['pv']
+  debug:
+    msg: "pv version: {{ pv_version_output.stdout_lines[0] }}"

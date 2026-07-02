@@ -1,0 +1,43 @@
+---
+- name: Check if column is installed
+  tags: ['column']
+  command: which column
+  register: column_check
+  failed_when: false
+  changed_when: false
+
+- name: Install column
+  tags: ['column']
+  block:
+    - name: Check Ubuntu version
+      set_fact:
+        ubuntu_version: "{{ ansible_distribution_version }}"
+
+    # On Ubuntu 22.04+ the `column` command ships in bsdextrautils, while
+    # older releases provide it via bsdmainutils.
+    - name: Install column from bsdextrautils (Ubuntu 22.04+)
+      apt:
+        name: bsdextrautils
+        state: present
+        update_cache: yes
+      when: ubuntu_version is version('22.04', '>=')
+
+    - name: Install column from bsdmainutils (Ubuntu < 22.04)
+      apt:
+        name: bsdmainutils
+        state: present
+        update_cache: yes
+      when: ubuntu_version is version('22.04', '<')
+
+  when: column_check.rc != 0
+
+- name: Verify column installation
+  tags: ['column']
+  command: which column
+  register: column_verify
+  changed_when: false
+
+- name: Display column installation path
+  tags: ['column']
+  debug:
+    msg: "column installed at: {{ column_verify.stdout }}"

@@ -92,6 +92,8 @@ That's it! The setup script handles all prerequisites automatically.
 - **watchexec** - Executes commands in response to file modifications
 - **asciinema** - Terminal session recorder
 - **ssh-list** - Tool for managing SSH connections
+- **pv (Pipe Viewer)** - Monitor the progress of data through a pipe
+- **column** - Format input into aligned, multiple columns
 
 ### Configurations
 - Custom `.zshrc` with sensible defaults and plugins
@@ -518,6 +520,8 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── ssh-list/          # SSH connection manager
 │   ├── tldr/              # Simplified man pages
 │   ├── yazi/              # Terminal file manager
+│   ├── pv/                # Pipe viewer (progress monitor)
+│   ├── column/            # Columnar text formatter
 │   └── nvm/               # Node Version Manager
 └── README.md              # This file
 ```
