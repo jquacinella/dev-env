@@ -1,0 +1,64 @@
+---
+- name: Check if rustnet is installed
+  tags: ['rustnet']
+  stat:
+    path: /usr/local/bin/rustnet
+  register: rustnet_stat
+
+- name: Download and install rustnet
+  tags: ['rustnet']
+  block:
+    - name: Install rustnet runtime dependencies (libpcap, setcap)
+      tags: ['rustnet']
+      apt:
+        name:
+          - libpcap0.8
+          - libcap2-bin
+        state: present
+
+    - name: Create temporary directory for rustnet
+      tags: ['rustnet']
+      tempfile:
+        state: directory
+      register: rustnet_temp
+
+    - name: Download rustnet tarball
+      tags: ['rustnet']
+      get_url:
+        url: "https://github.com/domcyrus/rustnet/releases/download/{{ rustnet_version }}/rustnet-{{ rustnet_version }}-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "{{ rustnet_temp.path }}/rustnet.tar.gz"
+
+    - name: Extract rustnet tarball
+      tags: ['rustnet']
+      unarchive:
+        src: "{{ rustnet_temp.path }}/rustnet.tar.gz"
+        dest: "{{ rustnet_temp.path }}"
+        remote_src: yes
+
+    - name: Find rustnet binary in extracted directory
+      tags: ['rustnet']
+      find:
+        paths: "{{ rustnet_temp.path }}"
+        patterns: "rustnet"
+        recurse: yes
+        file_type: file
+      register: rustnet_binary
+
+    - name: Install rustnet to /usr/local/bin
+      tags: ['rustnet']
+      copy:
+        src: "{{ rustnet_binary.files[0].path }}"
+        dest: /usr/local/bin/rustnet
+        mode: '0755'
+        remote_src: yes
+
+    - name: Grant packet capture capabilities to rustnet (run without sudo)
+      tags: ['rustnet']
+      command: setcap 'cap_net_raw,cap_bpf,cap_perfmon+eip' /usr/local/bin/rustnet
+
+    - name: Clean up rustnet temporary directory
+      tags: ['rustnet']
+      file:
+        path: "{{ rustnet_temp.path }}"
+        state: absent
+  when: not rustnet_stat.stat.exists or (force_update | default(false) | bool)

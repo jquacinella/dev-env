@@ -1,0 +1,52 @@
+---
+- name: Check if glow is installed
+  tags: ['glow']
+  stat:
+    path: /usr/local/bin/glow
+  register: glow_stat
+
+- name: Download and install glow
+  tags: ['glow']
+  block:
+    - name: Create temporary directory for glow
+      tags: ['glow']
+      tempfile:
+        state: directory
+      register: glow_temp
+
+    - name: Download glow tarball
+      tags: ['glow']
+      get_url:
+        url: "https://github.com/charmbracelet/glow/releases/download/{{ glow_version }}/glow_{{ glow_version | replace('v', '') }}_Linux_x86_64.tar.gz"
+        dest: "{{ glow_temp.path }}/glow.tar.gz"
+
+    - name: Extract glow tarball
+      tags: ['glow']
+      unarchive:
+        src: "{{ glow_temp.path }}/glow.tar.gz"
+        dest: "{{ glow_temp.path }}"
+        remote_src: yes
+
+    - name: Find glow binary in extracted directory
+      tags: ['glow']
+      find:
+        paths: "{{ glow_temp.path }}"
+        patterns: "glow"
+        recurse: yes
+        file_type: file
+      register: glow_binary
+
+    - name: Install glow to /usr/local/bin
+      tags: ['glow']
+      copy:
+        src: "{{ glow_binary.files[0].path }}"
+        dest: /usr/local/bin/glow
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up glow temporary directory
+      tags: ['glow']
+      file:
+        path: "{{ glow_temp.path }}"
+        state: absent
+  when: not glow_stat.stat.exists or (force_update | default(false) | bool)

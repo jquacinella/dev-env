@@ -111,6 +111,18 @@ zide_version: "v3.2.0"
 # Yazi - blazing fast terminal file manager
 yazi_version: "v26.5.6"
 
+# RustNet - network monitoring TUI with deep packet inspection
+rustnet_version: "v1.6.0"
+
+# ast-grep - structural code search, lint, and rewriting tool
+ast_grep_version: "0.45.2"
+
+# Glow - markdown renderer for the terminal
+glow_version: "v3.0.0"
+
+# Hyperfine - command-line benchmarking tool
+hyperfine_version: "v1.20.0"
+
 # Oh-My-Zsh Plugins and Themes
 zsh_autosuggestions_version: "v0.7.1"
 zsh_syntax_highlighting_version: "0.8.0"

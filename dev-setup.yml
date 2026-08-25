@@ -346,7 +346,32 @@
       tags:
         - nvm
 
-    
+    - name: Include rustnet role
+      include_role:
+        name: rustnet
+      tags:
+        - rustnet
+
+    - name: Include ast-grep role
+      include_role:
+        name: ast-grep
+      tags:
+        - ast-grep
+        - sg
+
+    - name: Include glow role
+      include_role:
+        name: glow
+      tags:
+        - glow
+
+    - name: Include hyperfine role
+      include_role:
+        name: hyperfine
+      tags:
+        - hyperfine
+
+
   handlers:
     - name: reload shell
       debug:
