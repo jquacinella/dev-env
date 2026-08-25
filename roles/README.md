@@ -39,6 +39,7 @@ roles/
 - **fzf**: Fuzzy finder for command line
 - **fd**: Fast and user-friendly alternative to find
 - **ripgrep**: Ultra-fast recursive search tool
+- **ast-grep**: Structural code search, lint, and rewriting tool based on ASTs
 - **broot**: Directory navigator with tree view
 - **zoxide**: Smarter cd command that learns your habits
 
@@ -48,12 +49,14 @@ roles/
 - **lsd**: Modern ls replacement with icons and colors
 - **dust**: Intuitive disk usage analyzer
 - **hexyl**: Command-line hex viewer with colored output
+- **glow**: Markdown renderer for the terminal
 
 ### Process & System Monitoring
 - **procs**: Modern replacement for ps with colored output
 - **bottom**: Cross-platform graphical process/system monitor
 - **gping**: Ping tool with a graph
 - **bandwhich**: Terminal bandwidth utilization tool
+- **rustnet**: Network monitoring TUI with deep packet inspection
 
 ### Version Control & Git
 - **gitui**: Blazing fast terminal UI for git
@@ -61,6 +64,7 @@ roles/
 
 ### Development Tools & Editors
 - **helix**: Post-modern modal text editor
+- **hyperfine**: Command-line benchmarking tool
 - **nvm**: Node Version Manager
 - **zeco**: Development environment container manager
 - **zide**: Terminal-based IDE

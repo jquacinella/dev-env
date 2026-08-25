@@ -1,0 +1,52 @@
+---
+- name: Check if hyperfine is installed
+  tags: ['hyperfine']
+  stat:
+    path: /usr/local/bin/hyperfine
+  register: hyperfine_stat
+
+- name: Download and install hyperfine
+  tags: ['hyperfine']
+  block:
+    - name: Create temporary directory for hyperfine
+      tags: ['hyperfine']
+      tempfile:
+        state: directory
+      register: hyperfine_temp
+
+    - name: Download hyperfine tarball
+      tags: ['hyperfine']
+      get_url:
+        url: "https://github.com/sharkdp/hyperfine/releases/download/{{ hyperfine_version }}/hyperfine-{{ hyperfine_version }}-x86_64-unknown-linux-musl.tar.gz"
+        dest: "{{ hyperfine_temp.path }}/hyperfine.tar.gz"
+
+    - name: Extract hyperfine tarball
+      tags: ['hyperfine']
+      unarchive:
+        src: "{{ hyperfine_temp.path }}/hyperfine.tar.gz"
+        dest: "{{ hyperfine_temp.path }}"
+        remote_src: yes
+
+    - name: Find hyperfine binary in extracted directory
+      tags: ['hyperfine']
+      find:
+        paths: "{{ hyperfine_temp.path }}"
+        patterns: "hyperfine"
+        recurse: yes
+        file_type: file
+      register: hyperfine_binary
+
+    - name: Install hyperfine to /usr/local/bin
+      tags: ['hyperfine']
+      copy:
+        src: "{{ hyperfine_binary.files[0].path }}"
+        dest: /usr/local/bin/hyperfine
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up hyperfine temporary directory
+      tags: ['hyperfine']
+      file:
+        path: "{{ hyperfine_temp.path }}"
+        state: absent
+  when: not hyperfine_stat.stat.exists or (force_update | default(false) | bool)

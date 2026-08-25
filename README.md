@@ -53,6 +53,7 @@ That's it! The setup script handles all prerequisites automatically.
 
 #### Search & Text Processing
 - **ripgrep (rg)** - Ultra-fast recursive search tool
+- **ast-grep** - Structural code search, lint, and rewriting tool based on ASTs
 - **up (Ultimate Plumber)** - Interactive pipe building tool
 - **bat** - Cat clone with syntax highlighting and Git integration
 - **hexyl** - Command-line hex viewer with colored output
@@ -62,6 +63,7 @@ That's it! The setup script handles all prerequisites automatically.
 - **bottom** - Cross-platform graphical process/system monitor
 - **gping** - Ping tool with a graph
 - **bandwhich** - Terminal bandwidth utilization tool
+- **rustnet** - Network monitoring TUI with deep packet inspection (installed with packet-capture capabilities so it runs without sudo)
 - **nmon** - System performance monitoring tool for Linux
 - **iotop** - I/O monitoring tool for processes
 - **iftop** - Network bandwidth monitoring tool
@@ -72,6 +74,7 @@ That's it! The setup script handles all prerequisites automatically.
 
 #### Development Tools & Editors
 - **helix** - Post-modern modal text editor
+- **hyperfine** - Command-line benchmarking tool
 - **nvm** - Node Version Manager
 - **zeco** - Development environment container manager
 - **zide** - Terminal-based IDE
@@ -83,6 +86,7 @@ That's it! The setup script handles all prerequisites automatically.
 #### Documentation & Help
 - **tldr** - Simplified and community-driven man pages with practical examples
 - **navi** - Interactive cheatsheet tool for the command-line
+- **glow** - Markdown renderer for the terminal
 
 #### Productivity & Utilities
 - **ccze** - Colorizer for log files
@@ -191,7 +195,7 @@ This will:
 2. Set up oh-my-zsh with spaceship-prompt and plugins
 3. Configure zsh as your default shell
 4. Install container tools (podman, podman-tui, distrobox)
-5. Install CLI tools from GitHub (fzf, fd, ripgrep, watchexec, espanso, dust, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, asciinema, navi, ssh-list, tldr, zeco, zide)
+5. Install CLI tools from GitHub (fzf, fd, ripgrep, ast-grep, watchexec, espanso, dust, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, rustnet, glow, hyperfine, asciinema, navi, ssh-list, tldr, zeco, zide)
 6. Register and start Espanso text expander service
 7. Apply your custom configurations
 
@@ -522,7 +526,11 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── yazi/              # Terminal file manager
 │   ├── pv/                # Pipe viewer (progress monitor)
 │   ├── column/            # Columnar text formatter
-│   └── nvm/               # Node Version Manager
+│   ├── nvm/               # Node Version Manager
+│   ├── rustnet/           # Network monitoring TUI
+│   ├── ast-grep/          # Structural code search and rewrite
+│   ├── glow/              # Markdown renderer
+│   └── hyperfine/         # Command-line benchmarking tool
 └── README.md              # This file
 ```
 

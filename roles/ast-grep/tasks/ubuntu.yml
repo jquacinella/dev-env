@@ -1,0 +1,58 @@
+---
+- name: Check if ast-grep is installed
+  tags: ['ast-grep', 'sg']
+  stat:
+    path: /usr/local/bin/ast-grep
+  register: ast_grep_stat
+
+- name: Download and install ast-grep
+  tags: ['ast-grep', 'sg']
+  block:
+    - name: Install unzip if not present
+      tags: ['ast-grep', 'sg']
+      apt:
+        name: unzip
+        state: present
+
+    - name: Create temporary directory for ast-grep
+      tags: ['ast-grep', 'sg']
+      tempfile:
+        state: directory
+      register: ast_grep_temp
+
+    - name: Download ast-grep zip
+      tags: ['ast-grep', 'sg']
+      get_url:
+        url: "https://github.com/ast-grep/ast-grep/releases/download/{{ ast_grep_version }}/app-x86_64-unknown-linux-gnu.zip"
+        dest: "{{ ast_grep_temp.path }}/ast-grep.zip"
+
+    - name: Extract ast-grep zip
+      tags: ['ast-grep', 'sg']
+      unarchive:
+        src: "{{ ast_grep_temp.path }}/ast-grep.zip"
+        dest: "{{ ast_grep_temp.path }}"
+        remote_src: yes
+
+    - name: Find ast-grep binary in extracted directory
+      tags: ['ast-grep', 'sg']
+      find:
+        paths: "{{ ast_grep_temp.path }}"
+        patterns: "ast-grep"
+        recurse: yes
+        file_type: file
+      register: ast_grep_binary
+
+    - name: Install ast-grep to /usr/local/bin
+      tags: ['ast-grep', 'sg']
+      copy:
+        src: "{{ ast_grep_binary.files[0].path }}"
+        dest: /usr/local/bin/ast-grep
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up ast-grep temporary directory
+      tags: ['ast-grep', 'sg']
+      file:
+        path: "{{ ast_grep_temp.path }}"
+        state: absent
+  when: not ast_grep_stat.stat.exists or (force_update | default(false) | bool)
