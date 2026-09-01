@@ -1,0 +1,24 @@
+# Managed by Ansible (dev-env) - edit configs/tmux.conf.j2, not this file
+
+# Truecolor support
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",xterm-256color:RGB"
+
+# Sane defaults
+set -g mouse on
+set -g history-limit 50000
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on
+set -sg escape-time 10
+set -g focus-events on
+
+# Use zsh
+set -g default-shell /usr/bin/zsh
+
+# Reload config with prefix+r
+bind r source-file ~/.tmux.conf \; display-message "tmux.conf reloaded"
+
+# Intuitive splits that keep the current path
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
