@@ -76,7 +76,6 @@ That's it! The setup script handles all prerequisites automatically.
 - **helix** - Post-modern modal text editor
 - **hyperfine** - Command-line benchmarking tool
 - **nvm** - Node Version Manager
-- **zeco** - Development environment container manager
 - **zide** - Terminal-based IDE
 
 #### Database & API Tools
@@ -196,7 +195,7 @@ This will:
 2. Set up oh-my-zsh with spaceship-prompt and plugins
 3. Configure zsh as your default shell
 4. Install container tools (podman, podman-tui, distrobox)
-5. Install CLI tools from GitHub (fzf, fd, ripgrep, ast-grep, watchexec, espanso, dust, duf, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, rustnet, glow, hyperfine, asciinema, navi, ssh-list, tldr, zeco, zide)
+5. Install CLI tools from GitHub (fzf, fd, ripgrep, ast-grep, watchexec, espanso, dust, duf, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, rustnet, glow, hyperfine, asciinema, navi, ssh-list, tldr, zide)
 6. Register and start Espanso text expander service
 7. Apply your custom configurations
 
@@ -276,7 +275,7 @@ python3 scripts/update-versions.py
 ```
 
 This will:
-- Query GitHub releases/tags (and crates.io for `zeco`) for the latest version of each tool
+- Query GitHub releases/tags for the latest version of each tool
 - Compare with your pinned versions in `vars/versions.yml`
 - Print a summary of which tools are up to date and which have updates available
 
@@ -506,7 +505,6 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── procs/             # Process viewer
 │   ├── bottom/            # System monitor
 │   ├── zellij/            # Terminal multiplexer
-│   ├── zeco/              # Development container manager
 │   ├── zide/              # Terminal IDE
 │   ├── gping/             # Graphical ping
 │   ├── bandwhich/         # Network monitor

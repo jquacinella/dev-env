@@ -208,12 +208,6 @@
       tags:
         - zellij
 
-    - name: Include zeco role
-      include_role:
-        name: zeco
-      tags:
-        - zeco
-
     - name: Include zide role
       include_role:
         name: zide

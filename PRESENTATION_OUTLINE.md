@@ -574,19 +574,17 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 8.5 Zeco & Zide
+### 8.5 Zide
 
-**Summary**:
-- **Zeco**: Development environment container manager, creates consistent dev environments
-- **Zide**: Terminal-based IDE combining editor, terminal, and file browser
+**Summary**: Terminal-based IDE that combines Zellij layouts with a file picker (yazi) and an editor (helix) — editor, terminal, and file browser in one workspace.
 
 **Why Adopt It**:
-- **Reproducible environments**: Same dev setup across team
-- **Isolated dependencies**: Project dependencies don't conflict
-- **Quick onboarding**: New devs get working environment in minutes
+- **IDE feel without an IDE**: File tree, editor, and terminal panes pre-arranged
+- **Builds on tools we already use**: Zellij, yazi, and helix working together
+- **Keyboard-driven**: Same vim-style navigation across all panes
 
 **Demo** (brief):
-- Mention these are more advanced tools for development workflows
+- Mention this is a more advanced tool for development workflows
 - Show quick overview if time permits
 
 ---

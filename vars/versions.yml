@@ -102,9 +102,6 @@ podman_tui_version: "v1.11.1"
 # Distrobox - Use any Linux distribution inside your terminal
 distrobox_version: "1.8.2.5"
 
-# Zeco - Zellij session sharing via P2P, E2E encrypted
-zeco_version: "0.5.2"
-
 # Zide - Terminal-based IDE combining Zellij with file pickers and editors
 zide_version: "v3.2.0"
 

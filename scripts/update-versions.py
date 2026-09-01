@@ -9,7 +9,7 @@ Usage:
   scripts/update-versions.py              # report what is outdated (no changes)
   scripts/update-versions.py --write      # apply updates to vars/versions.yml
   scripts/update-versions.py --only fzf,bat        # restrict to specific tools
-  scripts/update-versions.py --only zeco_version   # (var name also accepted)
+  scripts/update-versions.py --only glow_version   # (var name also accepted)
 
 Set GITHUB_TOKEN (or GH_TOKEN) to raise the GitHub API rate limit from
 60 to 5000 requests/hour. Without it, ~40 unauthenticated calls per run
@@ -79,7 +79,6 @@ TOOLS = {
     "nvm_version":        ("gh_release", "nvm-sh/nvm"),
     "podman_tui_version": ("gh_release", "containers/podman-tui"),
     "distrobox_version":  ("gh_release", "89luca89/distrobox"),
-    "zeco_version":       ("crates", "zeco"),
     "zide_version":       ("gh_release", "josephschmitt/zide"),
     "yazi_version":       ("gh_release", "sxyazi/yazi"),
     "rustnet_version":    ("gh_release", "domcyrus/rustnet"),
