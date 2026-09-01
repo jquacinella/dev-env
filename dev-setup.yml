@@ -371,6 +371,12 @@
       tags:
         - hyperfine
 
+    - name: Include duf role
+      include_role:
+        name: duf
+      tags:
+        - duf
+
 
   handlers:
     - name: reload shell

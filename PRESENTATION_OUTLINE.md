@@ -27,14 +27,14 @@ Zsh is a modern, feature-rich shell that extends bash capabilities with powerful
    - Demonstrate directory completion with partial matches
 
 2. **Command history search**
-   - Press `Ctrl+R` for reverse history search
+   - Press `Ctrl+R` for reverse history search (handled by atuin in our setup, since `atuin init` runs last in .zshrc)
    - Use arrow keys with substring search (type `ssh` then up arrow)
 
 3. **Oh-My-Zsh plugins included**:
    - `zsh-autosuggestions`: Ghost text from history (type `git ` and see suggestion)
    - `zsh-syntax-highlighting`: Real-time command validation (red=invalid, green=valid)
    - `zsh-history-substring-search`: Arrow key search in history
-   - `zsh-fzf-history-search`: Fuzzy search history with `Ctrl+R`
+   - `zsh-fzf-history-search`: Fuzzy history search (note: atuin owns `Ctrl+R` in our setup)
    - `zsh-completions`: Additional completion definitions
 
 4. **Spaceship Prompt**
@@ -99,7 +99,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 - Integrates with other tools (git, vim, cd)
 
 **Demo**:
-- `Ctrl+R`: Search command history with fuzzy matching
+- `Ctrl+R`: History search (rebound by atuin in our setup — fzf's version is what you get without atuin)
 - `Ctrl+T`: Find and insert file path into current command — type `vim `, hit Ctrl+T, fuzzy-pick the file; Tab marks multiple files and inserts all of them
 - `Alt+C`: Fuzzy find directory and cd into it — no `cd`, no `../../..` chains
 - Pipe any list to fzf: `ls /var/log | fzf`
@@ -648,7 +648,25 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.4 XH - HTTP Client
+### 9.4 Duf - Disk Usage/Free Utility
+
+**Summary**: Modern df replacement that shows mounted filesystems in clean, colorful tables with usage bars. Complements dust: dust shows what's eating space inside a directory, duf shows how full each disk is.
+
+**Why Adopt It**:
+- **Grouped tables**: Local, network, and special devices separated
+- **Usage bars**: Color-coded fill levels at a glance
+- **Less noise**: Hides pseudo-filesystems by default
+- **Scriptable**: JSON output with `--json`
+
+**Demo**:
+- `duf`: All mounted filesystems, grouped and color-coded
+- `duf /home`: Just the filesystem backing a path
+- `duf --only local`: Skip network and special mounts
+- Compare with plain `df -h` output
+
+---
+
+### 9.5 XH - HTTP Client
 
 **Summary**: Friendly HTTP client with expressive syntax. Like HTTPie but faster (written in Rust).
 
@@ -666,7 +684,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.5 Espanso - Text Expander
+### 9.6 Espanso - Text Expander
 
 **Summary**: Cross-platform text expander. Type shortcuts that expand to longer text (snippets, commands, templates).
 
@@ -684,7 +702,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.6 Watchexec - File Watcher
+### 9.7 Watchexec - File Watcher
 
 **Summary**: Executes commands when files change. Monitor config files, auto-restart services, trigger tests on code changes.
 
@@ -701,7 +719,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.7 Asciinema - Terminal Recorder
+### 9.8 Asciinema - Terminal Recorder
 
 **Summary**: Record and share terminal sessions. Perfect for documentation, demos, and reproducing issues.
 
@@ -720,7 +738,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.8 SSH-List - SSH Connection Manager
+### 9.9 SSH-List - SSH Connection Manager
 
 **Summary**: Tool for managing and quickly connecting to SSH hosts. Fuzzy search your SSH config.
 
@@ -736,7 +754,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 ---
 
-### 9.9 CCZE - Log Colorizer
+### 9.10 CCZE - Log Colorizer
 
 **Summary**: Colorizer for log files. Reads logs and applies color coding to different log levels, IPs, timestamps, etc.
 
@@ -763,7 +781,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 **Week 1: Foundation**
 - Install Zsh and get comfortable with Oh-My-Zsh
 - Start using Zellij for session management
-- Adopt fzf for command history (Ctrl+R)
+- Learn atuin's Ctrl+R history search; adopt fzf's Ctrl+T and Alt+C
 
 **Week 2: Navigation & Search**
 - Replace ls with eza/lsd

@@ -62,14 +62,14 @@ cd /u/l/b<TAB>       # Expands to /usr/local/bin
 
 **2. Command History Search**
 ```bash
-Ctrl+R               # Reverse history search with fzf
+Ctrl+R               # Reverse history search with atuin
 # Type 'ssh' then ↑  # Shows only ssh commands
 ```
 
 **3. Plugins Included**
 - `zsh-autosuggestions` - Ghost text from history
 - `zsh-syntax-highlighting` - Real-time validation (red/green)
-- `zsh-fzf-history-search` - Fuzzy search with Ctrl+R
+- `zsh-fzf-history-search` - Fuzzy history search (atuin owns Ctrl+R in our setup)
 
 ---
 
@@ -168,7 +168,7 @@ Interactive command-line fuzzy finder. Filters files, history, processes in real
 ## FZF: Key Bindings
 
 ```bash
-Ctrl+R        # Search command history (fuzzy)
+Ctrl+R        # History search (atuin rebinds this in our setup)
 Ctrl+T        # Find file, insert path into command
 Alt+C         # Fuzzy find directory and cd
 ```
@@ -805,6 +805,27 @@ Compare with `du -sh * | sort -h` - much faster and clearer!
 
 ---
 
+## Duf - Disk Usage/Free Utility
+
+**What is it?**
+Modern `df` that shows mounted filesystems in clean, colorful tables. Dust tells you *what's eating space*; duf tells you *how full each disk is*.
+
+**Why adopt it?**
+- ✅ Grouped tables: local, network, special devices
+- ✅ Usage bars and color-coded fill levels
+- ✅ Hides pseudo-filesystem noise by default
+- ✅ JSON output for scripting
+
+**Examples:**
+```bash
+duf                      # All mounted filesystems, grouped
+duf /home                # Just the filesystem backing a path
+duf --only local         # Skip network/special mounts
+duf --json               # Machine-readable output
+```
+
+---
+
 ## XH - HTTP Client
 
 **What is it?**
@@ -932,7 +953,7 @@ ansible-playbook dev-setup.yml --tags "zsh,fzf,ripgrep"
 **Week 1: Foundation**
 - Install Zsh + Oh-My-Zsh
 - Start using Zellij for session management
-- Adopt fzf for command history (Ctrl+R)
+- Learn atuin's Ctrl+R history search; adopt fzf's Ctrl+T and Alt+C
 
 **Week 2: Navigation & Search**
 - Replace ls → eza/lsd

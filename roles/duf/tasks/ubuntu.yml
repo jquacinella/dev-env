@@ -1,0 +1,52 @@
+---
+- name: Check if duf is installed
+  tags: ['duf']
+  stat:
+    path: /usr/local/bin/duf
+  register: duf_stat
+
+- name: Download and install duf
+  tags: ['duf']
+  block:
+    - name: Create temporary directory for duf
+      tags: ['duf']
+      tempfile:
+        state: directory
+      register: duf_temp
+
+    - name: Download duf tarball
+      tags: ['duf']
+      get_url:
+        url: "https://github.com/muesli/duf/releases/download/{{ duf_version }}/duf_{{ duf_version | replace('v', '') }}_linux_x86_64.tar.gz"
+        dest: "{{ duf_temp.path }}/duf.tar.gz"
+
+    - name: Extract duf tarball
+      tags: ['duf']
+      unarchive:
+        src: "{{ duf_temp.path }}/duf.tar.gz"
+        dest: "{{ duf_temp.path }}"
+        remote_src: yes
+
+    - name: Find duf binary in extracted directory
+      tags: ['duf']
+      find:
+        paths: "{{ duf_temp.path }}"
+        patterns: "duf"
+        recurse: yes
+        file_type: file
+      register: duf_binary
+
+    - name: Install duf to /usr/local/bin
+      tags: ['duf']
+      copy:
+        src: "{{ duf_binary.files[0].path }}"
+        dest: /usr/local/bin/duf
+        mode: '0755'
+        remote_src: yes
+
+    - name: Clean up duf temporary directory
+      tags: ['duf']
+      file:
+        path: "{{ duf_temp.path }}"
+        state: absent
+  when: not duf_stat.stat.exists or (force_update | default(false) | bool)
