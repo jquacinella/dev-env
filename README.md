@@ -91,6 +91,7 @@ That's it! The setup script handles all prerequisites automatically.
 #### Productivity & Utilities
 - **ccze** - Colorizer for log files
 - **dust** - Modern disk usage analyzer
+- **duf** - Disk usage/free utility - a better df with colorful output
 - **xh** - Friendly HTTP client (HTTPie-like)
 - **Espanso** - Cross-platform text expander
 - **watchexec** - Executes commands in response to file modifications
@@ -195,7 +196,7 @@ This will:
 2. Set up oh-my-zsh with spaceship-prompt and plugins
 3. Configure zsh as your default shell
 4. Install container tools (podman, podman-tui, distrobox)
-5. Install CLI tools from GitHub (fzf, fd, ripgrep, ast-grep, watchexec, espanso, dust, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, rustnet, glow, hyperfine, asciinema, navi, ssh-list, tldr, zeco, zide)
+5. Install CLI tools from GitHub (fzf, fd, ripgrep, ast-grep, watchexec, espanso, dust, duf, xh, broot, procs, bottom, bat, hexyl, eza, lsd, zoxide, gitui, lazygit, lazysql, slumber, helix, zellij, gping, bandwhich, rustnet, glow, hyperfine, asciinema, navi, ssh-list, tldr, zeco, zide)
 6. Register and start Espanso text expander service
 7. Apply your custom configurations
 
@@ -530,7 +531,8 @@ By default, custom config file deployment is disabled. To enable:
 │   ├── rustnet/           # Network monitoring TUI
 │   ├── ast-grep/          # Structural code search and rewrite
 │   ├── glow/              # Markdown renderer
-│   └── hyperfine/         # Command-line benchmarking tool
+│   ├── hyperfine/         # Command-line benchmarking tool
+│   └── duf/               # Disk usage/free utility
 └── README.md              # This file
 ```
 

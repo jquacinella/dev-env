@@ -62,14 +62,14 @@ cd /u/l/b<TAB>       # Expands to /usr/local/bin
 
 **2. Command History Search**
 ```bash
-Ctrl+R               # Reverse history search with fzf
+Ctrl+R               # Reverse history search with atuin
 # Type 'ssh' then ↑  # Shows only ssh commands
 ```
 
 **3. Plugins Included**
 - `zsh-autosuggestions` - Ghost text from history
 - `zsh-syntax-highlighting` - Real-time validation (red/green)
-- `zsh-fzf-history-search` - Fuzzy search with Ctrl+R
+- `zsh-fzf-history-search` - Fuzzy history search (atuin owns Ctrl+R in our setup)
 
 ---
 
@@ -168,17 +168,36 @@ Interactive command-line fuzzy finder. Filters files, history, processes in real
 ## FZF: Key Bindings
 
 ```bash
-Ctrl+R        # Search command history (fuzzy)
+Ctrl+R        # History search (atuin rebinds this in our setup)
 Ctrl+T        # Find file, insert path into command
 Alt+C         # Fuzzy find directory and cd
-
-# Pipe anything to fzf
-ls /var/log | fzf
-docker ps -a | fzf
 ```
 
 **Example:**
 Type "ngnx" → matches "nginx", "nginx.conf", etc.
+
+---
+
+## FZF: Ctrl+T & Alt+C - The Hidden Gems
+
+**Ctrl+T** — fuzzy-pick a file, path lands in your command:
+```bash
+vim <Ctrl+T>          # Type command, then fuzzy-find the file
+tail -f <Ctrl+T>      # Works with any command
+# Tab marks multiple files - all paths get inserted
+```
+
+**Alt+C** — fuzzy-pick a directory and cd into it:
+```bash
+<Alt+C>               # From anywhere: pick dir, you're there
+# No cd, no ../../.., no tab-completion ladder
+```
+
+**Bonus:** pipe anything to fzf:
+```bash
+ls /var/log | fzf
+docker ps -a | fzf
+```
 
 ---
 
@@ -192,12 +211,15 @@ Smarter cd that learns your most-visited directories. Jump with minimal typing.
 - ✅ Jump to frequent dirs: `z ngi` → `/var/log/nginx`
 - ✅ Learns your habits, ranks by frequency
 
-**Commands:**
+**Commands** (stock zoxide uses `z`/`zi`; our setup remaps them onto `cd` via `zoxide init --cmd cd`):
 ```bash
-z nginx           # Jump to most frequent nginx directory
-zi                # Interactive selection with fzf
+cd nginx          # Jump to most frequent nginx directory
+cdi               # Interactive selection with fzf
 zoxide query      # See ranked directories
 ```
+
+`cdi` is the sleeper hit: fuzzy-pick from every directory
+zoxide has ever seen, ranked by how often you visit.
 
 ---
 
@@ -783,6 +805,27 @@ Compare with `du -sh * | sort -h` - much faster and clearer!
 
 ---
 
+## Duf - Disk Usage/Free Utility
+
+**What is it?**
+Modern `df` that shows mounted filesystems in clean, colorful tables. Dust tells you *what's eating space*; duf tells you *how full each disk is*.
+
+**Why adopt it?**
+- ✅ Grouped tables: local, network, special devices
+- ✅ Usage bars and color-coded fill levels
+- ✅ Hides pseudo-filesystem noise by default
+- ✅ JSON output for scripting
+
+**Examples:**
+```bash
+duf                      # All mounted filesystems, grouped
+duf /home                # Just the filesystem backing a path
+duf --only local         # Skip network/special mounts
+duf --json               # Machine-readable output
+```
+
+---
+
 ## XH - HTTP Client
 
 **What is it?**
@@ -910,7 +953,7 @@ ansible-playbook dev-setup.yml --tags "zsh,fzf,ripgrep"
 **Week 1: Foundation**
 - Install Zsh + Oh-My-Zsh
 - Start using Zellij for session management
-- Adopt fzf for command history (Ctrl+R)
+- Learn atuin's Ctrl+R history search; adopt fzf's Ctrl+T and Alt+C
 
 **Week 2: Navigation & Search**
 - Replace ls → eza/lsd

@@ -48,6 +48,7 @@ roles/
 - **eza**: Modern replacement for ls with colors and git integration
 - **lsd**: Modern ls replacement with icons and colors
 - **dust**: Intuitive disk usage analyzer
+- **duf**: Disk usage/free utility - a better df
 - **hexyl**: Command-line hex viewer with colored output
 - **glow**: Markdown renderer for the terminal
 

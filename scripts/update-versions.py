@@ -86,6 +86,7 @@ TOOLS = {
     "ast_grep_version":   ("gh_release", "ast-grep/ast-grep"),
     "glow_version":       ("gh_release", "charmbracelet/glow"),
     "hyperfine_version":  ("gh_release", "sharkdp/hyperfine"),
+    "duf_version":        ("gh_release", "muesli/duf"),
     "zsh_autosuggestions_version":          ("gh_tags", "zsh-users/zsh-autosuggestions"),
     "zsh_syntax_highlighting_version":      ("gh_tags", "zsh-users/zsh-syntax-highlighting"),
     "zsh_history_substring_search_version": ("gh_tags", "zsh-users/zsh-history-substring-search"),

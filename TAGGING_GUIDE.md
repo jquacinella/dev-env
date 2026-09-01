@@ -99,6 +99,7 @@ Here's the complete mapping of roles to their tags as defined in [`dev-setup.yml
 | ripgrep | `ripgrep`, `rg` |
 | espanso | `espanso` |
 | dust | `dust` |
+| duf | `duf` |
 | xh | `xh` |
 | broot | `broot` |
 | procs | `procs` |
