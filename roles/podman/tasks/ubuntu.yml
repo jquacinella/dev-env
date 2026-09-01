@@ -116,6 +116,11 @@
 - name: Setup Portainer for container management
   tags: ['podman', 'portainer']
   block:
+    - name: Get user UID for XDG_RUNTIME_DIR
+      command: id -u {{ user_name }}
+      register: user_uid
+      changed_when: false
+
     - name: Enable and start podman socket for rootless user
       become_user: "{{ user_name }}"
       systemd:
@@ -124,13 +129,8 @@
         enabled: yes
         scope: user
       environment:
-        XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['user_uid'] | default(lookup('pipe', 'id -u ' + user_name)) }}"
-        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ ansible_facts['user_uid'] | default(lookup('pipe', 'id -u ' + user_name)) }}/bus"
-
-    - name: Get user UID for XDG_RUNTIME_DIR
-      command: id -u {{ user_name }}
-      register: user_uid
-      changed_when: false
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid.stdout }}"
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ user_uid.stdout }}/bus"
 
     - name: Create Portainer data volume
       become_user: "{{ user_name }}"
