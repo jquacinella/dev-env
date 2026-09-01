@@ -100,8 +100,8 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 
 **Demo**:
 - `Ctrl+R`: Search command history with fuzzy matching
-- `Ctrl+T`: Find and insert file path into current command
-- `Alt+C`: Fuzzy find directory and cd into it
+- `Ctrl+T`: Find and insert file path into current command — type `vim `, hit Ctrl+T, fuzzy-pick the file; Tab marks multiple files and inserts all of them
+- `Alt+C`: Fuzzy find directory and cd into it — no `cd`, no `../../..` chains
 - Pipe any list to fzf: `ls /var/log | fzf`
 
 ---
@@ -115,10 +115,10 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 - Jump to frequent dirs with partial names: `z ngi` → `/var/log/nginx`
 - Remembers your habits and ranks directories by frequency
 
-**Demo**:
+**Demo** (our setup runs `zoxide init --cmd cd`, so stock `z`/`zi` become `cd`/`cdi`):
 - cd to a few different directories
-- Show `z <partial-name>` jumping directly
-- Use `zi` for interactive selection with fzf
+- Show `cd <partial-name>` jumping directly
+- Use `cdi` for interactive fzf selection over every directory zoxide has seen, ranked by frequency
 - Show `zoxide query` to see ranked directories
 
 ---

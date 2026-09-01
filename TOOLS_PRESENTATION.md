@@ -171,14 +171,33 @@ Interactive command-line fuzzy finder. Filters files, history, processes in real
 Ctrl+R        # Search command history (fuzzy)
 Ctrl+T        # Find file, insert path into command
 Alt+C         # Fuzzy find directory and cd
-
-# Pipe anything to fzf
-ls /var/log | fzf
-docker ps -a | fzf
 ```
 
 **Example:**
 Type "ngnx" → matches "nginx", "nginx.conf", etc.
+
+---
+
+## FZF: Ctrl+T & Alt+C - The Hidden Gems
+
+**Ctrl+T** — fuzzy-pick a file, path lands in your command:
+```bash
+vim <Ctrl+T>          # Type command, then fuzzy-find the file
+tail -f <Ctrl+T>      # Works with any command
+# Tab marks multiple files - all paths get inserted
+```
+
+**Alt+C** — fuzzy-pick a directory and cd into it:
+```bash
+<Alt+C>               # From anywhere: pick dir, you're there
+# No cd, no ../../.., no tab-completion ladder
+```
+
+**Bonus:** pipe anything to fzf:
+```bash
+ls /var/log | fzf
+docker ps -a | fzf
+```
 
 ---
 
@@ -192,12 +211,15 @@ Smarter cd that learns your most-visited directories. Jump with minimal typing.
 - ✅ Jump to frequent dirs: `z ngi` → `/var/log/nginx`
 - ✅ Learns your habits, ranks by frequency
 
-**Commands:**
+**Commands** (stock zoxide uses `z`/`zi`; our setup remaps them onto `cd` via `zoxide init --cmd cd`):
 ```bash
-z nginx           # Jump to most frequent nginx directory
-zi                # Interactive selection with fzf
+cd nginx          # Jump to most frequent nginx directory
+cdi               # Interactive selection with fzf
 zoxide query      # See ranked directories
 ```
+
+`cdi` is the sleeper hit: fuzzy-pick from every directory
+zoxide has ever seen, ranked by how often you visit.
 
 ---
 
