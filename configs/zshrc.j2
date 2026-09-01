@@ -16,12 +16,9 @@ plugins=(
   ssh-agent
   docker
   command-not-found
-  screen
   tmux
   jsontools
   sudo
-  supervisor
-  vagrant
   vscode
   zsh-autosuggestions
   zsh-syntax-highlighting
@@ -88,3 +85,6 @@ eval "$(zoxide init --cmd cd zsh)"
 # Atuin shell history
 # Record history with atuin but keep fzf's Ctrl+R and default arrow keys
 eval "$(atuin init zsh --disable-ctrl-r --disable-up-arrow)"
+
+# Something above aliases gsd, which we use for our ai harness
+unlias gsd 2>/dev/null
