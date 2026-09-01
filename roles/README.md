@@ -67,7 +67,6 @@ roles/
 - **helix**: Post-modern modal text editor
 - **hyperfine**: Command-line benchmarking tool
 - **nvm**: Node Version Manager
-- **zeco**: Development environment container manager
 - **zide**: Terminal-based IDE
 
 ### Database & API Tools

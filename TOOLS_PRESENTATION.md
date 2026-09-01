@@ -62,14 +62,14 @@ cd /u/l/b<TAB>       # Expands to /usr/local/bin
 
 **2. Command History Search**
 ```bash
-Ctrl+R               # Reverse history search with atuin
+Ctrl+R               # Reverse history search with fzf
 # Type 'ssh' then ↑  # Shows only ssh commands
 ```
 
 **3. Plugins Included**
 - `zsh-autosuggestions` - Ghost text from history
 - `zsh-syntax-highlighting` - Real-time validation (red/green)
-- `zsh-fzf-history-search` - Fuzzy history search (atuin owns Ctrl+R in our setup)
+- `zsh-fzf-history-search` - Fuzzy search with Ctrl+R
 
 ---
 
@@ -168,10 +168,12 @@ Interactive command-line fuzzy finder. Filters files, history, processes in real
 ## FZF: Key Bindings
 
 ```bash
-Ctrl+R        # History search (atuin rebinds this in our setup)
+Ctrl+R        # Search command history (fuzzy)
 Ctrl+T        # Find file, insert path into command
 Alt+C         # Fuzzy find directory and cd
 ```
+
+*(atuin still records rich history in the background — search it on demand with `atuin search`)*
 
 **Example:**
 Type "ngnx" → matches "nginx", "nginx.conf", etc.
@@ -953,7 +955,7 @@ ansible-playbook dev-setup.yml --tags "zsh,fzf,ripgrep"
 **Week 1: Foundation**
 - Install Zsh + Oh-My-Zsh
 - Start using Zellij for session management
-- Learn atuin's Ctrl+R history search; adopt fzf's Ctrl+T and Alt+C
+- Adopt fzf for command history (Ctrl+R), plus Ctrl+T and Alt+C
 
 **Week 2: Navigation & Search**
 - Replace ls → eza/lsd
