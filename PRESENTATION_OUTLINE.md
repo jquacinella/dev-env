@@ -27,14 +27,14 @@ Zsh is a modern, feature-rich shell that extends bash capabilities with powerful
    - Demonstrate directory completion with partial matches
 
 2. **Command history search**
-   - Press `Ctrl+R` for reverse history search (handled by atuin in our setup, since `atuin init` runs last in .zshrc)
+   - Press `Ctrl+R` for reverse history search (fzf-powered; atuin records history in the background but leaves the keybindings alone)
    - Use arrow keys with substring search (type `ssh` then up arrow)
 
 3. **Oh-My-Zsh plugins included**:
    - `zsh-autosuggestions`: Ghost text from history (type `git ` and see suggestion)
    - `zsh-syntax-highlighting`: Real-time command validation (red=invalid, green=valid)
    - `zsh-history-substring-search`: Arrow key search in history
-   - `zsh-fzf-history-search`: Fuzzy history search (note: atuin owns `Ctrl+R` in our setup)
+   - `zsh-fzf-history-search`: Fuzzy search history with `Ctrl+R`
    - `zsh-completions`: Additional completion definitions
 
 4. **Spaceship Prompt**
@@ -99,7 +99,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 - Integrates with other tools (git, vim, cd)
 
 **Demo**:
-- `Ctrl+R`: History search (rebound by atuin in our setup — fzf's version is what you get without atuin)
+- `Ctrl+R`: Search command history with fuzzy matching (atuin records history in the background; query it on demand with `atuin search`)
 - `Ctrl+T`: Find and insert file path into current command — type `vim `, hit Ctrl+T, fuzzy-pick the file; Tab marks multiple files and inserts all of them
 - `Alt+C`: Fuzzy find directory and cd into it — no `cd`, no `../../..` chains
 - Pipe any list to fzf: `ls /var/log | fzf`
@@ -781,7 +781,7 @@ Zellij is a modern terminal multiplexer (think tmux, but with better UX). It pro
 **Week 1: Foundation**
 - Install Zsh and get comfortable with Oh-My-Zsh
 - Start using Zellij for session management
-- Learn atuin's Ctrl+R history search; adopt fzf's Ctrl+T and Alt+C
+- Adopt fzf for command history (Ctrl+R), plus Ctrl+T and Alt+C
 
 **Week 2: Navigation & Search**
 - Replace ls with eza/lsd

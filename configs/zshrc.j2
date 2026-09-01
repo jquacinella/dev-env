@@ -86,4 +86,5 @@ setopt HIST_IGNORE_SPACE
 eval "$(zoxide init --cmd cd zsh)"
 
 # Atuin shell history
-eval "$(atuin init zsh)"
+# Record history with atuin but keep fzf's Ctrl+R and default arrow keys
+eval "$(atuin init zsh --disable-ctrl-r --disable-up-arrow)"
